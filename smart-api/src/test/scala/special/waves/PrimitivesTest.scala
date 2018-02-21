@@ -1,8 +1,5 @@
-package smart
+package special.waves
 
-import org.scalameter.Context
-
-import scala.util.Try
 import scalan.BaseNestedTests
 
 class PrimitivesTest extends BaseNestedTests {
