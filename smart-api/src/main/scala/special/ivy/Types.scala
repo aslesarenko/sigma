@@ -1,7 +1,7 @@
 package special.ivy
 
-import special.lang
 import scala.annotation.Annotation
+import scalan.lang
 
 @lang("Ivy")
 class ivy extends Annotation {}
