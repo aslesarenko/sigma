@@ -1,9 +1,5 @@
 package special.smart
 
-import scala.annotation.Annotation
-
-@ivy class clause extends Annotation
-
 abstract class LockWithPublicKey(publicKey: PublicKey, value: Value) extends Contract {
   @clause def spend(sig: Signature) {
     verify { checkSig(publicKey, sig) }
@@ -18,7 +14,7 @@ abstract class LockWithMultisig(
     value: Value
 ) extends Contract {
   @clause def spend (sig1: Signature, sig2: Signature) {
-    verify { checkMultiSig(List(pubKey1, pubKey2, pubKey3), List(sig1 , sig2)) }
+    verify { checkMultiSig(Array(pubKey1, pubKey2, pubKey3), Array(sig1 , sig2)) }
     unlock (value)
   }
 }
@@ -96,7 +92,7 @@ abstract class EscrowWithDelay(
     value: Value
 ) extends Contract {
   @clause def transfer(sig1: Signature, sig2: Signature) {
-    verify(checkMultiSig(List(sender, recipient, escrow), List(sig1, sig2)))
+    verify(checkMultiSig(Array(sender, recipient, escrow), Array(sig1, sig2)))
     unlock(value)
   }
 

@@ -12,6 +12,7 @@ class SmartLibraryConfig extends LibraryConfig {
   val ApiModule = new SourceModuleConf("", "smart-api")
       .moduleDependencies(specialLibrary.ApiModule)
       .addUnit("Types.scala", "special/smart/Types.scala")
+      .addUnit("Examples.scala", "special/smart/Examples.scala")
 
   def sourceModules = List(ApiModule)
   def targetModules = Nil

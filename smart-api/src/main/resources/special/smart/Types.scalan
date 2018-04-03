@@ -1,0 +1,53 @@
+package special.smart {
+  import scalan._
+
+  trait Types extends Base { self: TypesModule =>
+    @ivy trait HashableType extends Def[HashableType];
+    @ivy trait Bytes extends HashableType;
+    @ivy trait PublicKey extends HashableType;
+    @ivy trait Signature extends HashableType;
+    @ivy trait Time extends Def[Time];
+    @ivy trait Duration extends Def[Duration];
+    @ivy trait Number extends Def[Number];
+    @ivy trait Value extends Def[Value];
+    @ivy trait Sha256[T <: HashableType] extends HashableType {
+      implicit def eT: Elem[T]
+    };
+    @ivy trait Sha1[T <: HashableType] extends HashableType {
+      implicit def eT: Elem[T]
+    };
+    @ivy trait Ripemd160[T <: HashableType] extends HashableType {
+      implicit def eT: Elem[T]
+    };
+    @ivy trait IvyContext extends Def[IvyContext] {
+      def checkSig(publicKey: Rep[PublicKey], sig: Rep[Signature]): Rep[Boolean];
+      def checkMultiSig(publicKeys: Rep[WArray[PublicKey]], sigs: Rep[WArray[Signature]]): Rep[Boolean];
+      def after(time: Rep[Time]): Rep[Boolean];
+      def older(duration: Rep[Duration]): Rep[Boolean];
+      def sha256[T <: HashableType](preimage: Rep[T]): Rep[Sha256[T]];
+      def sha1[T <: HashableType](preimage: Rep[T]): Rep[Sha1[T]];
+      def ripemd160[T <: HashableType](preimage: Rep[T]): Rep[Ripemd160[T]];
+      def bytes[T](item: Rep[T]): Rep[Bytes];
+      def size(bytestring: Rep[Bytes]): Rep[Number]
+    };
+    @ivy trait Contract extends IvyContext {
+      def verify(cond: Rep[Thunk[Boolean]]): Rep[Unit];
+      def unlock(v: Rep[Value]): Rep[Unit]
+    };
+    @lang("Ivy") abstract class ivy extends Def[ivy] with Annotation;
+    trait HashableTypeCompanion;
+    trait BytesCompanion;
+    trait PublicKeyCompanion;
+    trait SignatureCompanion;
+    trait TimeCompanion;
+    trait DurationCompanion;
+    trait NumberCompanion;
+    trait ValueCompanion;
+    trait Sha256Companion;
+    trait Sha1Companion;
+    trait Ripemd160Companion;
+    trait IvyContextCompanion;
+    trait ContractCompanion;
+    trait ivyCompanion
+  }
+}
