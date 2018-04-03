@@ -1,4 +1,4 @@
-package special.ivy
+package special.smart
 
 import scala.annotation.Annotation
 
