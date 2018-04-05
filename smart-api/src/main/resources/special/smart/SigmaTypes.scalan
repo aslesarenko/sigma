@@ -1,0 +1,39 @@
+package special.smart {
+  import scalan._
+
+  trait SigmaTypes extends Base { self: SigmaTypesModule =>
+    @sigma trait ByteArray extends Def[ByteArray];
+    @sigma trait Sigma extends Def[Sigma] {
+      def isValid: Rep[Boolean];
+      def &&(other: Rep[Sigma]): Rep[Sigma];
+      def &&(other: Rep[Boolean]): Rep[Sigma];
+      def ||(other: Rep[Sigma]): Rep[Sigma];
+      def ||(other: Rep[Boolean]): Rep[Sigma]
+    };
+    @sigma trait ProveDlog extends Sigma {
+      def propBytes: Rep[ByteArray]
+    };
+    @sigma trait Box extends Def[Box] {
+      def id: Rep[ByteArray];
+      def value: Rep[Int];
+      def propositionBytes: Rep[ByteArray];
+      def R3[T]: Rep[WOption[T]]
+    };
+    @sigma trait SigmaContract extends Def[SigmaContract] with Contract {
+      def OUTPUTS: Rep[Col[Box]];
+      def INPUTS: Rep[Col[Box]];
+      def SELF: Rep[Box];
+      def HEIGHT: Rep[Int];
+      def open(box: Rep[Box]): Rep[Unit];
+      def allOf(conditions: Rep[Boolean]*): Rep[Boolean];
+      def anyOf(conditions: Rep[Boolean]*): Rep[Boolean];
+      def allOf(conditions: Rep[Sigma]*): Rep[Sigma];
+      def anyOf(conditions: Rep[Sigma]*): Rep[Sigma]
+    };
+    trait ByteArrayCompanion;
+    trait SigmaCompanion;
+    trait ProveDlogCompanion;
+    trait BoxCompanion;
+    trait SigmaContractCompanion
+  }
+}

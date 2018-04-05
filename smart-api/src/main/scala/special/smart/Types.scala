@@ -1,14 +1,19 @@
 package special.smart
 
 import scala.annotation.Annotation
+import scalan.collection.{ColBuilder, Col}
 import scalan.lang
 
 @lang("Ivy")
 class ivy extends Annotation {}
 
+@lang("Sigma")
+class sigma extends Annotation {}
+
 @ivy trait Bytes extends HashableType
 @ivy trait PublicKey extends HashableType
 @ivy trait Signature extends HashableType
+
 @ivy trait Time
 @ivy trait Duration
 @ivy trait Number
@@ -21,7 +26,7 @@ class ivy extends Annotation {}
 
 @ivy trait IvyContext {
   def checkSig(publicKey: PublicKey, sig: Signature): Boolean
-  def checkMultiSig(publicKeys: Array[PublicKey], sigs: Array[Signature]): Boolean
+  def checkMultiSig(publicKeys: Col[PublicKey], sigs: Col[Signature]): Boolean
   def after(time: Time): Boolean
   def older(duration: Duration): Boolean
   def sha256[T <: HashableType](preimage: T): Sha256[T]
@@ -32,7 +37,10 @@ class ivy extends Annotation {}
 }
 
 @ivy trait Contract extends IvyContext {
+  def Collection: ColBuilder
   def verify(cond: => Boolean): Unit
+  def verifyZK(cond: => Sigma): Unit
   def unlock(v: Value): Unit
 }
+
 

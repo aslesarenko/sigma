@@ -13,6 +13,8 @@ class SmartLibraryConfig extends LibraryConfig {
       .moduleDependencies(specialLibrary.ApiModule)
       .addUnit("Types.scala", "special/smart/Types.scala")
       .addUnit("Examples.scala", "special/smart/Examples.scala")
+      .addUnit("SigmaTypes.scala", "special/smart/SigmaTypes.scala")
+      .addUnit("SigmaExamples.scala", "special/smart/SigmaExamples.scala")
 
   def sourceModules = List(ApiModule)
   def targetModules = Nil

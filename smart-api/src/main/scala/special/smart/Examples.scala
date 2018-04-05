@@ -14,7 +14,7 @@ abstract class LockWithMultisig(
     value: Value
 ) extends Contract {
   @clause def spend (sig1: Signature, sig2: Signature) {
-    verify { checkMultiSig(Array(pubKey1, pubKey2, pubKey3), Array(sig1 , sig2)) }
+    verify { checkMultiSig(Collection(pubKey1, pubKey2, pubKey3), Collection(sig1 , sig2)) }
     unlock (value)
   }
 }
@@ -92,7 +92,7 @@ abstract class EscrowWithDelay(
     value: Value
 ) extends Contract {
   @clause def transfer(sig1: Signature, sig2: Signature) {
-    verify(checkMultiSig(Array(sender, recipient, escrow), Array(sig1, sig2)))
+    verify(checkMultiSig(Collection(sender, recipient, escrow), Collection(sig1, sig2)))
     unlock(value)
   }
 

@@ -21,7 +21,7 @@ package special.smart {
     };
     @ivy trait IvyContext extends Def[IvyContext] {
       def checkSig(publicKey: Rep[PublicKey], sig: Rep[Signature]): Rep[Boolean];
-      def checkMultiSig(publicKeys: Rep[WArray[PublicKey]], sigs: Rep[WArray[Signature]]): Rep[Boolean];
+      def checkMultiSig(publicKeys: Rep[Col[PublicKey]], sigs: Rep[Col[Signature]]): Rep[Boolean];
       def after(time: Rep[Time]): Rep[Boolean];
       def older(duration: Rep[Duration]): Rep[Boolean];
       def sha256[T <: HashableType](preimage: Rep[T]): Rep[Sha256[T]];
@@ -31,10 +31,13 @@ package special.smart {
       def size(bytestring: Rep[Bytes]): Rep[Number]
     };
     @ivy trait Contract extends IvyContext {
+      def Collection: Rep[ColBuilder];
       def verify(cond: Rep[Thunk[Boolean]]): Rep[Unit];
+      def verifyZK(cond: Rep[Thunk[Sigma]]): Rep[Unit];
       def unlock(v: Rep[Value]): Rep[Unit]
     };
     @lang("Ivy") abstract class ivy extends Def[ivy] with Annotation;
+    @lang("Sigma") abstract class sigma extends Def[sigma] with Annotation;
     trait HashableTypeCompanion;
     trait BytesCompanion;
     trait PublicKeyCompanion;
@@ -48,6 +51,7 @@ package special.smart {
     trait Ripemd160Companion;
     trait IvyContextCompanion;
     trait ContractCompanion;
-    trait ivyCompanion
+    trait ivyCompanion;
+    trait sigmaCompanion
   }
 }
