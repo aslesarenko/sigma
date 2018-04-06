@@ -1,4 +1,4 @@
 <plugin>
     <name>scalanizer</name>
-    <classname>special.smart.scalanizer.SmartPlugin</classname>
+    <classname>special.sigma.scalanizer.SigmaPlugin</classname>
 </plugin>

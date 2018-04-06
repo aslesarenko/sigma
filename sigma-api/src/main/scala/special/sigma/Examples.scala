@@ -1,4 +1,4 @@
-package special.smart
+package special.sigma
 
 abstract class LockWithPublicKey(publicKey: PublicKey, value: Value) extends Contract {
   @clause def spend(sig: Signature) {

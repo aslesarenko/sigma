@@ -61,14 +61,14 @@ val libraryapi = "com.huawei.scalan" %% "library-api" % "0.3.0-SNAPSHOT"
 val libraryimpl = "com.huawei.scalan" %% "library-impl" % "0.3.0-SNAPSHOT"
 val libraryconf = "com.huawei.scalan" %% "library-conf" % "0.3.0-SNAPSHOT"
 
-lazy val smartconf = Project("smart-conf", file("smart-conf"))
+lazy val sigmaconf = Project("sigma-conf", file("sigma-conf"))
     .settings(commonSettings,
       libraryDependencies ++= Seq(
         plugin, libraryconf
       ))
 
 lazy val scalanizer = Project("scalanizer", file("scalanizer"))
-    .dependsOn(smartconf)
+    .dependsOn(sigmaconf)
     .settings(commonSettings,
       libraryDependencies ++= Seq(meta, plugin, libraryapi),
       publishArtifact in(Compile, packageBin) := false,
@@ -80,15 +80,15 @@ lazy val scalanizer = Project("scalanizer", file("scalanizer"))
       addArtifact(artifact in(Compile, assembly), assembly)
     )
 
-lazy val smartapi = Project("smart-api", file("smart-api"))
+lazy val sigmaapi = Project("sigma-api", file("sigma-api"))
     .settings(libraryDefSettings :+ addCompilerPlugin(paradise),
       libraryDependencies ++= Seq(
         common % allConfigDependency, meta, libraryapi,
         "org.typelevel" %% "macro-compat" % "1.1.1"
       ))
 
-lazy val root = Project("smart", file("."))
-    .aggregate(smartapi, smartconf, scalanizer)
+lazy val root = Project("sigma", file("."))
+    .aggregate(sigmaapi, sigmaconf, scalanizer)
     .settings(buildSettings, publishArtifact := false)
 
 

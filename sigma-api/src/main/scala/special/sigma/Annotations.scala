@@ -1,4 +1,4 @@
-package special.smart
+package special.sigma
 
 import scala.annotation.Annotation
 

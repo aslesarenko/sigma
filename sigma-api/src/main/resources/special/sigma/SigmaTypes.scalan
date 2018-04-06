@@ -1,4 +1,4 @@
-package special.smart {
+package special.sigma {
   import scalan._
 
   trait SigmaTypes extends Base { self: SigmaTypesModule =>

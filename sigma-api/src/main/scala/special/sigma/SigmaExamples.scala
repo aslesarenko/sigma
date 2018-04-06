@@ -1,4 +1,4 @@
-package special.smart
+package special.sigma
 
 abstract class CrowdFunding(
     timeout: Int, minToRaise: Int,
