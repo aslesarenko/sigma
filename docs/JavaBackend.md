@@ -16,6 +16,7 @@ Overviews
 - [Java 7: A complete invokedynamic example](http://niklasschlimm.blogspot.co.il/2012/02/java-7-complete-invokedynamic-example.html)
 - [Byte Code Engineering Library](https://en.wikipedia.org/wiki/Byte_Code_Engineering_Library)
 - [Javassist](https://en.wikipedia.org/wiki/Javassist)
+- [Series on Building Your Own Language](https://dzone.com/articles/generating-bytecode)
 
 Stack Overflow
 --------------
