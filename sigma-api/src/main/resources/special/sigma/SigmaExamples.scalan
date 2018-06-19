@@ -3,15 +3,15 @@ package special.sigma {
 
   trait SigmaExamples extends Base { self: SigmaExamplesModule =>
     abstract class CrowdFunding(val timeout: Rep[Int], val minToRaise: Rep[Int], val backerPubKey: Rep[ProveDlog], val projectPubKey: Rep[ProveDlog]) extends Def[CrowdFunding] with SigmaContract {
-      @clause def canSpend: Rep[Boolean] = {
-        val c1: Rep[Boolean] = CrowdFunding.this.HEIGHT.>=(CrowdFunding.this.timeout).&&(CrowdFunding.this.backerPubKey.isValid);
-        val c2: Rep[Boolean] = CrowdFunding.this.allOf(CrowdFunding.this.HEIGHT.<(CrowdFunding.this.timeout), CrowdFunding.this.projectPubKey.isValid, CrowdFunding.this.OUTPUTS.exists(fun(((out: Rep[Box]) => out.value.>=(CrowdFunding.this.minToRaise).&&(out.propositionBytes.==(CrowdFunding.this.projectPubKey.propBytes))))));
+      @clause def canOpen(ctx: Rep[Context], SELF: Rep[Box]): Rep[Boolean] = {
+        val c1: Rep[Boolean] = ctx.HEIGHT.>=(CrowdFunding.this.timeout).&&(CrowdFunding.this.backerPubKey.isValid);
+        val c2: Rep[Boolean] = CrowdFunding.this.allOf(ctx.HEIGHT.<(CrowdFunding.this.timeout), CrowdFunding.this.projectPubKey.isValid, ctx.OUTPUTS.exists(fun(((out: Rep[Box]) => out.value.>=(CrowdFunding.this.minToRaise).&&(out.propositionBytes.==(CrowdFunding.this.projectPubKey.propBytes))))));
         CrowdFunding.this.verify(c1.||(c2))
       }
     };
     abstract class DemurrageCurrency(val demurragePeriod: Rep[Int], val demurrageCost: Rep[Int], val regScript: Rep[ProveDlog]) extends Def[DemurrageCurrency] with SigmaContract {
-      @clause def canSpend: Rep[Boolean] = {
-        val c2: Rep[Boolean] = DemurrageCurrency.this.allOf(DemurrageCurrency.this.HEIGHT.>=(DemurrageCurrency.this.SELF.R3[Int].get.+(DemurrageCurrency.this.demurragePeriod)), DemurrageCurrency.this.OUTPUTS.exists(fun(((out: Rep[Box]) => out.value.>=(DemurrageCurrency.this.SELF.value.-(DemurrageCurrency.this.demurrageCost)).&&(out.propositionBytes.==(DemurrageCurrency.this.SELF.propositionBytes))))));
+      @clause def canOpen(ctx: Rep[Context], SELF: Rep[Box]): Rep[Boolean] = {
+        val c2: Rep[Boolean] = DemurrageCurrency.this.allOf(ctx.HEIGHT.>=(SELF.R3[Int].get.+(DemurrageCurrency.this.demurragePeriod)), ctx.OUTPUTS.exists(fun(((out: Rep[Box]) => out.value.>=(SELF.value.-(DemurrageCurrency.this.demurrageCost)).&&(out.propositionBytes.==(SELF.propositionBytes))))));
         DemurrageCurrency.this.verifyZK(DemurrageCurrency.this.regScript.||(c2))
       }
     };

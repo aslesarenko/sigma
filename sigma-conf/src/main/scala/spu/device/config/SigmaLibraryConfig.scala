@@ -11,7 +11,7 @@ class SigmaLibraryConfig extends LibraryConfig {
 
   val ApiModule = new SourceModuleConf("", "sigma-api")
       .moduleDependencies(specialLibrary.ApiModule)
-      .addUnit("SigmaTypes.scala", "special/sigma/SigmaTypes.scala")
+      .addUnit("SigmaDsl.scala", "special/sigma/SigmaDsl.scala")
       .addUnit("SigmaExamples.scala", "special/sigma/SigmaExamples.scala")
 
   def sourceModules = List(ApiModule)

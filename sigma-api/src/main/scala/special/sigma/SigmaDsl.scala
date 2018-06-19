@@ -29,14 +29,17 @@ import scalan.collection.{Col, ColBuilder}
   def R9[T]: Option[T]
 }
 
-
-@sigmalang trait SigmaContract {
-  def Collection: ColBuilder
+trait Context {
+  def builder: ContextBuilder
   def OUTPUTS: Col[Box]
   def INPUTS: Col[Box]
-  def SELF: Box
   def HEIGHT: Long
+}
 
+trait ContextBuilder {
+}
+
+@sigmalang trait SigmaContract {
   def verify(cond: => Boolean): Boolean
   def verifyZK(cond: => Sigma): Boolean
   def unlock(v: Box): Unit
@@ -46,7 +49,7 @@ import scalan.collection.{Col, ColBuilder}
   def allOf(conditions: Sigma*): Sigma
   def anyOf(conditions: Sigma*): Sigma
 
-  @clause def canSpend(): Boolean
+  @clause def canOpen(ctx: Context, SELF: Box): Boolean
 }
 
 

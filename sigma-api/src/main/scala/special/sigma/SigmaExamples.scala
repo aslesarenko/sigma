@@ -4,12 +4,13 @@ abstract class CrowdFunding(
     timeout: Int, minToRaise: Int,
     backerPubKey: ProveDlog,
     projectPubKey: ProveDlog) extends SigmaContract {
-  @clause def canSpend() = {
-    val c1 = HEIGHT >= timeout && backerPubKey.isValid
+
+  @clause def canOpen(ctx: Context, SELF: Box) = {
+    val c1 = ctx.HEIGHT >= timeout && backerPubKey.isValid
     val c2 = allOf(
-      HEIGHT < timeout,
+      ctx.HEIGHT < timeout,
       projectPubKey.isValid,
-      OUTPUTS.exists(out => {
+      ctx.OUTPUTS.exists(out => {
         out.value >= minToRaise && out.propositionBytes == projectPubKey.propBytes
       })
     )
@@ -19,10 +20,10 @@ abstract class CrowdFunding(
 
 abstract class DemurrageCurrency(demurragePeriod: Int, demurrageCost: Int, regScript: ProveDlog)
     extends SigmaContract {
-  @clause def canSpend() = {
+  @clause def canOpen(ctx: Context, SELF: Box) = {
     val c2 = allOf(
-      HEIGHT >= SELF.R3[Int].get + demurragePeriod,
-      OUTPUTS.exists(out => {
+      ctx.HEIGHT >= SELF.R3[Int].get + demurragePeriod,
+      ctx.OUTPUTS.exists(out => {
         out.value >= SELF.value - demurrageCost && out.propositionBytes == SELF.propositionBytes
       })
     )
