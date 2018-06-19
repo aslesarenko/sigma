@@ -1,14 +1,7 @@
-package special.sigma
+package special.ivylang
 
-import scala.annotation.Annotation
 import scalan.collection.{ColBuilder, Col}
-import scalan.lang
 
-@lang("Ivy")
-class ivy extends Annotation {}
-
-@lang("Sigma")
-class sigma extends Annotation {}
 
 @ivy trait Bytes extends HashableType
 @ivy trait PublicKey extends HashableType
@@ -39,7 +32,6 @@ class sigma extends Annotation {}
 @ivy trait Contract extends IvyContext {
   def Collection: ColBuilder
   def verify(cond: => Boolean): Unit
-  def verifyZK(cond: => Sigma): Unit
   def unlock(v: Value): Unit
 }
 

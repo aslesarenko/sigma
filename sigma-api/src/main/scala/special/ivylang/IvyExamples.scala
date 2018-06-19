@@ -1,4 +1,6 @@
-package special.sigma
+package special.ivylang
+
+import special.sigma._
 
 abstract class LockWithPublicKey(publicKey: PublicKey, value: Value) extends Contract {
   @clause def spend(sig: Signature) {

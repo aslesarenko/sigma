@@ -4,7 +4,7 @@ abstract class CrowdFunding(
     timeout: Int, minToRaise: Int,
     backerPubKey: ProveDlog,
     projectPubKey: ProveDlog) extends SigmaContract {
-  @clause def spend() {
+  @clause def canSpend() = {
     val c1 = HEIGHT >= timeout && backerPubKey.isValid
     val c2 = allOf(
       HEIGHT < timeout,
@@ -14,13 +14,12 @@ abstract class CrowdFunding(
       })
     )
     verify { c1 || c2 }
-    open(SELF)
   }
 }
 
 abstract class DemurrageCurrency(demurragePeriod: Int, demurrageCost: Int, regScript: ProveDlog)
     extends SigmaContract {
-  @clause def spend() {
+  @clause def canSpend() = {
     val c2 = allOf(
       HEIGHT >= SELF.R3[Int].get + demurragePeriod,
       OUTPUTS.exists(out => {
@@ -28,7 +27,6 @@ abstract class DemurrageCurrency(demurragePeriod: Int, demurrageCost: Int, regSc
       })
     )
     verifyZK { regScript || c2 }
-    open(SELF)
   }
 }
 

@@ -1,11 +1,8 @@
 package special.sigma
 
-import scalan.collection.Col
+import scalan.collection.{Col, ColBuilder}
 
-
-@sigma trait ByteArray
-
-@sigma trait Sigma {
+@sigmalang trait Sigma {
   def isValid: Boolean
   def &&(other: Sigma): Sigma
   def &&(other: Boolean): Sigma
@@ -13,27 +10,43 @@ import scalan.collection.Col
   def ||(other: Boolean): Sigma
 }
 
-@sigma trait ProveDlog extends Sigma {
-  def propBytes: ByteArray
+@sigmalang trait ProveDlog extends Sigma {
+  def propBytes: Col[Byte]
 }
 
-@sigma trait Box {
-  def id: ByteArray
-  def value: Int
-  def propositionBytes: ByteArray
+@sigmalang trait Box {
+  def id: Col[Byte]
+  def value: Long
+  def propositionBytes: Col[Byte]
+  def R1[T]: Option[T]
+  def R2[T]: Option[T]
   def R3[T]: Option[T]
+  def R4[T]: Option[T]
+  def R5[T]: Option[T]
+  def R6[T]: Option[T]
+  def R7[T]: Option[T]
+  def R8[T]: Option[T]
+  def R9[T]: Option[T]
 }
 
-@sigma trait SigmaContract extends Contract {
+
+@sigmalang trait SigmaContract {
+  def Collection: ColBuilder
   def OUTPUTS: Col[Box]
   def INPUTS: Col[Box]
   def SELF: Box
-  def HEIGHT: Int
+  def HEIGHT: Long
+
+  def verify(cond: => Boolean): Boolean
+  def verifyZK(cond: => Sigma): Boolean
+  def unlock(v: Box): Unit
   def open(box: Box): Unit
   def allOf(conditions: Boolean*): Boolean
   def anyOf(conditions: Boolean*): Boolean
   def allOf(conditions: Sigma*): Sigma
   def anyOf(conditions: Sigma*): Sigma
+
+  @clause def canSpend(): Boolean
 }
 
 
