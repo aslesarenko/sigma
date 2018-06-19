@@ -43,12 +43,12 @@ trait ContextBuilder {
 @sigmalang trait SigmaContract {
   def verify(cond: => Boolean): Boolean
   def verifyZK(cond: => Sigma): Boolean
-  def unlock(v: Box): Unit
-  def open(box: Box): Unit
-  def allOf(conditions: Boolean*): Boolean
-  def anyOf(conditions: Boolean*): Boolean
-  def allOf(conditions: Sigma*): Sigma
-  def anyOf(conditions: Sigma*): Sigma
+
+  def allOf(conditions: Col[Boolean]): Boolean
+  def allZK(conditions: Col[Sigma]): Sigma
+
+  def anyOf(conditions: Col[Boolean]): Boolean
+  def anyZK(conditions: Col[Sigma]): Sigma
 
   @clause def canOpen(ctx: Context, SELF: Box): Boolean
 }

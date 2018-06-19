@@ -11,7 +11,8 @@ lazy val buildSettings = Seq(
     "-encoding", "UTF-8",
     "-unchecked",
     "-deprecation",
-    "-Xlint:-unused,_",
+    "-Xlint",
+//    "-Xlint:-unused,_",
     "-feature",
     "-Ywarn-adapted-args",
     "-Ywarn-inaccessible",
@@ -46,7 +47,7 @@ lazy val testSettings = Seq(
 lazy val commonSettings = buildSettings ++ testSettings
 def libraryDefSettings = commonSettings ++ Seq(
   scalacOptions ++= Seq(
-    s"-Xplugin:${file(".").absolutePath }/scalanizer/target/scala-2.11/scalanizer-assembly-0.3.0-SNAPSHOT.jar"
+//    s"-Xplugin:${file(".").absolutePath }/scalanizer/target/scala-2.11/scalanizer-assembly-0.3.0-SNAPSHOT.jar"
   )
 )
 
