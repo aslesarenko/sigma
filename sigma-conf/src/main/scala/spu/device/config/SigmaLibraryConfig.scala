@@ -15,7 +15,7 @@ class SigmaLibraryConfig extends LibraryConfig {
       .addUnit("SigmaExamples.scala", "special/sigma/SigmaExamples.scala")
 
   val ImplModule = new SourceModuleConf("", "sigma-impl")
-      .moduleDependencies(specialLibrary.ImplModule)
+      .moduleDependencies(specialLibrary.ApiModule, specialLibrary.ImplModule)
       .addUnit("SigmaDslOverArrays.scala", "special/sigma/SigmaDslOverArrays.scala")
       .dependsOn(ApiModule)
 

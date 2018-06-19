@@ -72,7 +72,7 @@ lazy val sigmaconf = Project("sigma-conf", file("sigma-conf"))
 lazy val scalanizer = Project("scalanizer", file("scalanizer"))
     .dependsOn(sigmaconf)
     .settings(commonSettings,
-      libraryDependencies ++= Seq(meta, plugin, libraryapi),
+      libraryDependencies ++= Seq(meta, plugin, libraryapi, libraryimpl),
       publishArtifact in(Compile, packageBin) := false,
       assemblyOption in assembly ~= { _.copy(includeScala = false, includeDependency = true) },
       artifact in(Compile, assembly) := {
@@ -99,7 +99,7 @@ lazy val sigmalibrary = Project("sigma-library", file("sigma-library"))
     .settings(//commonSettings,
       libraryDefSettings,
       libraryDependencies ++= Seq(
-        common % allConfigDependency, core % allConfigDependency, library
+        common % allConfigDependency, core % allConfigDependency, library, libraryimpl, libraryapi
       ))
 
 lazy val root = Project("sigma", file("."))
