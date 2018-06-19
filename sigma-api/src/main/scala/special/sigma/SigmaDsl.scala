@@ -37,6 +37,7 @@ trait Context {
 }
 
 trait ContextBuilder {
+  def Collections: ColBuilder
 }
 
 @sigmalang trait SigmaContract {

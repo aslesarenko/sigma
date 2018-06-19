@@ -32,7 +32,9 @@ package special.sigma {
       def INPUTS: Rep[Col[Box]];
       def HEIGHT: Rep[Long]
     };
-    trait ContextBuilder extends Def[ContextBuilder];
+    trait ContextBuilder extends Def[ContextBuilder] {
+      def Collections: Rep[ColBuilder]
+    };
     @sigmalang trait SigmaContract extends Def[SigmaContract] {
       def verify(cond: Rep[Thunk[Boolean]]): Rep[Boolean];
       def verifyZK(cond: Rep[Thunk[Sigma]]): Rep[Boolean];

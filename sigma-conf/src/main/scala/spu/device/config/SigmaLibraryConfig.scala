@@ -2,7 +2,7 @@ package spu.device.config
 
 import special.library.config.SpecialLibraryConfig
 
-import scalan.meta.{LibraryConfig, SourceModuleConf}
+import scalan.meta.{LibraryConfig, SourceModuleConf, ConfMap, TargetModuleConf}
 
 class SigmaLibraryConfig extends LibraryConfig {
   def name = "sigma"
@@ -14,6 +14,16 @@ class SigmaLibraryConfig extends LibraryConfig {
       .addUnit("SigmaDsl.scala", "special/sigma/SigmaDsl.scala")
       .addUnit("SigmaExamples.scala", "special/sigma/SigmaExamples.scala")
 
-  def sourceModules = List(ApiModule)
-  def targetModules = Nil
+  val ImplModule = new SourceModuleConf("", "sigma-impl")
+      .moduleDependencies(specialLibrary.ImplModule)
+      .addUnit("SigmaDslOverArrays.scala", "special/sigma/SigmaDslOverArrays.scala")
+      .dependsOn(ApiModule)
+
+  val TargetModule = new TargetModuleConf("", "sigma-library",
+    sourceModules = ConfMap()
+        .add(ApiModule)
+        .add(ImplModule))
+
+  def sourceModules = List(ApiModule, ImplModule)
+  def targetModules = List(TargetModule)
 }

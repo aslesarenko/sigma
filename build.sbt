@@ -60,6 +60,7 @@ val core = "com.huawei.scalan" %% "core" % "0.3.0-SNAPSHOT"
 val plugin = "com.huawei.scalan" %% "plugin" % "0.3.0-SNAPSHOT"
 val libraryapi = "com.huawei.scalan" %% "library-api" % "0.3.0-SNAPSHOT"
 val libraryimpl = "com.huawei.scalan" %% "library-impl" % "0.3.0-SNAPSHOT"
+val library= "com.huawei.scalan" %% "library" % "0.3.0-SNAPSHOT"
 val libraryconf = "com.huawei.scalan" %% "library-conf" % "0.3.0-SNAPSHOT"
 
 lazy val sigmaconf = Project("sigma-conf", file("sigma-conf"))
@@ -91,14 +92,14 @@ lazy val sigmaapi = Project("sigma-api", file("sigma-api"))
 lazy val sigmaimpl = Project("sigma-impl", file("sigma-impl"))
     .dependsOn(sigmaapi % allConfigDependency)
     .settings(libraryDefSettings,
-      libraryDependencies ++= Seq())
+      libraryDependencies ++= Seq(libraryimpl))
 
 lazy val sigmalibrary = Project("sigma-library", file("sigma-library"))
     .dependsOn(sigmaimpl)
     .settings(//commonSettings,
       libraryDefSettings,
       libraryDependencies ++= Seq(
-        common % allConfigDependency, core % allConfigDependency
+        common % allConfigDependency, core % allConfigDependency, library
       ))
 
 lazy val root = Project("sigma", file("."))
