@@ -32,9 +32,9 @@ class ProveDlogEvidence(val id: Int, val isValid: Boolean) extends ProveDlog wit
 }
 
 trait DefaultContract extends SigmaContract {
-  def verify(cond: => Boolean) = cond
+  def verify(cond: Boolean) = cond
 
-  def verifyZK(proof: =>Sigma) = proof.isValid
+  def verifyZK(proof: Sigma) = proof.isValid
 
   def allOf(conditions: Col[Boolean]) = conditions.forall(c => c)
   def anyOf(conditions: Col[Boolean]) = conditions.exists(c => c)

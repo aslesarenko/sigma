@@ -47,7 +47,7 @@ lazy val testSettings = Seq(
 lazy val commonSettings = buildSettings ++ testSettings
 def libraryDefSettings = commonSettings ++ Seq(
   scalacOptions ++= Seq(
-//    s"-Xplugin:${file(".").absolutePath }/scalanizer/target/scala-2.11/scalanizer-assembly-0.3.0-SNAPSHOT.jar"
+    s"-Xplugin:${file(".").absolutePath }/scalanizer/target/scala-2.11/scalanizer-assembly-0.3.0-SNAPSHOT.jar"
   )
 )
 
@@ -93,14 +93,14 @@ lazy val sigmaapi = Project("sigma-api", file("sigma-api"))
 lazy val sigmaimpl = Project("sigma-impl", file("sigma-impl"))
     .dependsOn(sigmaapi % allConfigDependency)
     .settings(libraryDefSettings,
-      libraryDependencies ++= Seq(libraryimpl))
+      libraryDependencies ++= Seq(libraryapi, libraryimpl))
 
 lazy val sigmalibrary = Project("sigma-library", file("sigma-library"))
     .dependsOn(sigmaimpl)
     .settings(//commonSettings,
       libraryDefSettings,
       libraryDependencies ++= Seq(
-        common % allConfigDependency, core % allConfigDependency, library, libraryimpl, libraryapi
+        common % allConfigDependency, core % allConfigDependency, libraryapi,  libraryimpl, library
       ))
 
 lazy val root = Project("sigma", file("."))

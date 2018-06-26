@@ -36,14 +36,12 @@ package special.sigma {
       def Collections: Rep[ColBuilder]
     };
     @sigmalang trait SigmaContract extends Def[SigmaContract] {
-      def verify(cond: Rep[Thunk[Boolean]]): Rep[Boolean];
-      def verifyZK(cond: Rep[Thunk[Sigma]]): Rep[Boolean];
-      def unlock(v: Rep[Box]): Rep[Unit];
-      def open(box: Rep[Box]): Rep[Unit];
-      def allOf(conditions: Rep[Boolean]*): Rep[Boolean];
-      def anyOf(conditions: Rep[Boolean]*): Rep[Boolean];
-      def allOf(conditions: Rep[Sigma]*): Rep[Sigma];
-      def anyOf(conditions: Rep[Sigma]*): Rep[Sigma];
+      def verify(cond: Rep[Boolean]): Rep[Boolean];
+      def verifyZK(cond: Rep[Sigma]): Rep[Boolean];
+      def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean];
+      def allZK(conditions: Rep[Col[Sigma]]): Rep[Sigma];
+      def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean];
+      def anyZK(conditions: Rep[Col[Sigma]]): Rep[Sigma];
       @clause def canOpen(ctx: Rep[Context], SELF: Rep[Box]): Rep[Boolean]
     };
     trait SigmaCompanion;

@@ -41,8 +41,8 @@ trait ContextBuilder {
 }
 
 @sigmalang trait SigmaContract {
-  def verify(cond: => Boolean): Boolean
-  def verifyZK(cond: => Sigma): Boolean
+  def verify(cond: Boolean): Boolean
+  def verifyZK(cond: Sigma): Boolean
 
   def allOf(conditions: Col[Boolean]): Boolean
   def allZK(conditions: Col[Sigma]): Sigma
