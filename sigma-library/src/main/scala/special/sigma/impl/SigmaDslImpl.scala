@@ -655,8 +655,8 @@ trait SigmaDslDefs extends scalan.Scalan with SigmaDsl {
 
     object canOpen {
       def unapply(d: Def[_]): Option[(Rep[SigmaContract], Rep[Context], Rep[Box])] = d match {
-        case MethodCall(receiver, method, Seq(ctx, SELF, _*), _) if receiver.elem.isInstanceOf[SigmaContractElem[_]] && method.getName == "canOpen" =>
-          Some((receiver, ctx, SELF)).asInstanceOf[Option[(Rep[SigmaContract], Rep[Context], Rep[Box])]]
+        case MethodCall(receiver, method, Seq(ctx, _SELF, _*), _) if receiver.elem.isInstanceOf[SigmaContractElem[_]] && method.getName == "canOpen" =>
+          Some((receiver, ctx, _SELF)).asInstanceOf[Option[(Rep[SigmaContract], Rep[Context], Rep[Box])]]
         case _ => None
       }
       def unapply(exp: Sym): Option[(Rep[SigmaContract], Rep[Context], Rep[Box])] = exp match {

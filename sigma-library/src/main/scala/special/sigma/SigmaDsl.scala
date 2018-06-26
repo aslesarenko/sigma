@@ -1,13 +1,14 @@
 package special.sigma {
+  import scalan.OverloadHack.Overloaded1
   import scalan._
 
   trait SigmaDsl extends Base { self: SigmaLibrary =>
     @sigmalang trait Sigma extends Def[Sigma] {
       def isValid: Rep[Boolean];
       @OverloadId(value = "and_sigma") def &&(other: Rep[Sigma]): Rep[Sigma];
-      @OverloadId(value = "and_bool") def &&(other: Rep[Boolean]): Rep[Sigma];
+      @OverloadId(value = "and_bool") def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[Sigma];
       @OverloadId(value = "or_sigma") def ||(other: Rep[Sigma]): Rep[Sigma];
-      @OverloadId(value = "or_bool") def ||(other: Rep[Boolean]): Rep[Sigma]
+      @OverloadId(value = "or_bool") def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[Sigma]
     };
     @sigmalang trait ProveDlog extends Sigma {
       def propBytes: Rep[Col[Byte]]

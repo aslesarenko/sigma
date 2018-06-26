@@ -258,8 +258,8 @@ trait SigmaDslOverArraysDefs extends scalan.Scalan with SigmaDslOverArrays {
     override def from(p: Rep[ContextOverArrays]) =
       tryConvert[ContextOverArrays, (WArray[Box], (WArray[Box], Long))](eTo, eFrom, p, _safeFrom)
     override def to(p: Rep[(WArray[Box], (WArray[Box], Long))]) = {
-      val Pair(inputs, Pair(outputs, HEIGHT)) = p
-      ContextOverArrays(inputs, outputs, HEIGHT)
+      val Pair(inputs, Pair(outputs, _HEIGHT)) = p
+      ContextOverArrays(inputs, outputs, _HEIGHT)
     }
     lazy val eFrom = pairElement(element[WArray[Box]], pairElement(element[WArray[Box]], element[Long]))
     lazy val eTo = new ContextOverArraysElem(self)

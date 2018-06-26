@@ -105,8 +105,8 @@ trait SigmaExamplesDefs extends scalan.Scalan with SigmaExamples {
 
     object canOpen {
       def unapply(d: Def[_]): Option[(Rep[CrowdFunding], Rep[Context], Rep[Box])] = d match {
-        case MethodCall(receiver, method, Seq(ctx, SELF, _*), _) if receiver.elem.isInstanceOf[CrowdFundingElem[_]] && method.getName == "canOpen" =>
-          Some((receiver, ctx, SELF)).asInstanceOf[Option[(Rep[CrowdFunding], Rep[Context], Rep[Box])]]
+        case MethodCall(receiver, method, Seq(ctx, _SELF, _*), _) if receiver.elem.isInstanceOf[CrowdFundingElem[_]] && method.getName == "canOpen" =>
+          Some((receiver, ctx, _SELF)).asInstanceOf[Option[(Rep[CrowdFunding], Rep[Context], Rep[Box])]]
         case _ => None
       }
       def unapply(exp: Sym): Option[(Rep[CrowdFunding], Rep[Context], Rep[Box])] = exp match {
@@ -203,8 +203,8 @@ trait SigmaExamplesDefs extends scalan.Scalan with SigmaExamples {
 
     object canOpen {
       def unapply(d: Def[_]): Option[(Rep[DemurrageCurrency], Rep[Context], Rep[Box])] = d match {
-        case MethodCall(receiver, method, Seq(ctx, SELF, _*), _) if receiver.elem.isInstanceOf[DemurrageCurrencyElem[_]] && method.getName == "canOpen" =>
-          Some((receiver, ctx, SELF)).asInstanceOf[Option[(Rep[DemurrageCurrency], Rep[Context], Rep[Box])]]
+        case MethodCall(receiver, method, Seq(ctx, _SELF, _*), _) if receiver.elem.isInstanceOf[DemurrageCurrencyElem[_]] && method.getName == "canOpen" =>
+          Some((receiver, ctx, _SELF)).asInstanceOf[Option[(Rep[DemurrageCurrency], Rep[Context], Rep[Box])]]
         case _ => None
       }
       def unapply(exp: Sym): Option[(Rep[DemurrageCurrency], Rep[Context], Rep[Box])] = exp match {

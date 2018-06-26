@@ -1,12 +1,13 @@
 package special.sigma {
+  import scalan.OverloadHack.Overloaded1
   import scalan._
 
   trait SigmaDslOverArrays extends Base { self: SigmaLibrary =>
     trait DefaultSigma extends Sigma {
       @OverloadId(value = "and_sigma") def &&(other: Rep[Sigma]): Rep[TrivialSigma] = TrivialSigma(DefaultSigma.this.isValid.&&(other.isValid));
-      @OverloadId(value = "and_bool") def &&(other: Rep[Boolean]): Rep[TrivialSigma] = TrivialSigma(DefaultSigma.this.isValid.&&(other));
+      @OverloadId(value = "and_bool") def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[TrivialSigma] = TrivialSigma(DefaultSigma.this.isValid.&&(other));
       @OverloadId(value = "or_sigma") def ||(other: Rep[Sigma]): Rep[TrivialSigma] = TrivialSigma(DefaultSigma.this.isValid.||(other.isValid));
-      @OverloadId(value = "or_bool") def ||(other: Rep[Boolean]): Rep[TrivialSigma] = TrivialSigma(DefaultSigma.this.isValid.||(other))
+      @OverloadId(value = "or_bool") def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[TrivialSigma] = TrivialSigma(DefaultSigma.this.isValid.||(other))
     };
     trait DefaultContract extends SigmaContract {
       def verify(cond: Rep[Boolean]): Rep[Boolean] = cond;

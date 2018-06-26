@@ -8,8 +8,8 @@ package special.sigma {
       def backerPubKey: Rep[ProveDlog];
       def projectPubKey: Rep[ProveDlog];
       @clause def canOpen(ctx: Rep[Context], SELF: Rep[Box]): Rep[Boolean] = {
-        val c1: Rep[Boolean] = ctx.HEIGHT.>=(CrowdFunding.this.timeout).&&(CrowdFunding.this.backerPubKey.isValid);
-        val c2: Rep[Boolean] = ctx.HEIGHT.<(CrowdFunding.this.timeout).&&(CrowdFunding.this.projectPubKey.isValid).&&(ctx.OUTPUTS.exists(fun(((out: Rep[Box]) => out.value.>=(CrowdFunding.this.minToRaise).&&(out.propositionBytes.==(CrowdFunding.this.projectPubKey.propBytes))))));
+        val c1: Rep[Boolean] = ctx.HEIGHT.>=(CrowdFunding.this.timeout.toLong).&&(CrowdFunding.this.backerPubKey.isValid);
+        val c2: Rep[Boolean] = ctx.HEIGHT.<(CrowdFunding.this.timeout.toLong).&&(CrowdFunding.this.projectPubKey.isValid).&&(ctx.OUTPUTS.exists(fun(((out: Rep[Box]) => out.value.>=(CrowdFunding.this.minToRaise.toLong).&&(out.propositionBytes.==(CrowdFunding.this.projectPubKey.propBytes))))));
         CrowdFunding.this.verify(c1.||(c2))
       }
     };
@@ -18,7 +18,7 @@ package special.sigma {
       def demurrageCost: Rep[Int];
       def regScript: Rep[ProveDlog];
       @clause def canOpen(ctx: Rep[Context], SELF: Rep[Box]): Rep[Boolean] = {
-        val c2: Rep[Boolean] = ctx.HEIGHT.>=(SELF.R3[Int].get.+(DemurrageCurrency.this.demurragePeriod)).&&(ctx.OUTPUTS.exists(fun(((out: Rep[Box]) => out.value.>=(SELF.value.-(DemurrageCurrency.this.demurrageCost)).&&(out.propositionBytes.==(SELF.propositionBytes))))));
+        val c2: Rep[Boolean] = ctx.HEIGHT.>=(SELF.R3[Int].get.toLong.+(DemurrageCurrency.this.demurragePeriod.toLong)).&&(ctx.OUTPUTS.exists(fun(((out: Rep[Box]) => out.value.>=(SELF.value.-(DemurrageCurrency.this.demurrageCost.toLong)).&&(out.propositionBytes.==(SELF.propositionBytes))))));
         DemurrageCurrency.this.verifyZK(DemurrageCurrency.this.regScript.||(c2))
       }
     };
