@@ -1,13 +1,14 @@
 package special.sigma
 
-import scalan.collection.{Col, ColBuilder}
+import scalan.OverloadId
+import scalan.collection.{ColBuilder, Col}
 
 @sigmalang trait Sigma {
   def isValid: Boolean
-  def &&(other: Sigma): Sigma
-  def &&(other: Boolean): Sigma
-  def ||(other: Sigma): Sigma
-  def ||(other: Boolean): Sigma
+  @OverloadId("and_sigma") def &&(other: Sigma): Sigma
+  @OverloadId("and_bool")  def &&(other: Boolean): Sigma
+  @OverloadId("or_sigma") def ||(other: Sigma): Sigma
+  @OverloadId("or_bool")  def ||(other: Boolean): Sigma
 }
 
 @sigmalang trait ProveDlog extends Sigma {

@@ -1,9 +1,10 @@
 package special.sigma
 
-abstract class CrowdFunding(
-    timeout: Int, minToRaise: Int,
-    backerPubKey: ProveDlog,
-    projectPubKey: ProveDlog) extends SigmaContract {
+trait CrowdFunding extends SigmaContract {
+  def timeout: Int
+  def minToRaise: Int
+  def backerPubKey: ProveDlog
+  def projectPubKey: ProveDlog
 
   @clause def canOpen(ctx: Context, SELF: Box) = {
     val c1 = ctx.HEIGHT >= timeout && backerPubKey.isValid
@@ -17,8 +18,11 @@ abstract class CrowdFunding(
   }
 }
 
-abstract class DemurrageCurrency(demurragePeriod: Int, demurrageCost: Int, regScript: ProveDlog)
-    extends SigmaContract {
+trait DemurrageCurrency extends SigmaContract {
+  def demurragePeriod: Int
+  def demurrageCost: Int
+  def regScript: ProveDlog
+
   @clause def canOpen(ctx: Context, SELF: Box) = {
     val c2 =
       ctx.HEIGHT >= SELF.R3[Int].get + demurragePeriod &&
