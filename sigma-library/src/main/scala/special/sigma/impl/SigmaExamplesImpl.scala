@@ -104,12 +104,12 @@ trait SigmaExamplesDefs extends scalan.Scalan with SigmaExamples {
     }
 
     object canOpen {
-      def unapply(d: Def[_]): Option[(Rep[CrowdFunding], Rep[Context], Rep[Box])] = d match {
-        case MethodCall(receiver, method, Seq(ctx, _SELF, _*), _) if receiver.elem.isInstanceOf[CrowdFundingElem[_]] && method.getName == "canOpen" =>
-          Some((receiver, ctx, _SELF)).asInstanceOf[Option[(Rep[CrowdFunding], Rep[Context], Rep[Box])]]
+      def unapply(d: Def[_]): Option[(Rep[CrowdFunding], Rep[Context])] = d match {
+        case MethodCall(receiver, method, Seq(ctx, _*), _) if receiver.elem.isInstanceOf[CrowdFundingElem[_]] && method.getName == "canOpen" =>
+          Some((receiver, ctx)).asInstanceOf[Option[(Rep[CrowdFunding], Rep[Context])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[CrowdFunding], Rep[Context], Rep[Box])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[CrowdFunding], Rep[Context])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
@@ -202,12 +202,12 @@ trait SigmaExamplesDefs extends scalan.Scalan with SigmaExamples {
     }
 
     object canOpen {
-      def unapply(d: Def[_]): Option[(Rep[DemurrageCurrency], Rep[Context], Rep[Box])] = d match {
-        case MethodCall(receiver, method, Seq(ctx, _SELF, _*), _) if receiver.elem.isInstanceOf[DemurrageCurrencyElem[_]] && method.getName == "canOpen" =>
-          Some((receiver, ctx, _SELF)).asInstanceOf[Option[(Rep[DemurrageCurrency], Rep[Context], Rep[Box])]]
+      def unapply(d: Def[_]): Option[(Rep[DemurrageCurrency], Rep[Context])] = d match {
+        case MethodCall(receiver, method, Seq(ctx, _*), _) if receiver.elem.isInstanceOf[DemurrageCurrencyElem[_]] && method.getName == "canOpen" =>
+          Some((receiver, ctx)).asInstanceOf[Option[(Rep[DemurrageCurrency], Rep[Context])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[DemurrageCurrency], Rep[Context], Rep[Box])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[DemurrageCurrency], Rep[Context])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }

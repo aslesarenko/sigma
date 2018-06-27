@@ -31,7 +31,8 @@ package special.sigma {
       def builder: Rep[ContextBuilder];
       def OUTPUTS: Rep[Col[Box]];
       def INPUTS: Rep[Col[Box]];
-      def HEIGHT: Rep[Long]
+      def HEIGHT: Rep[Long];
+      def SELF: Rep[Box]
     };
     trait ContextBuilder extends Def[ContextBuilder] {
       def Collections: Rep[ColBuilder]
@@ -43,7 +44,7 @@ package special.sigma {
       def allZK(conditions: Rep[Col[Sigma]]): Rep[Sigma];
       def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean];
       def anyZK(conditions: Rep[Col[Sigma]]): Rep[Sigma];
-      @clause def canOpen(ctx: Rep[Context], SELF: Rep[Box]): Rep[Boolean]
+      @clause def canOpen(ctx: Rep[Context]): Rep[Boolean]
     };
     trait SigmaCompanion;
     trait ProveDlogCompanion;

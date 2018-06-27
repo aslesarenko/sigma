@@ -16,7 +16,7 @@ package special.sigma {
       def allZK(proofs: Rep[Col[Sigma]]): Rep[TrivialSigma] = TrivialSigma(proofs.forall(fun(((p: Rep[Sigma]) => p.isValid))));
       def anyZK(proofs: Rep[Col[Sigma]]): Rep[TrivialSigma] = TrivialSigma(proofs.forall(fun(((p: Rep[Sigma]) => p.isValid))))
     };
-    abstract class ContextOverArrays(val inputs: Rep[WArray[Box]], val outputs: Rep[WArray[Box]], val HEIGHT: Rep[Long]) extends Context {
+    abstract class ContextOverArrays(val inputs: Rep[WArray[Box]], val outputs: Rep[WArray[Box]], val HEIGHT: Rep[Long], val SELF: Rep[Box]) extends Context {
       def builder: Rep[ContextOverArrayBuilder] = ContextOverArrayBuilder();
       def INPUTS: Rep[Col[Box]] = ContextOverArrays.this.builder.Collections.fromArray[Box](ContextOverArrays.this.outputs);
       def OUTPUTS: Rep[Col[Box]] = ContextOverArrays.this.builder.Collections.fromArray[Box](ContextOverArrays.this.outputs)
@@ -28,7 +28,7 @@ package special.sigma {
     abstract class ProveDlogEvidence(val id: Rep[Int], val isValid: Rep[Boolean]) extends ProveDlog with DefaultSigma {
       def propBytes: Rep[Col[Byte]] = ColOverArray(WArray.fill[Byte](ProveDlogEvidence.this.id, Thunk(toRep(1.asInstanceOf[Byte]))))
     };
-    abstract class CrowdFundingContract(val timeout: Rep[Int], val minToRaise: Rep[Int], val backerPubKey: Rep[ProveDlog], val projectPubKey: Rep[ProveDlog]) extends CrowdFunding with DefaultContract;
+    abstract class CrowdFundingContract(val timeout: Rep[Long], val minToRaise: Rep[Long], val backerPubKey: Rep[ProveDlog], val projectPubKey: Rep[ProveDlog]) extends CrowdFunding with DefaultContract;
     trait DefaultSigmaCompanion;
     trait DefaultContractCompanion;
     trait ContextOverArraysCompanion;

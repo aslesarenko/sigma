@@ -4,7 +4,7 @@ import scala.collection.mutable
 import scalan.OverloadId
 import scalan.collection.{Col, ColOverArrayBuilder, ColOverArray}
 
-class ContextOverArrays(val inputs: Array[Box], val outputs: Array[Box], val HEIGHT: Long) extends Context {
+class ContextOverArrays(val inputs: Array[Box], val outputs: Array[Box], val HEIGHT: Long, val SELF: Box) extends Context {
   def builder = new ContextOverArrayBuilder
 
   def INPUTS = builder.Collections.fromArray(outputs)
@@ -45,7 +45,7 @@ trait DefaultContract extends SigmaContract {
 }
 
 class CrowdFundingContract(
-    val timeout: Int, val minToRaise: Int,
+    val timeout: Long, val minToRaise: Long,
     val backerPubKey: ProveDlog,
     val projectPubKey: ProveDlog
 ) extends CrowdFunding with DefaultContract

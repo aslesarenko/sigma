@@ -468,6 +468,18 @@ trait SigmaDslDefs extends scalan.Scalan with SigmaDsl {
         case _ => None
       }
     }
+
+    object SELF {
+      def unapply(d: Def[_]): Option[Rep[Context]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[ContextElem[_]] && method.getName == "SELF" =>
+          Some(receiver).asInstanceOf[Option[Rep[Context]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[Context]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
   }
 
   object ContextCompanionMethods {
@@ -654,12 +666,12 @@ trait SigmaDslDefs extends scalan.Scalan with SigmaDsl {
     }
 
     object canOpen {
-      def unapply(d: Def[_]): Option[(Rep[SigmaContract], Rep[Context], Rep[Box])] = d match {
-        case MethodCall(receiver, method, Seq(ctx, _SELF, _*), _) if receiver.elem.isInstanceOf[SigmaContractElem[_]] && method.getName == "canOpen" =>
-          Some((receiver, ctx, _SELF)).asInstanceOf[Option[(Rep[SigmaContract], Rep[Context], Rep[Box])]]
+      def unapply(d: Def[_]): Option[(Rep[SigmaContract], Rep[Context])] = d match {
+        case MethodCall(receiver, method, Seq(ctx, _*), _) if receiver.elem.isInstanceOf[SigmaContractElem[_]] && method.getName == "canOpen" =>
+          Some((receiver, ctx)).asInstanceOf[Option[(Rep[SigmaContract], Rep[Context])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[SigmaContract], Rep[Context], Rep[Box])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[SigmaContract], Rep[Context])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
