@@ -1,6 +1,6 @@
 package special.sigma
 
-import scalan.OverloadId
+import scalan.{OverloadId}
 import scalan.collection.{ColBuilder, Col}
 
 @sigmalang trait Sigma {
@@ -35,6 +35,7 @@ trait Context {
   def OUTPUTS: Col[Box]
   def INPUTS: Col[Box]
   def HEIGHT: Long
+  def SELF: Box
 }
 
 trait ContextBuilder {
@@ -51,7 +52,7 @@ trait ContextBuilder {
   def anyOf(conditions: Col[Boolean]): Boolean
   def anyZK(conditions: Col[Sigma]): Sigma
 
-  @clause def canOpen(ctx: Context, SELF: Box): Boolean
+  @clause def canOpen(ctx: Context): Boolean
 }
 
 

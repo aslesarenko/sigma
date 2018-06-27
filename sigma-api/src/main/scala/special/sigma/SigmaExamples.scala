@@ -6,7 +6,7 @@ trait CrowdFunding extends SigmaContract {
   def backerPubKey: ProveDlog
   def projectPubKey: ProveDlog
 
-  @clause def canOpen(ctx: Context, SELF: Box) = {
+  @clause def canOpen(ctx: Context) = {
     val c1 = ctx.HEIGHT >= timeout && backerPubKey.isValid
     val c2 =
       ctx.HEIGHT < timeout &&
@@ -23,11 +23,11 @@ trait DemurrageCurrency extends SigmaContract {
   def demurrageCost: Int
   def regScript: ProveDlog
 
-  @clause def canOpen(ctx: Context, SELF: Box) = {
+  @clause def canOpen(ctx: Context) = {
     val c2 =
-      ctx.HEIGHT >= SELF.R3[Int].get + demurragePeriod &&
+      ctx.HEIGHT >= ctx.SELF.R3[Int].get + demurragePeriod &&
       ctx.OUTPUTS.exists(out => {
-        out.value >= SELF.value - demurrageCost && out.propositionBytes == SELF.propositionBytes
+        out.value >= ctx.SELF.value - demurrageCost && out.propositionBytes == SELF.propositionBytes
       })
     verifyZK ( regScript || c2 )
   }
