@@ -17,15 +17,17 @@ package special.sigma {
       def id: Rep[Col[Byte]];
       def value: Rep[Long];
       def propositionBytes: Rep[Col[Byte]];
-      def R1[T]: Rep[WOption[T]];
-      def R2[T]: Rep[WOption[T]];
-      def R3[T]: Rep[WOption[T]];
-      def R4[T]: Rep[WOption[T]];
-      def R5[T]: Rep[WOption[T]];
-      def R6[T]: Rep[WOption[T]];
-      def R7[T]: Rep[WOption[T]];
-      def R8[T]: Rep[WOption[T]];
-      def R9[T]: Rep[WOption[T]]
+      def cost: Rep[Int];
+      def registers: Rep[Col[Any]];
+      def R1[T:Elem]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(0.asInstanceOf[Int])));
+      def R2[T:Elem]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(1.asInstanceOf[Int])));
+      def R3[T:Elem]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(2.asInstanceOf[Int])));
+      def R4[T:Elem]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(3.asInstanceOf[Int])));
+      def R5[T:Elem]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(4.asInstanceOf[Int])));
+      def R6[T:Elem]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(5.asInstanceOf[Int])));
+      def R7[T:Elem]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(6.asInstanceOf[Int])));
+      def R8[T:Elem]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(7.asInstanceOf[Int])));
+      def R9[T:Elem]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(8.asInstanceOf[Int])))
     };
     trait Context extends Def[Context] {
       def builder: Rep[ContextBuilder];

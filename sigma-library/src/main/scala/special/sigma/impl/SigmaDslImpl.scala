@@ -263,6 +263,30 @@ trait SigmaDslDefs extends scalan.Scalan with SigmaDsl {
       }
     }
 
+    object cost {
+      def unapply(d: Def[_]): Option[Rep[Box]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "cost" =>
+          Some(receiver).asInstanceOf[Option[Rep[Box]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[Box]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object registers {
+      def unapply(d: Def[_]): Option[Rep[Box]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "registers" =>
+          Some(receiver).asInstanceOf[Option[Rep[Box]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[Box]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
     object R1 {
       def unapply(d: Def[_]): Option[(Rep[Box], Elem[T]) forSome {type T}] = d match {
         case MethodCall(receiver, method, Seq(emT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R1" =>

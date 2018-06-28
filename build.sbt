@@ -4,15 +4,14 @@ resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repos
 unmanagedBase := baseDirectory.value / "libs"
 
 lazy val buildSettings = Seq(
-  scalaVersion := "2.11.8",
-  organization := "special",
+  scalaVersion := "2.12.6",
+  organization := "special.sigma",
   javacOptions ++= Seq("-source", "1.7", "-target", "1.7"),
   scalacOptions ++= Seq(
     "-encoding", "UTF-8",
     "-unchecked",
     "-deprecation",
-    "-Xlint",
-//    "-Xlint:-unused,_",
+    "-Xlint:-unused,_",
     "-feature",
     "-Ywarn-adapted-args",
     "-Ywarn-inaccessible",
@@ -47,7 +46,7 @@ lazy val testSettings = Seq(
 lazy val commonSettings = buildSettings ++ testSettings
 def libraryDefSettings = commonSettings ++ Seq(
   scalacOptions ++= Seq(
-//    s"-Xplugin:${file(".").absolutePath }/scalanizer/target/scala-2.11/scalanizer-assembly-0.3.0-SNAPSHOT.jar"
+//    s"-Xplugin:${file(".").absolutePath }/scalanizer/target/scala-2.12/scalanizer-assembly-0.3.0-SNAPSHOT.jar"
   )
 )
 
@@ -55,14 +54,14 @@ lazy val allConfigDependency = "compile->compile;test->test"
 cancelable in Global := true
 
 val paradise = "org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full
-val common = "com.huawei.scalan" %% "common" % "0.3.0-SNAPSHOT"
-val meta = "com.huawei.scalan" %% "meta" % "0.3.0-SNAPSHOT"
-val core = "com.huawei.scalan" %% "core" % "0.3.0-SNAPSHOT"
-val plugin = "com.huawei.scalan" %% "plugin" % "0.3.0-SNAPSHOT"
-val libraryapi = "com.huawei.scalan" %% "library-api" % "0.3.0-SNAPSHOT"
-val libraryimpl = "com.huawei.scalan" %% "library-impl" % "0.3.0-SNAPSHOT"
-val library= "com.huawei.scalan" %% "library" % "0.3.0-SNAPSHOT"
-val libraryconf = "com.huawei.scalan" %% "library-conf" % "0.3.0-SNAPSHOT"
+val common = "special" %% "common" % "0.3.0-SNAPSHOT"
+val meta = "special" %% "meta" % "0.3.0-SNAPSHOT"
+val core = "special" %% "core" % "0.3.0-SNAPSHOT"
+val plugin = "special" %% "plugin" % "0.3.0-SNAPSHOT"
+val libraryapi = "special" %% "library-api" % "0.3.0-SNAPSHOT"
+val libraryimpl = "special" %% "library-impl" % "0.3.0-SNAPSHOT"
+val library= "special" %% "library" % "0.3.0-SNAPSHOT"
+val libraryconf = "special" %% "library-conf" % "0.3.0-SNAPSHOT"
 
 lazy val sigmaconf = Project("sigma-conf", file("sigma-conf"))
     .settings(commonSettings,
