@@ -86,20 +86,28 @@ lazy val sigmaapi = Project("sigma-api", file("sigma-api"))
     .settings(libraryDefSettings :+ addCompilerPlugin(paradise),
       libraryDependencies ++= Seq(
         common % allConfigDependency, meta, libraryapi,
-        "org.typelevel" %% "macro-compat" % "1.1.1"
+        "org.typelevel" %% "macro-compat" % "1.1.1",
+        "org.scorexfoundation" %% "scrypto" % "2.1.+",
+        "org.bouncycastle" % "bcprov-jdk15on" % "1.+"
       ))
 
 lazy val sigmaimpl = Project("sigma-impl", file("sigma-impl"))
     .dependsOn(sigmaapi % allConfigDependency)
     .settings(libraryDefSettings,
-      libraryDependencies ++= Seq(libraryapi, libraryimpl))
+      libraryDependencies ++= Seq(
+        libraryapi, libraryimpl,
+        "org.scorexfoundation" %% "scrypto" % "2.1.+",
+        "org.bouncycastle" % "bcprov-jdk15on" % "1.+"
+      ))
 
 lazy val sigmalibrary = Project("sigma-library", file("sigma-library"))
     .dependsOn(sigmaimpl)
     .settings(//commonSettings,
       libraryDefSettings,
       libraryDependencies ++= Seq(
-        common % allConfigDependency, core % allConfigDependency, libraryapi,  libraryimpl, library
+        common % allConfigDependency, core % allConfigDependency, libraryapi,  libraryimpl, library,
+        "org.scorexfoundation" %% "scrypto" % "2.1.+",
+        "org.bouncycastle" % "bcprov-jdk15on" % "1.+"
       ))
 
 lazy val root = Project("sigma", file("."))

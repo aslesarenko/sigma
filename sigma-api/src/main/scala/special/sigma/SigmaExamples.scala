@@ -25,7 +25,7 @@ trait DemurrageCurrency extends SigmaContract {
 
   @clause def canOpen(ctx: Context) = {
     val c2 =
-      ctx.HEIGHT >= ctx.SELF.R3[Long].get + demurragePeriod &&
+      ctx.HEIGHT >= ctx.SELF.R4[Long].get + demurragePeriod &&
       ctx.OUTPUTS.exists(out => {
         out.value >= ctx.SELF.value - demurrageCost && out.propositionBytes == ctx.SELF.propositionBytes
       })
