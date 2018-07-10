@@ -20,16 +20,16 @@ trait ContractsTestSuite {
   val curve = CustomNamedCurves.getByName("curve25519")
   val g = curve.getG
   val Cols = new ColOverArrayBuilder
-  val noRegisters = Cols.fromArray(Array[Any]())
+  val noRegisters = Cols.fromArray(Array[AnyValue]())
   val noBytes = Cols.fromArray(Array[Byte]())
   val noInputs = Array[Box]()
   val noOutputs = Array[Box]()
 
-  def regs(m: Map[Byte, Any]): Col[Any] = {
-    val res = new Array[Any](10)
+  def regs(m: Map[Byte, Any]): Col[AnyValue] = {
+    val res = new Array[AnyValue](10)
     for ((id, v) <- m) {
       assert(res(id) == null, s"register $id is defined more then once")
-      res(id) = v
+      res(id) = new TestValue(v)
     }
     Cols.fromArray(res)
   }
@@ -51,14 +51,14 @@ class SigmaExamplesTests extends FunSuite with ContractsTestSuite {
     val self = new TestBox(selfId, 10, noBytes, noRegisters)
 
     { // when backer can open
-      val ctxForBacker = new ContextOverArrays(noInputs, noOutputs, HEIGHT = 200, self, Array())
+      val ctxForBacker = new TestContext(noInputs, noOutputs, height = 200, self, Array())
       val ok = contract.canOpen(ctxForBacker)
       assert(ok)
     }
 
     { // then project can open
       val out = new TestBox(outId, minToRaise, project.propBytes, noRegisters)
-      val ctxForProject = new ContextOverArrays(Array(), Array(out), HEIGHT = 50, self, Array())
+      val ctxForProject = new TestContext(Array(), Array(out), height = 50, self, Array())
       val ok = contract.canOpen(ctxForProject)
       assert(ok)
     }
@@ -77,11 +77,11 @@ class SigmaExamplesTests extends FunSuite with ContractsTestSuite {
     val out = new TestBox(outId, outValue, prop, regs(Map(R4 -> curHeight)))
 
     { //case 1: demurrage time hasn't come yet
-      val ctxForProject = new ContextOverArrays(
+      val ctxForProject = new TestContext(
         inputs = Array(),
         outputs = Array(out),
-        HEIGHT = outHeight + demurragePeriod - 1,
-        SELF = new TestBox(
+        height = outHeight + demurragePeriod - 1,
+        self = new TestBox(
           selfId, outValue, prop,
           regs(Map(R4 -> outHeight))),
         vars = Array()
@@ -96,11 +96,11 @@ class SigmaExamplesTests extends FunSuite with ContractsTestSuite {
     }
 
     { //case 2: demurrage time has come (user can spend all the money)
-      val ctxForProject = new ContextOverArrays(
+      val ctxForProject = new TestContext(
         inputs = Array(),
         outputs = Array(out),
-        HEIGHT = outHeight + demurragePeriod,
-        SELF = new TestBox(
+        height = outHeight + demurragePeriod,
+        self = new TestBox(
           selfId, outValue, prop,
           regs(Map(R4 -> outHeight))),
         vars = Array()
@@ -112,11 +112,11 @@ class SigmaExamplesTests extends FunSuite with ContractsTestSuite {
 
     { //case 3: demurrage time has come (miner can spend "demurrageCost" tokens)
       val minerOut = new TestBox(outId, outValue - demurrageCost, prop, regs(Map(R4 -> curHeight)))
-      val ctxForMiner = new ContextOverArrays(
+      val ctxForMiner = new TestContext(
         inputs = Array(),
         outputs = Array(minerOut),
-        HEIGHT = outHeight + demurragePeriod,
-        SELF = new TestBox(
+        height = outHeight + demurragePeriod,
+        self = new TestBox(
           selfId, outValue, prop,
           regs(Map(R4 -> outHeight))),
         vars = Array()

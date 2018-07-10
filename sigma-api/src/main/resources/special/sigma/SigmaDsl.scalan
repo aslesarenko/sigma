@@ -3,42 +3,48 @@ package special.sigma {
 
   trait SigmaDsl extends Base { self: SigmaDslModule =>
     @sigmalang trait Sigma extends Def[Sigma] {
+      def builder: Rep[SigmaDslBuilder];
       def isValid: Rep[Boolean];
+      def propBytes: Rep[Col[Byte]];
       @OverloadId(value = "and_sigma") def &&(other: Rep[Sigma]): Rep[Sigma];
       @OverloadId(value = "and_bool") def &&(other: Rep[Boolean]): Rep[Sigma];
       @OverloadId(value = "or_sigma") def ||(other: Rep[Sigma]): Rep[Sigma];
       @OverloadId(value = "or_bool") def ||(other: Rep[Boolean]): Rep[Sigma]
     };
+    trait SigmaBuilder extends Def[SigmaBuilder];
     @sigmalang trait ProveDlog extends Sigma {
-      def propBytes: Rep[Col[Byte]]
+      def value: Rep[WECPoint]
     };
     @sigmalang trait Box extends Def[Box] {
+      def builder: Rep[BoxBuilder];
       def id: Rep[Col[Byte]];
       def value: Rep[Long];
       def propositionBytes: Rep[Col[Byte]];
       def cost: Rep[Int];
       def registers: Rep[Col[Any]];
-      def R1[T]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(0.asInstanceOf[Int])));
-      def R2[T]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(1.asInstanceOf[Int])));
-      def R3[T]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(2.asInstanceOf[Int])));
-      def R4[T]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(3.asInstanceOf[Int])));
-      def R5[T]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(4.asInstanceOf[Int])));
-      def R6[T]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(5.asInstanceOf[Int])));
-      def R7[T]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(6.asInstanceOf[Int])));
-      def R8[T]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(7.asInstanceOf[Int])));
-      def R9[T]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(8.asInstanceOf[Int])))
+      def R0[T]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(0.asInstanceOf[Int])));
+      def R1[T]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(1.asInstanceOf[Int])));
+      def R2[T]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(2.asInstanceOf[Int])));
+      def R3[T]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(3.asInstanceOf[Int])));
+      def R4[T]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(4.asInstanceOf[Int])));
+      def R5[T]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(5.asInstanceOf[Int])));
+      def R6[T]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(6.asInstanceOf[Int])));
+      def R7[T]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(7.asInstanceOf[Int])));
+      def R8[T]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(8.asInstanceOf[Int])));
+      def R9[T]: Rep[WOption[T]] = WSpecialPredef.cast[T](Box.this.registers.apply(toRep(9.asInstanceOf[Int])))
     };
+    trait BoxBuilder extends Def[BoxBuilder];
     trait Context extends Def[Context] {
       def builder: Rep[ContextBuilder];
       def OUTPUTS: Rep[Col[Box]];
       def INPUTS: Rep[Col[Box]];
       def HEIGHT: Rep[Long];
-      def SELF: Rep[Box]
+      def SELF: Rep[Box];
+      def getVar[T](id: Rep[Byte]): Rep[T]
     };
-    trait ContextBuilder extends Def[ContextBuilder] {
-      def Collections: Rep[ColBuilder]
-    };
+    trait ContextBuilder extends Def[ContextBuilder];
     @sigmalang trait SigmaContract extends Def[SigmaContract] {
+      def builder: Rep[SigmaContractBuilder];
       def verify(cond: Rep[Boolean]): Rep[Boolean];
       def verifyZK(cond: Rep[Sigma]): Rep[Boolean];
       def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean];
@@ -47,11 +53,19 @@ package special.sigma {
       def anyZK(conditions: Rep[Col[Sigma]]): Rep[Sigma];
       @clause def canOpen(ctx: Rep[Context]): Rep[Boolean]
     };
+    trait SigmaContractBuilder extends Def[SigmaContractBuilder];
+    trait SigmaDslBuilder extends SigmaBuilder with BoxBuilder with ContextBuilder with SigmaContractBuilder {
+      def Collections: Rep[ColBuilder]
+    };
     trait SigmaCompanion;
+    trait SigmaBuilderCompanion;
     trait ProveDlogCompanion;
     trait BoxCompanion;
+    trait BoxBuilderCompanion;
     trait ContextCompanion;
     trait ContextBuilderCompanion;
-    trait SigmaContractCompanion
+    trait SigmaContractCompanion;
+    trait SigmaContractBuilderCompanion;
+    trait SigmaDslBuilderCompanion
   }
 }

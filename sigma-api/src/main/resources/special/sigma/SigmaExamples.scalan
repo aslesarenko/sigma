@@ -18,7 +18,7 @@ package special.sigma {
       def demurrageCost: Rep[Long];
       def regScript: Rep[ProveDlog];
       @clause def canOpen(ctx: Rep[Context]): Rep[Boolean] = {
-        val c2: Rep[Boolean] = ctx.HEIGHT.>=(ctx.SELF.R3[Long].get.+(DemurrageCurrency.this.demurragePeriod)).&&(ctx.OUTPUTS.exists(fun(((out: Rep[Box]) => out.value.>=(ctx.SELF.value.-(DemurrageCurrency.this.demurrageCost)).&&(out.propositionBytes.==(ctx.SELF.propositionBytes))))));
+        val c2: Rep[Boolean] = ctx.HEIGHT.>=(ctx.SELF.R4[Long].get.+(DemurrageCurrency.this.demurragePeriod)).&&(ctx.OUTPUTS.exists(fun(((out: Rep[Box]) => out.value.>=(ctx.SELF.value.-(DemurrageCurrency.this.demurrageCost)).&&(out.propositionBytes.==(ctx.SELF.propositionBytes))))));
         this.verifyZK(DemurrageCurrency.this.regScript.||(c2))
       }
     };

@@ -5,6 +5,8 @@ import scala.reflect.ClassTag
 import scalan.{SpecialPredef, OverloadId}
 import scalan.collection.{ColBuilder, Col}
 
+trait DslBuilder {}
+
 @sigmalang trait Sigma {
   def builder: SigmaDslBuilder
   def isValid: Boolean
@@ -14,12 +16,15 @@ import scalan.collection.{ColBuilder, Col}
   @OverloadId("or_sigma") def ||(other: Sigma): Sigma
   @OverloadId("or_bool")  def ||(other: Boolean): Sigma
 }
-trait SigmaBuilder {
+trait SigmaBuilder extends DslBuilder {
 }
 
 @sigmalang trait ProveDlog extends Sigma {
-  def propBytes: Col[Byte]
   def value: ECPoint
+}
+
+trait AnyValue {
+  def cost: Int
 }
 
 @sigmalang trait Box {
@@ -28,20 +33,20 @@ trait SigmaBuilder {
   def value: Long
   def propositionBytes: Col[Byte]
   def cost: Int
-  def registers: Col[Any]
-
-  def R0[T:ClassTag]: Option[T] = SpecialPredef.cast[T](registers(0))
-  def R1[T:ClassTag]: Option[T] = SpecialPredef.cast[T](registers(1))
-  def R2[T:ClassTag]: Option[T] = SpecialPredef.cast[T](registers(2))
-  def R3[T:ClassTag]: Option[T] = SpecialPredef.cast[T](registers(3))
-  def R4[T:ClassTag]: Option[T] = SpecialPredef.cast[T](registers(4))
-  def R5[T:ClassTag]: Option[T] = SpecialPredef.cast[T](registers(5))
-  def R6[T:ClassTag]: Option[T] = SpecialPredef.cast[T](registers(6))
-  def R7[T:ClassTag]: Option[T] = SpecialPredef.cast[T](registers(7))
-  def R8[T:ClassTag]: Option[T] = SpecialPredef.cast[T](registers(8))
-  def R9[T:ClassTag]: Option[T] = SpecialPredef.cast[T](registers(9))
+  def registers: Col[AnyValue]
+  def getReg[T:ClassTag](i: Int): Option[T]
+  def R0[T:ClassTag]: Option[T] = getReg[T](0)
+  def R1[T:ClassTag]: Option[T] = getReg[T](1)
+  def R2[T:ClassTag]: Option[T] = getReg[T](2)
+  def R3[T:ClassTag]: Option[T] = getReg[T](3)
+  def R4[T:ClassTag]: Option[T] = getReg[T](4)
+  def R5[T:ClassTag]: Option[T] = getReg[T](5)
+  def R6[T:ClassTag]: Option[T] = getReg[T](6)
+  def R7[T:ClassTag]: Option[T] = getReg[T](7)
+  def R8[T:ClassTag]: Option[T] = getReg[T](8)
+  def R9[T:ClassTag]: Option[T] = getReg[T](9)
 }
-trait BoxBuilder {
+trait BoxBuilder extends DslBuilder {
 }
 
 trait Context {
@@ -53,7 +58,7 @@ trait Context {
   def getVar[T:ClassTag](id: Byte): T
 }
 
-trait ContextBuilder {
+trait ContextBuilder extends DslBuilder {
 }
 
 @sigmalang trait SigmaContract {
@@ -70,7 +75,7 @@ trait ContextBuilder {
   @clause def canOpen(ctx: Context): Boolean
 }
 
-trait SigmaContractBuilder {
+trait SigmaContractBuilder extends DslBuilder {
 }
 
 trait SigmaDslBuilder
@@ -78,6 +83,6 @@ trait SigmaDslBuilder
      with BoxBuilder
      with ContextBuilder
      with SigmaContractBuilder {
-  def Collections: ColBuilder
+  def Cols: ColBuilder
 }
 

@@ -4,41 +4,68 @@ import org.bouncycastle.math.ec.ECPoint
 
 import scala.reflect.ClassTag
 import scalan.{SpecialPredef, OverloadId}
-import scalan.collection.{Col, ColOverArrayBuilder, ColOverArray}
+import scalan.collection.{Col, ColOverArrayBuilder, ColOverArray, MonoidBuilderInst}
 
 class TestBox(
   val idBytes: Array[Byte],
   val value: Long,
   val propositionBytes: Col[Byte],
-  val registers: Col[Any]
+  val registers: Col[AnyValue]
 ) extends Box {
-  def builder = new SigmaDslBuilderOverArray
-  def id = builder.Collections.fromArray(idBytes)
-  def cost = ???
+  def builder = new TestSigmaDslBuilder
+  def id = builder.Cols.fromArray(idBytes)
+  def getReg[T:ClassTag](i: Int): Option[T] = SpecialPredef.cast[TestValue[T]](registers(i)).map(x => x.value)
+  def cost = idBytes.length + propositionBytes.length + registers.map(_.cost).sum(new MonoidBuilderInst().intPlusMonoid)
 }
 
-class ContextOverArrays(
+//class BooleanValue(val value: Boolean) extends AnyValue {
+//  def cost = 1
+//}
+//class ByteValue(val value: Byte) extends AnyValue {
+//  def cost = 1
+//}
+//class IntValue(val value: Int) extends AnyValue {
+//  def cost = 4
+//}
+//class LongValue(val value: Long) extends AnyValue {
+//  def cost = 4
+//}
+class TestValue[T](val value: T) extends AnyValue {
+  def cost = value match {
+    case _: Boolean => 1
+    case _: Byte => 1
+    case _: Short => 2
+    case _: Int => 4
+    case _: Long => 8
+    case b: Box => b.cost
+    case p: ECPoint => p.getEncoded(true).length
+  }
+}
+
+class TestContext(
     val inputs: Array[Box],
     val outputs: Array[Box],
-    val HEIGHT: Long,
-    val SELF: Box,
-    val vars: Array[Any]
+    val height: Long,
+    val self: Box,
+    val vars: Array[AnyValue]
 ) extends Context {
-  def builder = new SigmaDslBuilderOverArray
+  def builder = new TestSigmaDslBuilder
 
-  def INPUTS = builder.Collections.fromArray(outputs)
+  def HEIGHT = height
+  def SELF   = self
+  def INPUTS = builder.Cols.fromArray(outputs)
 
-  def OUTPUTS = builder.Collections.fromArray(outputs)
+  def OUTPUTS = builder.Cols.fromArray(outputs)
 
   def getVar[T: ClassTag](id: Byte) = SpecialPredef.cast[T](vars(id)).get
 }
 
-class SigmaDslBuilderOverArray extends SigmaDslBuilder {
-  def Collections = new ColOverArrayBuilder
+class TestSigmaDslBuilder extends SigmaDslBuilder {
+  def Cols = new ColOverArrayBuilder
 }
 
 trait DefaultSigma extends Sigma {
-  def builder = new SigmaDslBuilderOverArray
+  def builder = new TestSigmaDslBuilder
   @OverloadId("and_sigma") def &&(other: Sigma) = new TrivialSigma(isValid && other.isValid)
 
   @OverloadId("and_bool")  def &&(other: Boolean) = new TrivialSigma(isValid && other)
@@ -49,7 +76,7 @@ trait DefaultSigma extends Sigma {
 }
 
 class TrivialSigma(val isValid: Boolean) extends Sigma with DefaultSigma {
-  def propBytes = builder.Collections(if(isValid) 1 else 0)
+  def propBytes = builder.Cols(if(isValid) 1 else 0)
 }
 
 class ProveDlogEvidence(val value: ECPoint) extends ProveDlog with DefaultSigma {
@@ -58,7 +85,7 @@ class ProveDlogEvidence(val value: ECPoint) extends ProveDlog with DefaultSigma 
 }
 
 trait DefaultContract extends SigmaContract {
-  def builder = new SigmaDslBuilderOverArray
+  def builder = new TestSigmaDslBuilder
   def verify(cond: Boolean) = cond
 
   def verifyZK(proof: Sigma) = proof.isValid
