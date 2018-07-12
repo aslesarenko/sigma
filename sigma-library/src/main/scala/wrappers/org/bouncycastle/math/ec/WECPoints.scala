@@ -1,4 +1,4 @@
-package org.bouncycastle.math.ec {
+package wrappers.org.bouncycastle.math.ec {
   import scalan._
 
   import impl._

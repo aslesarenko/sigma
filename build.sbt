@@ -105,7 +105,11 @@ lazy val sigmalibrary = Project("sigma-library", file("sigma-library"))
     .settings(//commonSettings,
       libraryDefSettings,
       libraryDependencies ++= Seq(
-        common % allConfigDependency, core % allConfigDependency, libraryapi,  libraryimpl, library,
+        common % allConfigDependency,
+        core % allConfigDependency,
+        libraryapi % allConfigDependency,
+        libraryimpl % allConfigDependency,
+        library % allConfigDependency,
         "org.scorexfoundation" %% "scrypto" % "2.1.+",
         "org.bouncycastle" % "bcprov-jdk15on" % "1.+"
       ))

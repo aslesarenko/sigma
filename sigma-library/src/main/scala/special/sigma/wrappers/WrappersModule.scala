@@ -1,6 +1,6 @@
 package special.sigma.wrappers
 
-import org.bouncycastle.math.ec.WECPointsModule
+import wrappers.org.bouncycastle.math.ec.WECPointsModule
 import special.sigma.WSigmaPredefsModule
 
 trait WrappersModule

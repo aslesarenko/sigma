@@ -1,4 +1,4 @@
-package org.bouncycastle.math.ec
+package wrappers.org.bouncycastle.math.ec
 
 import scalan._
 import impl._
@@ -79,4 +79,4 @@ trait WECPointsDefs extends scalan.Scalan with WECPoints {
 object WECPointsModule extends scalan.ModuleInfo("org.bouncycastle.math.ec", "WECPoints")
 }
 
-trait WECPointsModule extends org.bouncycastle.math.ec.impl.WECPointsDefs {self: WrappersModule =>}
+trait WECPointsModule extends wrappers.org.bouncycastle.math.ec.impl.WECPointsDefs {self: WrappersModule =>}
