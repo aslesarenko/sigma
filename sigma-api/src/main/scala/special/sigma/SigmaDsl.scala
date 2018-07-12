@@ -35,16 +35,16 @@ trait AnyValue {
   def cost: Int
   def registers: Col[AnyValue]
   def getReg[T:ClassTag](i: Int): Option[T]
-  def R0[T:ClassTag]: Option[T] = getReg[T](0)
-  def R1[T:ClassTag]: Option[T] = getReg[T](1)
-  def R2[T:ClassTag]: Option[T] = getReg[T](2)
-  def R3[T:ClassTag]: Option[T] = getReg[T](3)
-  def R4[T:ClassTag]: Option[T] = getReg[T](4)
-  def R5[T:ClassTag]: Option[T] = getReg[T](5)
-  def R6[T:ClassTag]: Option[T] = getReg[T](6)
-  def R7[T:ClassTag]: Option[T] = getReg[T](7)
-  def R8[T:ClassTag]: Option[T] = getReg[T](8)
-  def R9[T:ClassTag]: Option[T] = getReg[T](9)
+  def R0[T:ClassTag]: Option[T] = this.getReg[T](0)
+  def R1[T:ClassTag]: Option[T] = this.getReg[T](1)
+  def R2[T:ClassTag]: Option[T] = this.getReg[T](2)
+  def R3[T:ClassTag]: Option[T] = this.getReg[T](3)
+  def R4[T:ClassTag]: Option[T] = this.getReg[T](4)
+  def R5[T:ClassTag]: Option[T] = this.getReg[T](5)
+  def R6[T:ClassTag]: Option[T] = this.getReg[T](6)
+  def R7[T:ClassTag]: Option[T] = this.getReg[T](7)
+  def R8[T:ClassTag]: Option[T] = this.getReg[T](8)
+  def R9[T:ClassTag]: Option[T] = this.getReg[T](9)
 }
 trait BoxBuilder extends DslBuilder {
 }

@@ -38,13 +38,13 @@ class TestContext(
     val inputs: Array[Box],
     val outputs: Array[Box],
     val height: Long,
-    val self: Box,
+    val selfBox: Box,
     val vars: Array[AnyValue]
 ) extends Context {
   def builder = new TestSigmaDslBuilder
 
   def HEIGHT = height
-  def SELF   = self
+  def SELF   = selfBox
   def INPUTS = builder.Cols.fromArray(outputs)
 
   def OUTPUTS = builder.Cols.fromArray(outputs)

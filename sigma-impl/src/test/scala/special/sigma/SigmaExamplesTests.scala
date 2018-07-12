@@ -83,7 +83,7 @@ class SigmaExamplesTests extends FunSuite with ContractsTestSuite {
         inputs = Array(),
         outputs = Array(out),
         height = outHeight + demurragePeriod - 1,
-        self = new TestBox(
+        selfBox = new TestBox(
           selfId, outValue, prop,
           regs(Map(R4 -> outHeight))),
         vars = Array()
@@ -102,7 +102,7 @@ class SigmaExamplesTests extends FunSuite with ContractsTestSuite {
         inputs = Array(),
         outputs = Array(out),
         height = outHeight + demurragePeriod,
-        self = new TestBox(
+        selfBox = new TestBox(
           selfId, outValue, prop,
           regs(Map(R4 -> outHeight))),
         vars = Array()
@@ -118,7 +118,7 @@ class SigmaExamplesTests extends FunSuite with ContractsTestSuite {
         inputs = Array(),
         outputs = Array(minerOut),
         height = outHeight + demurragePeriod,
-        self = new TestBox(
+        selfBox = new TestBox(
           selfId, outValue, prop,
           regs(Map(R4 -> outHeight))),
         vars = Array()

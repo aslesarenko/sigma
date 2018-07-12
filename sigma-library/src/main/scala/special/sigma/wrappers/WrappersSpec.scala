@@ -1,7 +1,7 @@
 package special.sigma.wrappers {
   import scalan._
 
-  trait WrappersSpec extends Base { self: WrappersSpecModule =>
+  trait WrappersSpec extends Base { self: SigmaLibrary =>
     abstract class ECPointWrapSpec extends WrapSpec {
       def getEncoded[A](g: Rep[WECPoint]): Rep[WArray[Byte]] = g.getEncoded(toRep(true.asInstanceOf[Boolean]))
     };

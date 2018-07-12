@@ -27,10 +27,10 @@ package special.sigma {
     abstract class TestValue[T](val value: Rep[T]) extends AnyValue {
       def cost: Rep[Int] = SigmaPredef.cost(TestValue.this.value)
     };
-    abstract class TestContext(val inputs: Rep[WArray[Box]], val outputs: Rep[WArray[Box]], val height: Rep[Long], val self: Rep[Box], val vars: Rep[WArray[AnyValue]]) extends Context {
+    abstract class TestContext(val inputs: Rep[WArray[Box]], val outputs: Rep[WArray[Box]], val height: Rep[Long], val selfBox: Rep[Box], val vars: Rep[WArray[AnyValue]]) extends Context {
       def builder: Rep[TestSigmaDslBuilder] = TestSigmaDslBuilder();
       def HEIGHT: Rep[Long] = TestContext.this.height;
-      def SELF: Rep[Box] = TestContext.this.self;
+      def SELF: Rep[Box] = TestContext.this.selfBox;
       def INPUTS: Rep[Col[Box]] = TestContext.this.builder.Cols.fromArray[Box](TestContext.this.outputs);
       def OUTPUTS: Rep[Col[Box]] = TestContext.this.builder.Cols.fromArray[Box](TestContext.this.outputs);
       def getVar[T](id: Rep[Byte]): Rep[T] = WSpecialPredef.cast[T](TestContext.this.vars.apply(id.toInt)).get

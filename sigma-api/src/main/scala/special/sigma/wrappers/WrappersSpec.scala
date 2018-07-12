@@ -10,6 +10,6 @@ class ECPointWrapSpec extends WrapSpec {
   def getEncoded[A](g: ECPoint): Array[Byte] = g.getEncoded(true)
 }
 
-class SpecialPredefWrapSpec extends WrapSpec {
+class SigmaPredefWrapSpec extends WrapSpec {
   def cost(v: Any): Int = SigmaPredef.cost(v)
 }
