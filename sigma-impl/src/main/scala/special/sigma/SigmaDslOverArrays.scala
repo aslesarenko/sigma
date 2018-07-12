@@ -31,15 +31,7 @@ class TestBox(
 //  def cost = 4
 //}
 class TestValue[T](val value: T) extends AnyValue {
-  def cost = value match {
-    case _: Boolean => 1
-    case _: Byte => 1
-    case _: Short => 2
-    case _: Int => 4
-    case _: Long => 8
-    case b: Box => b.cost
-    case p: ECPoint => p.getEncoded(true).length
-  }
+  def cost = SigmaPredef.cost(value)
 }
 
 class TestContext(

@@ -54,6 +54,7 @@ class SigmaExamplesTests extends FunSuite with ContractsTestSuite {
       val ctxForBacker = new TestContext(noInputs, noOutputs, height = 200, self, Array())
       val ok = contract.canOpen(ctxForBacker)
       assert(ok)
+      assert(self.cost == selfId.length)
     }
 
     { // then project can open
@@ -61,6 +62,7 @@ class SigmaExamplesTests extends FunSuite with ContractsTestSuite {
       val ctxForProject = new TestContext(Array(), Array(out), height = 50, self, Array())
       val ok = contract.canOpen(ctxForProject)
       assert(ok)
+      assert(out.cost == outId.length + project.propBytes.length)
     }
   }
 

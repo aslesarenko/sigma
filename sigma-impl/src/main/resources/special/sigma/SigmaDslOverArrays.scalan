@@ -3,14 +3,14 @@ package special.sigma {
 
   trait SigmaDslOverArrays extends Base { self: SigmaDslOverArraysModule =>
     trait DefaultSigma extends Sigma {
-      def builder: Rep[SigmaDslBuilderOverArray] = SigmaDslBuilderOverArray();
+      def builder: Rep[TestSigmaDslBuilder] = TestSigmaDslBuilder();
       @OverloadId(value = "and_sigma") def &&(other: Rep[Sigma]): Rep[TrivialSigma] = TrivialSigma(DefaultSigma.this.isValid.&&(other.isValid));
       @OverloadId(value = "and_bool") def &&(other: Rep[Boolean]): Rep[TrivialSigma] = TrivialSigma(DefaultSigma.this.isValid.&&(other));
       @OverloadId(value = "or_sigma") def ||(other: Rep[Sigma]): Rep[TrivialSigma] = TrivialSigma(DefaultSigma.this.isValid.||(other.isValid));
       @OverloadId(value = "or_bool") def ||(other: Rep[Boolean]): Rep[TrivialSigma] = TrivialSigma(DefaultSigma.this.isValid.||(other))
     };
     trait DefaultContract extends SigmaContract {
-      def builder: Rep[SigmaDslBuilderOverArray] = SigmaDslBuilderOverArray();
+      def builder: Rep[TestSigmaDslBuilder] = TestSigmaDslBuilder();
       def verify(cond: Rep[Boolean]): Rep[Boolean] = cond;
       def verifyZK(proof: Rep[Sigma]): Rep[Boolean] = proof.isValid;
       def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = conditions.forall(fun(((c: Rep[Boolean]) => c)));
@@ -18,22 +18,28 @@ package special.sigma {
       def allZK(proofs: Rep[Col[Sigma]]): Rep[TrivialSigma] = TrivialSigma(proofs.forall(fun(((p: Rep[Sigma]) => p.isValid))));
       def anyZK(proofs: Rep[Col[Sigma]]): Rep[TrivialSigma] = TrivialSigma(proofs.forall(fun(((p: Rep[Sigma]) => p.isValid))))
     };
-    abstract class TestBox(val idBytes: Rep[WArray[Byte]], val value: Rep[Long], val propositionBytes: Rep[Col[Byte]], val registers: Rep[Col[Any]]) extends Box {
-      def builder: Rep[SigmaDslBuilderOverArray] = SigmaDslBuilderOverArray();
-      def id: Rep[Col[Byte]] = TestBox.this.builder.Collections.fromArray[Byte](TestBox.this.idBytes);
-      def cost: Rep[Nothing] = scala.Predef.???
+    abstract class TestBox(val idBytes: Rep[WArray[Byte]], val value: Rep[Long], val propositionBytes: Rep[Col[Byte]], val registers: Rep[Col[AnyValue]]) extends Box {
+      def builder: Rep[TestSigmaDslBuilder] = TestSigmaDslBuilder();
+      def id: Rep[Col[Byte]] = TestBox.this.builder.Cols.fromArray[Byte](TestBox.this.idBytes);
+      def getReg[T](i: Rep[Int]): Rep[WOption[T]] = WSpecialPredef.cast[TestValue[T]](TestBox.this.registers.apply(i))(((ClassTag.apply[TestValue[T]](toRep(classOf[special.sigma.TestValue].asInstanceOf[Class[TestValue[T]]]))): ClassTag[TestValue[T]])).map[T](fun(((x: Rep[TestValue[T]]) => x.value)).asRep[scala.Function1[TestValue[T], B]]);
+      def cost: Rep[Int] = TestBox.this.idBytes.length.+(TestBox.this.propositionBytes.length).+(TestBox.this.registers.map[Int](fun(((x$1: Rep[AnyValue]) => x$1.cost)))(((ClassTag.Int): ClassTag[Int])).sum(MonoidBuilderInst().intPlusMonoid))
     };
-    abstract class ContextOverArrays(val inputs: Rep[WArray[Box]], val outputs: Rep[WArray[Box]], val HEIGHT: Rep[Long], val SELF: Rep[Box], val vars: Rep[WArray[Any]]) extends Context {
-      def builder: Rep[SigmaDslBuilderOverArray] = SigmaDslBuilderOverArray();
-      def INPUTS: Rep[Col[Box]] = ContextOverArrays.this.builder.Collections.fromArray[Box](ContextOverArrays.this.outputs);
-      def OUTPUTS: Rep[Col[Box]] = ContextOverArrays.this.builder.Collections.fromArray[Box](ContextOverArrays.this.outputs);
-      def getVar[T](id: Rep[Byte]): Rep[T] = WSpecialPredef.cast[T](ContextOverArrays.this.vars.apply(id.toInt)).get
+    abstract class TestValue[T](val value: Rep[T]) extends AnyValue {
+      def cost: Rep[Int] = SigmaPredef.cost(TestValue.this.value)
     };
-    abstract class SigmaDslBuilderOverArray extends SigmaDslBuilder {
-      def Collections: Rep[ColOverArrayBuilder] = ColOverArrayBuilder()
+    abstract class TestContext(val inputs: Rep[WArray[Box]], val outputs: Rep[WArray[Box]], val height: Rep[Long], val self: Rep[Box], val vars: Rep[WArray[AnyValue]]) extends Context {
+      def builder: Rep[TestSigmaDslBuilder] = TestSigmaDslBuilder();
+      def HEIGHT: Rep[Long] = TestContext.this.height;
+      def SELF: Rep[Box] = TestContext.this.self;
+      def INPUTS: Rep[Col[Box]] = TestContext.this.builder.Cols.fromArray[Box](TestContext.this.outputs);
+      def OUTPUTS: Rep[Col[Box]] = TestContext.this.builder.Cols.fromArray[Box](TestContext.this.outputs);
+      def getVar[T](id: Rep[Byte]): Rep[T] = WSpecialPredef.cast[T](TestContext.this.vars.apply(id.toInt)).get
+    };
+    abstract class TestSigmaDslBuilder extends SigmaDslBuilder {
+      def Cols: Rep[ColOverArrayBuilder] = ColOverArrayBuilder()
     };
     abstract class TrivialSigma(val isValid: Rep[Boolean]) extends Sigma with DefaultSigma {
-      def propBytes: Rep[Col[Byte]] = TrivialSigma.this.builder.Collections.apply[Byte](IF(TrivialSigma.this.isValid).THEN(toRep(1.asInstanceOf[Byte])).ELSE(toRep(0.asInstanceOf[Byte])))
+      def propBytes: Rep[Col[Byte]] = TrivialSigma.this.builder.Cols.apply[Byte](IF(TrivialSigma.this.isValid).THEN(toRep(1.asInstanceOf[Byte])).ELSE(toRep(0.asInstanceOf[Byte])))
     };
     abstract class ProveDlogEvidence(val value: Rep[WECPoint]) extends ProveDlog with DefaultSigma {
       def propBytes: Rep[Col[Byte]] = ColOverArray(ProveDlogEvidence.this.value.getEncoded(toRep(true.asInstanceOf[Boolean])));
@@ -42,8 +48,9 @@ package special.sigma {
     trait DefaultSigmaCompanion;
     trait DefaultContractCompanion;
     trait TestBoxCompanion;
-    trait ContextOverArraysCompanion;
-    trait SigmaDslBuilderOverArrayCompanion;
+    trait TestValueCompanion;
+    trait TestContextCompanion;
+    trait TestSigmaDslBuilderCompanion;
     trait TrivialSigmaCompanion;
     trait ProveDlogEvidenceCompanion
   }

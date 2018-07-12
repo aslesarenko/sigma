@@ -5,6 +5,10 @@ package special.sigma.wrappers {
     abstract class ECPointWrapSpec extends WrapSpec {
       def getEncoded[A](g: Rep[WECPoint]): Rep[WArray[Byte]] = g.getEncoded(toRep(true.asInstanceOf[Boolean]))
     };
-    trait ECPointWrapSpecCompanion
+    abstract class SpecialPredefWrapSpec extends WrapSpec {
+      def cost(v: Rep[Any]): Rep[Int] = WSigmaPredef.cost(v)
+    };
+    trait ECPointWrapSpecCompanion;
+    trait SpecialPredefWrapSpecCompanion
   }
 }

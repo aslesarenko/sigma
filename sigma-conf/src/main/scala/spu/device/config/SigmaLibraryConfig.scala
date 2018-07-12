@@ -15,6 +15,10 @@ class SigmaLibraryConfig extends LibraryConfig {
     WrapperConf(baseDir,
       packageName = "org.bouncycastle.math.ec",
       name = "ECPoint"
+    ),
+    WrapperConf(baseDir,
+      packageName = "special.sigma",
+      name = "SigmaPredef"
     )
   ).map(w => (w.name, w)).toMap
 
