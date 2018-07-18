@@ -8,7 +8,17 @@ package impl {
 // Abs -----------------------------------
 trait TestContractsDefs extends scalan.Scalan with TestContracts {
   self: SigmaLibrary =>
+import IsoUR._
+import Converter._
+import CrowdFunding._
+import DefaultContract._
+import DemurrageCurrency._
+import CrowdFundingContract._
+import DemurrageCurrencyContract._
+import ProveDlog._
+import ProveDlogEvidence._
 
+object CrowdFundingContract extends EntityObject("CrowdFundingContract") {
   case class CrowdFundingContractCtor
       (override val timeout: Rep[Long], override val minToRaise: Rep[Long], override val backerPubKey: Rep[ProveDlog], override val projectPubKey: Rep[ProveDlog])
     extends CrowdFundingContract(timeout, minToRaise, backerPubKey, projectPubKey) with Def[CrowdFundingContract] {
@@ -20,8 +30,8 @@ trait TestContractsDefs extends scalan.Scalan with TestContracts {
     with ConcreteElem[CrowdFundingContractData, CrowdFundingContract] {
     override lazy val parent: Option[Elem[_]] = Some(crowdFundingElement)
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
-    override def convertCrowdFunding(x: Rep[CrowdFunding]) = CrowdFundingContract(x.timeout, x.minToRaise, x.backerPubKey, x.projectPubKey)
-    override def getDefaultRep = CrowdFundingContract(0l, 0l, element[ProveDlog].defaultRepValue, element[ProveDlog].defaultRepValue)
+    override def convertCrowdFunding(x: Rep[CrowdFunding]) = RCrowdFundingContract(x.timeout, x.minToRaise, x.backerPubKey, x.projectPubKey)
+    override def getDefaultRep = RCrowdFundingContract(0l, 0l, element[ProveDlog].defaultRepValue, element[ProveDlog].defaultRepValue)
     override lazy val tag = {
       weakTypeTag[CrowdFundingContract]
     }
@@ -38,7 +48,7 @@ trait TestContractsDefs extends scalan.Scalan with TestContracts {
       tryConvert[CrowdFundingContract, (Long, (Long, (ProveDlog, ProveDlog)))](eTo, eFrom, p, _safeFrom)
     override def to(p: Rep[(Long, (Long, (ProveDlog, ProveDlog)))]) = {
       val Pair(timeout, Pair(minToRaise, Pair(backerPubKey, projectPubKey))) = p
-      CrowdFundingContract(timeout, minToRaise, backerPubKey, projectPubKey)
+      RCrowdFundingContract(timeout, minToRaise, backerPubKey, projectPubKey)
     }
     lazy val eFrom = pairElement(element[Long], pairElement(element[Long], pairElement(element[ProveDlog], element[ProveDlog])))
     lazy val eTo = new CrowdFundingContractElem(self)
@@ -69,7 +79,7 @@ trait TestContractsDefs extends scalan.Scalan with TestContracts {
     def unapply(p: Rep[CrowdFunding]) = unmkCrowdFundingContract(p)
   }
   lazy val CrowdFundingContractRep: Rep[CrowdFundingContractCompanionCtor] = new CrowdFundingContractCompanionCtor
-  lazy val CrowdFundingContract: CrowdFundingContractCompanionCtor = proxyCrowdFundingContractCompanion(CrowdFundingContractRep)
+  lazy val RCrowdFundingContract: CrowdFundingContractCompanionCtor = proxyCrowdFundingContractCompanion(CrowdFundingContractRep)
   implicit def proxyCrowdFundingContractCompanion(p: Rep[CrowdFundingContractCompanionCtor]): CrowdFundingContractCompanionCtor = {
     proxyOps[CrowdFundingContractCompanionCtor](p)
   }
@@ -92,6 +102,26 @@ trait TestContractsDefs extends scalan.Scalan with TestContracts {
   implicit def isoCrowdFundingContract: Iso[CrowdFundingContractData, CrowdFundingContract] =
     reifyObject(new CrowdFundingContractIso())
 
+  def mkCrowdFundingContract
+    (timeout: Rep[Long], minToRaise: Rep[Long], backerPubKey: Rep[ProveDlog], projectPubKey: Rep[ProveDlog]): Rep[CrowdFundingContract] = {
+    new CrowdFundingContractCtor(timeout, minToRaise, backerPubKey, projectPubKey)
+  }
+  def unmkCrowdFundingContract(p: Rep[CrowdFunding]) = p.elem.asInstanceOf[Elem[_]] match {
+    case _: CrowdFundingContractElem @unchecked =>
+      Some((p.asRep[CrowdFundingContract].timeout, p.asRep[CrowdFundingContract].minToRaise, p.asRep[CrowdFundingContract].backerPubKey, p.asRep[CrowdFundingContract].projectPubKey))
+    case _ =>
+      None
+  }
+
+    object CrowdFundingContractMethods {
+  }
+
+  object CrowdFundingContractCompanionMethods {
+  }
+} // of object CrowdFundingContract
+  registerEntityObject("CrowdFundingContract", CrowdFundingContract)
+
+object DemurrageCurrencyContract extends EntityObject("DemurrageCurrencyContract") {
   case class DemurrageCurrencyContractCtor
       (override val demurragePeriod: Rep[Long], override val demurrageCost: Rep[Long], override val regScript: Rep[ProveDlog])
     extends DemurrageCurrencyContract(demurragePeriod, demurrageCost, regScript) with Def[DemurrageCurrencyContract] {
@@ -103,8 +133,8 @@ trait TestContractsDefs extends scalan.Scalan with TestContracts {
     with ConcreteElem[DemurrageCurrencyContractData, DemurrageCurrencyContract] {
     override lazy val parent: Option[Elem[_]] = Some(demurrageCurrencyElement)
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
-    override def convertDemurrageCurrency(x: Rep[DemurrageCurrency]) = DemurrageCurrencyContract(x.demurragePeriod, x.demurrageCost, x.regScript)
-    override def getDefaultRep = DemurrageCurrencyContract(0l, 0l, element[ProveDlog].defaultRepValue)
+    override def convertDemurrageCurrency(x: Rep[DemurrageCurrency]) = RDemurrageCurrencyContract(x.demurragePeriod, x.demurrageCost, x.regScript)
+    override def getDefaultRep = RDemurrageCurrencyContract(0l, 0l, element[ProveDlog].defaultRepValue)
     override lazy val tag = {
       weakTypeTag[DemurrageCurrencyContract]
     }
@@ -121,7 +151,7 @@ trait TestContractsDefs extends scalan.Scalan with TestContracts {
       tryConvert[DemurrageCurrencyContract, (Long, (Long, ProveDlog))](eTo, eFrom, p, _safeFrom)
     override def to(p: Rep[(Long, (Long, ProveDlog))]) = {
       val Pair(demurragePeriod, Pair(demurrageCost, regScript)) = p
-      DemurrageCurrencyContract(demurragePeriod, demurrageCost, regScript)
+      RDemurrageCurrencyContract(demurragePeriod, demurrageCost, regScript)
     }
     lazy val eFrom = pairElement(element[Long], pairElement(element[Long], element[ProveDlog]))
     lazy val eTo = new DemurrageCurrencyContractElem(self)
@@ -152,7 +182,7 @@ trait TestContractsDefs extends scalan.Scalan with TestContracts {
     def unapply(p: Rep[DemurrageCurrency]) = unmkDemurrageCurrencyContract(p)
   }
   lazy val DemurrageCurrencyContractRep: Rep[DemurrageCurrencyContractCompanionCtor] = new DemurrageCurrencyContractCompanionCtor
-  lazy val DemurrageCurrencyContract: DemurrageCurrencyContractCompanionCtor = proxyDemurrageCurrencyContractCompanion(DemurrageCurrencyContractRep)
+  lazy val RDemurrageCurrencyContract: DemurrageCurrencyContractCompanionCtor = proxyDemurrageCurrencyContractCompanion(DemurrageCurrencyContractRep)
   implicit def proxyDemurrageCurrencyContractCompanion(p: Rep[DemurrageCurrencyContractCompanionCtor]): DemurrageCurrencyContractCompanionCtor = {
     proxyOps[DemurrageCurrencyContractCompanionCtor](p)
   }
@@ -175,31 +205,6 @@ trait TestContractsDefs extends scalan.Scalan with TestContracts {
   implicit def isoDemurrageCurrencyContract: Iso[DemurrageCurrencyContractData, DemurrageCurrencyContract] =
     reifyObject(new DemurrageCurrencyContractIso())
 
-  registerModule(TestContractsModule)
-
-  object CrowdFundingContractMethods {
-  }
-
-  object CrowdFundingContractCompanionMethods {
-  }
-
-  def mkCrowdFundingContract
-    (timeout: Rep[Long], minToRaise: Rep[Long], backerPubKey: Rep[ProveDlog], projectPubKey: Rep[ProveDlog]): Rep[CrowdFundingContract] = {
-    new CrowdFundingContractCtor(timeout, minToRaise, backerPubKey, projectPubKey)
-  }
-  def unmkCrowdFundingContract(p: Rep[CrowdFunding]) = p.elem.asInstanceOf[Elem[_]] match {
-    case _: CrowdFundingContractElem @unchecked =>
-      Some((p.asRep[CrowdFundingContract].timeout, p.asRep[CrowdFundingContract].minToRaise, p.asRep[CrowdFundingContract].backerPubKey, p.asRep[CrowdFundingContract].projectPubKey))
-    case _ =>
-      None
-  }
-
-  object DemurrageCurrencyContractMethods {
-  }
-
-  object DemurrageCurrencyContractCompanionMethods {
-  }
-
   def mkDemurrageCurrencyContract
     (demurragePeriod: Rep[Long], demurrageCost: Rep[Long], regScript: Rep[ProveDlog]): Rep[DemurrageCurrencyContract] = {
     new DemurrageCurrencyContractCtor(demurragePeriod, demurrageCost, regScript)
@@ -210,6 +215,16 @@ trait TestContractsDefs extends scalan.Scalan with TestContracts {
     case _ =>
       None
   }
+
+    object DemurrageCurrencyContractMethods {
+  }
+
+  object DemurrageCurrencyContractCompanionMethods {
+  }
+} // of object DemurrageCurrencyContract
+  registerEntityObject("DemurrageCurrencyContract", DemurrageCurrencyContract)
+
+  registerModule(TestContractsModule)
 }
 
 object TestContractsModule extends scalan.ModuleInfo("special.sigma", "TestContracts")

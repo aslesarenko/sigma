@@ -10,7 +10,12 @@ package impl {
 // Abs -----------------------------------
 trait WECPointsDefs extends scalan.Scalan with WECPoints {
   self: WrappersModule =>
+import IsoUR._
+import Converter._
+import WArray._
+import WECPoint._
 
+object WECPoint extends EntityObject("WECPoint") {
   // entityProxy: single proxy for each type family
   implicit def proxyWECPoint(p: Rep[WECPoint]): WECPoint = {
     proxyOps[WECPoint](p)(scala.reflect.classTag[WECPoint])
@@ -43,7 +48,7 @@ trait WECPointsDefs extends scalan.Scalan with WECPoints {
 
   implicit case object WECPointCompanionElem extends CompanionElem[WECPointCompanionCtor] {
     lazy val tag = weakTypeTag[WECPointCompanionCtor]
-    protected def getDefaultRep = WECPoint
+    protected def getDefaultRep = RWECPoint
   }
 
   abstract class WECPointCompanionCtor extends CompanionDef[WECPointCompanionCtor] with WECPointCompanion {
@@ -53,7 +58,7 @@ trait WECPointsDefs extends scalan.Scalan with WECPoints {
   implicit def proxyWECPointCompanionCtor(p: Rep[WECPointCompanionCtor]): WECPointCompanionCtor =
     proxyOps[WECPointCompanionCtor](p)
 
-  lazy val WECPoint: Rep[WECPointCompanionCtor] = new WECPointCompanionCtor {
+  lazy val RWECPoint: Rep[WECPointCompanionCtor] = new WECPointCompanionCtor {
   }
 
   object WECPointMethods {
@@ -72,11 +77,13 @@ trait WECPointsDefs extends scalan.Scalan with WECPoints {
 
   object WECPointCompanionMethods {
   }
+} // of object WECPoint
+  registerEntityObject("WECPoint", WECPoint)
 
   registerModule(WECPointsModule)
 }
 
-object WECPointsModule extends scalan.ModuleInfo("org.bouncycastle.math.ec", "WECPoints")
+object WECPointsModule extends scalan.ModuleInfo("wrappers.org.bouncycastle.math.ec", "WECPoints")
 }
 
 trait WECPointsModule extends wrappers.org.bouncycastle.math.ec.impl.WECPointsDefs {self: WrappersModule =>}

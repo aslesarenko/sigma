@@ -3,6 +3,21 @@ package special.sigma {
   import scalan._
 
   trait SigmaDsl extends Base { self: SigmaLibrary =>
+    import DslBuilder._;
+    import SigmaDslBuilder._;
+    import Col._;
+    import Sigma._;
+    import WECPoint._;
+    import AnyValue._;
+    import BoxBuilder._;
+    import WOption._;
+    import Box._;
+    import ContextBuilder._;
+    import Context._;
+    import SigmaContractBuilder._;
+    import SigmaContract._;
+    import ColBuilder._;
+    import SigmaBuilder._;
     trait DslBuilder extends Def[DslBuilder];
     @sigmalang trait Sigma extends Def[Sigma] {
       def builder: Rep[SigmaDslBuilder];
@@ -28,16 +43,16 @@ package special.sigma {
       def cost: Rep[Int];
       def registers: Rep[Col[AnyValue]];
       def getReg[T:Elem](i: Rep[Int]): Rep[WOption[T]];
-      def R0[T:Elem]: Rep[WOption[T]] = Box.this.getReg[T](toRep(0.asInstanceOf[Int]));
-      def R1[T:Elem]: Rep[WOption[T]] = Box.this.getReg[T](toRep(1.asInstanceOf[Int]));
-      def R2[T:Elem]: Rep[WOption[T]] = Box.this.getReg[T](toRep(2.asInstanceOf[Int]));
-      def R3[T:Elem]: Rep[WOption[T]] = Box.this.getReg[T](toRep(3.asInstanceOf[Int]));
-      def R4[T:Elem]: Rep[WOption[T]] = Box.this.getReg[T](toRep(4.asInstanceOf[Int]));
-      def R5[T:Elem]: Rep[WOption[T]] = Box.this.getReg[T](toRep(5.asInstanceOf[Int]));
-      def R6[T:Elem]: Rep[WOption[T]] = Box.this.getReg[T](toRep(6.asInstanceOf[Int]));
-      def R7[T:Elem]: Rep[WOption[T]] = Box.this.getReg[T](toRep(7.asInstanceOf[Int]));
-      def R8[T:Elem]: Rep[WOption[T]] = Box.this.getReg[T](toRep(8.asInstanceOf[Int]));
-      def R9[T:Elem]: Rep[WOption[T]] = Box.this.getReg[T](toRep(9.asInstanceOf[Int]))
+      def R0[T:Elem]: Rep[WOption[T]] = this.getReg[T](toRep(0.asInstanceOf[Int]));
+      def R1[T:Elem]: Rep[WOption[T]] = this.getReg[T](toRep(1.asInstanceOf[Int]));
+      def R2[T:Elem]: Rep[WOption[T]] = this.getReg[T](toRep(2.asInstanceOf[Int]));
+      def R3[T:Elem]: Rep[WOption[T]] = this.getReg[T](toRep(3.asInstanceOf[Int]));
+      def R4[T:Elem]: Rep[WOption[T]] = this.getReg[T](toRep(4.asInstanceOf[Int]));
+      def R5[T:Elem]: Rep[WOption[T]] = this.getReg[T](toRep(5.asInstanceOf[Int]));
+      def R6[T:Elem]: Rep[WOption[T]] = this.getReg[T](toRep(6.asInstanceOf[Int]));
+      def R7[T:Elem]: Rep[WOption[T]] = this.getReg[T](toRep(7.asInstanceOf[Int]));
+      def R8[T:Elem]: Rep[WOption[T]] = this.getReg[T](toRep(8.asInstanceOf[Int]));
+      def R9[T:Elem]: Rep[WOption[T]] = this.getReg[T](toRep(9.asInstanceOf[Int]))
     };
     trait BoxBuilder extends DslBuilder;
     trait Context extends Def[Context] {

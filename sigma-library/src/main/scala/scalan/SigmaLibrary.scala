@@ -14,3 +14,5 @@ trait SigmaLibrary extends Library
   with TestContractsModule {
   implicit lazy val EcPointElement: Elem[ECPoint] = new BaseElem(CustomNamedCurves.getByName("curve25519").getG)
 }
+
+class Starter

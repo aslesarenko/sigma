@@ -8,7 +8,14 @@ package impl {
 // Abs -----------------------------------
 trait WrappersSpecDefs extends scalan.Scalan with WrappersSpec {
   self: SigmaLibrary =>
+import IsoUR._
+import Converter._
+import WArray._
+import WrapSpec._
+import ECPointWrapSpec._
+import SigmaPredefWrapSpec._
 
+object ECPointWrapSpec extends EntityObject("ECPointWrapSpec") {
   case class ECPointWrapSpecCtor
       ()
     extends ECPointWrapSpec() with Def[ECPointWrapSpec] {
@@ -20,8 +27,8 @@ trait WrappersSpecDefs extends scalan.Scalan with WrappersSpec {
     with ConcreteElem[ECPointWrapSpecData, ECPointWrapSpec] {
     override lazy val parent: Option[Elem[_]] = Some(wrapSpecElement)
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
-    override def convertWrapSpec(x: Rep[WrapSpec]) = ECPointWrapSpec()
-    override def getDefaultRep = ECPointWrapSpec()
+    override def convertWrapSpec(x: Rep[WrapSpec]) = RECPointWrapSpec()
+    override def getDefaultRep = RECPointWrapSpec()
     override lazy val tag = {
       weakTypeTag[ECPointWrapSpec]
     }
@@ -38,7 +45,7 @@ trait WrappersSpecDefs extends scalan.Scalan with WrappersSpec {
       tryConvert[ECPointWrapSpec, Unit](eTo, eFrom, p, _safeFrom)
     override def to(p: Rep[Unit]) = {
       val unit = p
-      ECPointWrapSpec()
+      RECPointWrapSpec()
     }
     lazy val eFrom = UnitElement
     lazy val eTo = new ECPointWrapSpecElem(self)
@@ -69,7 +76,7 @@ trait WrappersSpecDefs extends scalan.Scalan with WrappersSpec {
     def unapply(p: Rep[WrapSpec]) = unmkECPointWrapSpec(p)
   }
   lazy val ECPointWrapSpecRep: Rep[ECPointWrapSpecCompanionCtor] = new ECPointWrapSpecCompanionCtor
-  lazy val ECPointWrapSpec: ECPointWrapSpecCompanionCtor = proxyECPointWrapSpecCompanion(ECPointWrapSpecRep)
+  lazy val RECPointWrapSpec: ECPointWrapSpecCompanionCtor = proxyECPointWrapSpecCompanion(ECPointWrapSpecRep)
   implicit def proxyECPointWrapSpecCompanion(p: Rep[ECPointWrapSpecCompanionCtor]): ECPointWrapSpecCompanionCtor = {
     proxyOps[ECPointWrapSpecCompanionCtor](p)
   }
@@ -92,6 +99,37 @@ trait WrappersSpecDefs extends scalan.Scalan with WrappersSpec {
   implicit def isoECPointWrapSpec: Iso[ECPointWrapSpecData, ECPointWrapSpec] =
     reifyObject(new ECPointWrapSpecIso())
 
+  def mkECPointWrapSpec
+    (): Rep[ECPointWrapSpec] = {
+    new ECPointWrapSpecCtor()
+  }
+  def unmkECPointWrapSpec(p: Rep[WrapSpec]) = p.elem.asInstanceOf[Elem[_]] match {
+    case _: ECPointWrapSpecElem @unchecked =>
+      Some(())
+    case _ =>
+      None
+  }
+
+    object ECPointWrapSpecMethods {
+    object getEncoded {
+      def unapply(d: Def[_]): Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Elem[A]) forSome {type A}] = d match {
+        case MethodCall(receiver, method, Seq(g, emA, _*), _) if receiver.elem.isInstanceOf[ECPointWrapSpecElem] && method.getName == "getEncoded" =>
+          Some((receiver, g, emA)).asInstanceOf[Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Elem[A]) forSome {type A}]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Elem[A]) forSome {type A}] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+  }
+
+  object ECPointWrapSpecCompanionMethods {
+  }
+} // of object ECPointWrapSpec
+  registerEntityObject("ECPointWrapSpec", ECPointWrapSpec)
+
+object SigmaPredefWrapSpec extends EntityObject("SigmaPredefWrapSpec") {
   case class SigmaPredefWrapSpecCtor
       ()
     extends SigmaPredefWrapSpec() with Def[SigmaPredefWrapSpec] {
@@ -103,8 +141,8 @@ trait WrappersSpecDefs extends scalan.Scalan with WrappersSpec {
     with ConcreteElem[SigmaPredefWrapSpecData, SigmaPredefWrapSpec] {
     override lazy val parent: Option[Elem[_]] = Some(wrapSpecElement)
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
-    override def convertWrapSpec(x: Rep[WrapSpec]) = SigmaPredefWrapSpec()
-    override def getDefaultRep = SigmaPredefWrapSpec()
+    override def convertWrapSpec(x: Rep[WrapSpec]) = RSigmaPredefWrapSpec()
+    override def getDefaultRep = RSigmaPredefWrapSpec()
     override lazy val tag = {
       weakTypeTag[SigmaPredefWrapSpec]
     }
@@ -121,7 +159,7 @@ trait WrappersSpecDefs extends scalan.Scalan with WrappersSpec {
       tryConvert[SigmaPredefWrapSpec, Unit](eTo, eFrom, p, _safeFrom)
     override def to(p: Rep[Unit]) = {
       val unit = p
-      SigmaPredefWrapSpec()
+      RSigmaPredefWrapSpec()
     }
     lazy val eFrom = UnitElement
     lazy val eTo = new SigmaPredefWrapSpecElem(self)
@@ -152,7 +190,7 @@ trait WrappersSpecDefs extends scalan.Scalan with WrappersSpec {
     def unapply(p: Rep[WrapSpec]) = unmkSigmaPredefWrapSpec(p)
   }
   lazy val SigmaPredefWrapSpecRep: Rep[SigmaPredefWrapSpecCompanionCtor] = new SigmaPredefWrapSpecCompanionCtor
-  lazy val SigmaPredefWrapSpec: SigmaPredefWrapSpecCompanionCtor = proxySigmaPredefWrapSpecCompanion(SigmaPredefWrapSpecRep)
+  lazy val RSigmaPredefWrapSpec: SigmaPredefWrapSpecCompanionCtor = proxySigmaPredefWrapSpecCompanion(SigmaPredefWrapSpecRep)
   implicit def proxySigmaPredefWrapSpecCompanion(p: Rep[SigmaPredefWrapSpecCompanionCtor]): SigmaPredefWrapSpecCompanionCtor = {
     proxyOps[SigmaPredefWrapSpecCompanionCtor](p)
   }
@@ -175,37 +213,18 @@ trait WrappersSpecDefs extends scalan.Scalan with WrappersSpec {
   implicit def isoSigmaPredefWrapSpec: Iso[SigmaPredefWrapSpecData, SigmaPredefWrapSpec] =
     reifyObject(new SigmaPredefWrapSpecIso())
 
-  registerModule(WrappersSpecModule)
-
-  object ECPointWrapSpecMethods {
-    object getEncoded {
-      def unapply(d: Def[_]): Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Elem[A]) forSome {type A}] = d match {
-        case MethodCall(receiver, method, Seq(g, emA, _*), _) if receiver.elem.isInstanceOf[ECPointWrapSpecElem] && method.getName == "getEncoded" =>
-          Some((receiver, g, emA)).asInstanceOf[Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Elem[A]) forSome {type A}]]
-        case _ => None
-      }
-      def unapply(exp: Sym): Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Elem[A]) forSome {type A}] = exp match {
-        case Def(d) => unapply(d)
-        case _ => None
-      }
-    }
+  def mkSigmaPredefWrapSpec
+    (): Rep[SigmaPredefWrapSpec] = {
+    new SigmaPredefWrapSpecCtor()
   }
-
-  object ECPointWrapSpecCompanionMethods {
-  }
-
-  def mkECPointWrapSpec
-    (): Rep[ECPointWrapSpec] = {
-    new ECPointWrapSpecCtor()
-  }
-  def unmkECPointWrapSpec(p: Rep[WrapSpec]) = p.elem.asInstanceOf[Elem[_]] match {
-    case _: ECPointWrapSpecElem @unchecked =>
+  def unmkSigmaPredefWrapSpec(p: Rep[WrapSpec]) = p.elem.asInstanceOf[Elem[_]] match {
+    case _: SigmaPredefWrapSpecElem @unchecked =>
       Some(())
     case _ =>
       None
   }
 
-  object SigmaPredefWrapSpecMethods {
+    object SigmaPredefWrapSpecMethods {
     object cost {
       def unapply(d: Def[_]): Option[(Rep[SigmaPredefWrapSpec], Rep[Any])] = d match {
         case MethodCall(receiver, method, Seq(v, _*), _) if receiver.elem.isInstanceOf[SigmaPredefWrapSpecElem] && method.getName == "cost" =>
@@ -221,17 +240,10 @@ trait WrappersSpecDefs extends scalan.Scalan with WrappersSpec {
 
   object SigmaPredefWrapSpecCompanionMethods {
   }
+} // of object SigmaPredefWrapSpec
+  registerEntityObject("SigmaPredefWrapSpec", SigmaPredefWrapSpec)
 
-  def mkSigmaPredefWrapSpec
-    (): Rep[SigmaPredefWrapSpec] = {
-    new SigmaPredefWrapSpecCtor()
-  }
-  def unmkSigmaPredefWrapSpec(p: Rep[WrapSpec]) = p.elem.asInstanceOf[Elem[_]] match {
-    case _: SigmaPredefWrapSpecElem @unchecked =>
-      Some(())
-    case _ =>
-      None
-  }
+  registerModule(WrappersSpecModule)
 }
 
 object WrappersSpecModule extends scalan.ModuleInfo("special.sigma.wrappers", "WrappersSpec")

@@ -8,7 +8,14 @@ package impl {
 // Abs -----------------------------------
 trait SigmaExamplesDefs extends scalan.Scalan with SigmaExamples {
   self: SigmaLibrary =>
+import IsoUR._
+import Converter._
+import ProveDlog._
+import CrowdFunding._
+import SigmaContract._
+import DemurrageCurrency._
 
+object CrowdFunding extends EntityObject("CrowdFunding") {
   // entityProxy: single proxy for each type family
   implicit def proxyCrowdFunding(p: Rep[CrowdFunding]): CrowdFunding = {
     proxyOps[CrowdFunding](p)(scala.reflect.classTag[CrowdFunding])
@@ -17,7 +24,7 @@ trait SigmaExamplesDefs extends scalan.Scalan with SigmaExamples {
   // familyElem
   class CrowdFundingElem[To <: CrowdFunding]
     extends SigmaContractElem[To] {
-//    lazy val parent: Option[Elem[_]] = None
+    override lazy val parent: Option[Elem[_]] = Some(sigmaContractElement)
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
     override lazy val tag = {
       weakTypeTag[CrowdFunding].asInstanceOf[WeakTypeTag[To]]
@@ -41,7 +48,7 @@ trait SigmaExamplesDefs extends scalan.Scalan with SigmaExamples {
 
   implicit case object CrowdFundingCompanionElem extends CompanionElem[CrowdFundingCompanionCtor] {
     lazy val tag = weakTypeTag[CrowdFundingCompanionCtor]
-    protected def getDefaultRep = CrowdFunding
+    protected def getDefaultRep = RCrowdFunding
   }
 
   abstract class CrowdFundingCompanionCtor extends CompanionDef[CrowdFundingCompanionCtor] with CrowdFundingCompanion {
@@ -51,7 +58,7 @@ trait SigmaExamplesDefs extends scalan.Scalan with SigmaExamples {
   implicit def proxyCrowdFundingCompanionCtor(p: Rep[CrowdFundingCompanionCtor]): CrowdFundingCompanionCtor =
     proxyOps[CrowdFundingCompanionCtor](p)
 
-  lazy val CrowdFunding: Rep[CrowdFundingCompanionCtor] = new CrowdFundingCompanionCtor {
+  lazy val RCrowdFunding: Rep[CrowdFundingCompanionCtor] = new CrowdFundingCompanionCtor {
   }
 
   object CrowdFundingMethods {
@@ -118,7 +125,10 @@ trait SigmaExamplesDefs extends scalan.Scalan with SigmaExamples {
 
   object CrowdFundingCompanionMethods {
   }
+} // of object CrowdFunding
+  registerEntityObject("CrowdFunding", CrowdFunding)
 
+object DemurrageCurrency extends EntityObject("DemurrageCurrency") {
   // entityProxy: single proxy for each type family
   implicit def proxyDemurrageCurrency(p: Rep[DemurrageCurrency]): DemurrageCurrency = {
     proxyOps[DemurrageCurrency](p)(scala.reflect.classTag[DemurrageCurrency])
@@ -126,8 +136,8 @@ trait SigmaExamplesDefs extends scalan.Scalan with SigmaExamples {
 
   // familyElem
   class DemurrageCurrencyElem[To <: DemurrageCurrency]
-    extends EntityElem[To] {
-    lazy val parent: Option[Elem[_]] = None
+    extends SigmaContractElem[To] {
+    override lazy val parent: Option[Elem[_]] = Some(sigmaContractElement)
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
     override lazy val tag = {
       weakTypeTag[DemurrageCurrency].asInstanceOf[WeakTypeTag[To]]
@@ -151,7 +161,7 @@ trait SigmaExamplesDefs extends scalan.Scalan with SigmaExamples {
 
   implicit case object DemurrageCurrencyCompanionElem extends CompanionElem[DemurrageCurrencyCompanionCtor] {
     lazy val tag = weakTypeTag[DemurrageCurrencyCompanionCtor]
-    protected def getDefaultRep = DemurrageCurrency
+    protected def getDefaultRep = RDemurrageCurrency
   }
 
   abstract class DemurrageCurrencyCompanionCtor extends CompanionDef[DemurrageCurrencyCompanionCtor] with DemurrageCurrencyCompanion {
@@ -161,7 +171,7 @@ trait SigmaExamplesDefs extends scalan.Scalan with SigmaExamples {
   implicit def proxyDemurrageCurrencyCompanionCtor(p: Rep[DemurrageCurrencyCompanionCtor]): DemurrageCurrencyCompanionCtor =
     proxyOps[DemurrageCurrencyCompanionCtor](p)
 
-  lazy val DemurrageCurrency: Rep[DemurrageCurrencyCompanionCtor] = new DemurrageCurrencyCompanionCtor {
+  lazy val RDemurrageCurrency: Rep[DemurrageCurrencyCompanionCtor] = new DemurrageCurrencyCompanionCtor {
   }
 
   object DemurrageCurrencyMethods {
@@ -216,6 +226,8 @@ trait SigmaExamplesDefs extends scalan.Scalan with SigmaExamples {
 
   object DemurrageCurrencyCompanionMethods {
   }
+} // of object DemurrageCurrency
+  registerEntityObject("DemurrageCurrency", DemurrageCurrency)
 
   registerModule(SigmaExamplesModule)
 }

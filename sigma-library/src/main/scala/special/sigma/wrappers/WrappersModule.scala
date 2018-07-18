@@ -1,9 +1,9 @@
 package special.sigma.wrappers
 
 import wrappers.org.bouncycastle.math.ec.WECPointsModule
-import special.sigma.WSigmaPredefsModule
+import wrappers.special.sigma.WSigmaPredefsModule
 
 trait WrappersModule
-  extends scala.wrappers.WrappersModule
+  extends special.wrappers.WrappersModule
      with WSigmaPredefsModule
      with WECPointsModule

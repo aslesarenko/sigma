@@ -1,4 +1,4 @@
-package special.sigma
+package wrappers.special.sigma
 
 import scalan._
 import impl._
@@ -10,7 +10,11 @@ package impl {
 // Abs -----------------------------------
 trait WSigmaPredefsDefs extends scalan.Scalan with WSigmaPredefs {
   self: WrappersModule =>
+import IsoUR._
+import Converter._
+import WSigmaPredef._
 
+object WSigmaPredef extends EntityObject("WSigmaPredef") {
   // entityProxy: single proxy for each type family
   implicit def proxyWSigmaPredef(p: Rep[WSigmaPredef]): WSigmaPredef = {
     proxyOps[WSigmaPredef](p)(scala.reflect.classTag[WSigmaPredef])
@@ -43,7 +47,7 @@ trait WSigmaPredefsDefs extends scalan.Scalan with WSigmaPredefs {
 
   implicit case object WSigmaPredefCompanionElem extends CompanionElem[WSigmaPredefCompanionCtor] {
     lazy val tag = weakTypeTag[WSigmaPredefCompanionCtor]
-    protected def getDefaultRep = WSigmaPredef
+    protected def getDefaultRep = RWSigmaPredef
   }
 
   abstract class WSigmaPredefCompanionCtor extends CompanionDef[WSigmaPredefCompanionCtor] with WSigmaPredefCompanion {
@@ -53,7 +57,7 @@ trait WSigmaPredefsDefs extends scalan.Scalan with WSigmaPredefs {
   implicit def proxyWSigmaPredefCompanionCtor(p: Rep[WSigmaPredefCompanionCtor]): WSigmaPredefCompanionCtor =
     proxyOps[WSigmaPredefCompanionCtor](p)
 
-  lazy val WSigmaPredef: Rep[WSigmaPredefCompanionCtor] = new WSigmaPredefCompanionCtor {
+  lazy val RWSigmaPredef: Rep[WSigmaPredefCompanionCtor] = new WSigmaPredefCompanionCtor {
     def cost(v: Rep[Any]): Rep[Int] = {
       mkMethodCall(self,
         this.getClass.getMethod("cost", classOf[Sym]),
@@ -78,11 +82,13 @@ trait WSigmaPredefsDefs extends scalan.Scalan with WSigmaPredefs {
       }
     }
   }
+} // of object WSigmaPredef
+  registerEntityObject("WSigmaPredef", WSigmaPredef)
 
   registerModule(WSigmaPredefsModule)
 }
 
-object WSigmaPredefsModule extends scalan.ModuleInfo("special.sigma", "WSigmaPredefs")
+object WSigmaPredefsModule extends scalan.ModuleInfo("wrappers.special.sigma", "WSigmaPredefs")
 }
 
-trait WSigmaPredefsModule extends special.sigma.impl.WSigmaPredefsDefs {self: WrappersModule =>}
+trait WSigmaPredefsModule extends wrappers.special.sigma.impl.WSigmaPredefsDefs {self: WrappersModule =>}

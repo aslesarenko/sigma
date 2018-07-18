@@ -2,7 +2,12 @@ package special.sigma {
   import scalan._
 
   trait SigmaExamples extends Base { self: SigmaLibrary =>
+    import ProveDlog._;
+    import CrowdFunding._;
+    import SigmaContract._;
+    import DemurrageCurrency._;
     import Context._
+    import Col._; import Box._; import WOption._
     trait CrowdFunding extends Def[CrowdFunding] with SigmaContract {
       def timeout: Rep[Long];
       def minToRaise: Rep[Long];
