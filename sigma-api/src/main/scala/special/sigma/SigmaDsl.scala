@@ -5,7 +5,7 @@ import org.bouncycastle.math.ec.ECPoint
 import scala.reflect.ClassTag
 import special.collection.{ColBuilder, Col}
 
-import scalan.OverloadId
+import scalan.{OverloadId, Reified}
 
 trait DslBuilder {}
 
@@ -36,17 +36,27 @@ trait AnyValue {
   def propositionBytes: Col[Byte]
   def cost: Int
   def registers: Col[AnyValue]
-  def getReg[T:ClassTag](i: Int): Option[T]
-  def R0[T:ClassTag]: Option[T] = this.getReg[T](0)
-  def R1[T:ClassTag]: Option[T] = this.getReg[T](1)
-  def R2[T:ClassTag]: Option[T] = this.getReg[T](2)
-  def R3[T:ClassTag]: Option[T] = this.getReg[T](3)
-  def R4[T:ClassTag]: Option[T] = this.getReg[T](4)
-  def R5[T:ClassTag]: Option[T] = this.getReg[T](5)
-  def R6[T:ClassTag]: Option[T] = this.getReg[T](6)
-  def R7[T:ClassTag]: Option[T] = this.getReg[T](7)
-  def R8[T:ClassTag]: Option[T] = this.getReg[T](8)
-  def R9[T:ClassTag]: Option[T] = this.getReg[T](9)
+  def getReg[@Reified T:ClassTag](i: Int): Option[T]
+
+  /** Mandatory: Monetary value, in Ergo tokens */
+  def R0[@Reified T:ClassTag]: Option[T] = this.getReg[T](0)
+
+  /** Mandatory: Guarding script */
+  def R1[@Reified T:ClassTag]: Option[T] = this.getReg[T](1)
+
+  /** Mandatory: Secondary tokens */
+  def R2[@Reified T:ClassTag]: Option[T] = this.getReg[T](2)
+
+  /** Mandatory: Reference to transaction and output id where the box was created */
+  def R3[@Reified T:ClassTag]: Option[T] = this.getReg[T](3)
+
+  // Non-mandatory registers
+  def R4[@Reified T:ClassTag]: Option[T] = this.getReg[T](4)
+  def R5[@Reified T:ClassTag]: Option[T] = this.getReg[T](5)
+  def R6[@Reified T:ClassTag]: Option[T] = this.getReg[T](6)
+  def R7[@Reified T:ClassTag]: Option[T] = this.getReg[T](7)
+  def R8[@Reified T:ClassTag]: Option[T] = this.getReg[T](8)
+  def R9[@Reified T:ClassTag]: Option[T] = this.getReg[T](9)
 }
 trait BoxBuilder extends DslBuilder {
 }
@@ -75,6 +85,8 @@ trait ContextBuilder extends DslBuilder {
   def anyZK(conditions: Col[Sigma]): Sigma
 
   @clause def canOpen(ctx: Context): Boolean
+
+  def asFunction: Context => Boolean = (ctx: Context) => canOpen(ctx)
 }
 
 trait SigmaContractBuilder extends DslBuilder {
