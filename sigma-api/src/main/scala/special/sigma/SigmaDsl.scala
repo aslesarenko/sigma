@@ -1,9 +1,11 @@
 package special.sigma
 
 import org.bouncycastle.math.ec.ECPoint
+
 import scala.reflect.ClassTag
-import scalan.{SpecialPredef, OverloadId}
-import scalan.collection.{ColBuilder, Col}
+import special.collection.{ColBuilder, Col}
+
+import scalan.OverloadId
 
 trait DslBuilder {}
 

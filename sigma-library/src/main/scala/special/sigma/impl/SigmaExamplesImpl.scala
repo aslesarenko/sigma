@@ -16,8 +16,8 @@ trait SigmaExamplesDefs extends scalan.Scalan with SigmaExamples {
 
   // familyElem
   class CrowdFundingElem[To <: CrowdFunding]
-    extends EntityElem[To] {
-    lazy val parent: Option[Elem[_]] = None
+    extends SigmaContractElem[To] {
+//    lazy val parent: Option[Elem[_]] = None
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
     override lazy val tag = {
       weakTypeTag[CrowdFunding].asInstanceOf[WeakTypeTag[To]]

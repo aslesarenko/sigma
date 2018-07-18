@@ -3,7 +3,7 @@ package special.sigma
 import org.bouncycastle.crypto.ec.CustomNamedCurves
 import org.scalatest.FunSuite
 
-import scalan.collection.{ColOverArrayBuilder, Col}
+import special.collection.{ColOverArrayBuilder, Col}
 
 trait ContractsTestSuite {
   val R0 = 0.toByte;

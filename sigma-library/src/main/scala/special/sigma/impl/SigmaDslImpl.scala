@@ -8,50 +8,54 @@ package impl {
 // Abs -----------------------------------
 trait SigmaDslDefs extends scalan.Scalan with SigmaDsl {
   self: SigmaLibrary =>
+  import DslBuilder._
+  import Context._
 
-  // entityProxy: single proxy for each type family
-  implicit def proxyDslBuilder(p: Rep[DslBuilder]): DslBuilder = {
-    proxyOps[DslBuilder](p)(scala.reflect.classTag[DslBuilder])
-  }
-
-  // familyElem
-  class DslBuilderElem[To <: DslBuilder]
-    extends EntityElem[To] {
-    lazy val parent: Option[Elem[_]] = None
-    override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
-    override lazy val tag = {
-      weakTypeTag[DslBuilder].asInstanceOf[WeakTypeTag[To]]
-    }
-    override def convert(x: Rep[Def[_]]) = {
-      val conv = fun {x: Rep[DslBuilder] => convertDslBuilder(x) }
-      tryConvert(element[DslBuilder], this, x, conv)
+  object DslBuilder {
+    // entityProxy: single proxy for each type family
+    implicit def proxyDslBuilder(p: Rep[DslBuilder]): DslBuilder = {
+      proxyOps[DslBuilder](p)(scala.reflect.classTag[DslBuilder])
     }
 
-    def convertDslBuilder(x: Rep[DslBuilder]): Rep[To] = {
-      x.elem match {
-        case _: DslBuilderElem[_] => x.asRep[To]
-        case e => !!!(s"Expected $x to have DslBuilderElem[_], but got $e", x)
+    // familyElem
+    class DslBuilderElem[To <: DslBuilder]
+        extends EntityElem[To] {
+      lazy val parent: Option[Elem[_]] = None
+      override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
+      override lazy val tag = {
+        weakTypeTag[DslBuilder].asInstanceOf[WeakTypeTag[To]]
       }
+      override def convert(x: Rep[Def[_]]) = {
+        val conv = fun {x: Rep[DslBuilder] => convertDslBuilder(x) }
+        tryConvert(element[DslBuilder], this, x, conv)
+      }
+
+      def convertDslBuilder(x: Rep[DslBuilder]): Rep[To] = {
+        x.elem match {
+          case _: DslBuilderElem[_] => x.asRep[To]
+          case e => !!!(s"Expected $x to have DslBuilderElem[_], but got $e", x)
+        }
+      }
+      override def getDefaultRep: Rep[To] = ???
     }
-    override def getDefaultRep: Rep[To] = ???
-  }
 
-  implicit def dslBuilderElement: Elem[DslBuilder] =
-    cachedElem[DslBuilderElem[DslBuilder]]()
+    implicit def dslBuilderElement: Elem[DslBuilder] =
+      cachedElem[DslBuilderElem[DslBuilder]]()
 
-  implicit case object DslBuilderCompanionElem extends CompanionElem[DslBuilderCompanionCtor] {
-    lazy val tag = weakTypeTag[DslBuilderCompanionCtor]
-    protected def getDefaultRep = DslBuilder
-  }
+    implicit case object DslBuilderCompanionElem extends CompanionElem[DslBuilderCompanionCtor] {
+      lazy val tag = weakTypeTag[DslBuilderCompanionCtor]
+      protected def getDefaultRep = RDslBuilder
+    }
 
-  abstract class DslBuilderCompanionCtor extends CompanionDef[DslBuilderCompanionCtor] with DslBuilderCompanion {
-    def selfType = DslBuilderCompanionElem
-    override def toString = "DslBuilder"
-  }
-  implicit def proxyDslBuilderCompanionCtor(p: Rep[DslBuilderCompanionCtor]): DslBuilderCompanionCtor =
-    proxyOps[DslBuilderCompanionCtor](p)
+    abstract class DslBuilderCompanionCtor extends CompanionDef[DslBuilderCompanionCtor] with DslBuilderCompanion {
+      def selfType = DslBuilderCompanionElem
+      override def toString = "DslBuilder"
+    }
+    implicit def proxyDslBuilderCompanionCtor(p: Rep[DslBuilderCompanionCtor]): DslBuilderCompanionCtor =
+      proxyOps[DslBuilderCompanionCtor](p)
 
-  lazy val DslBuilder: Rep[DslBuilderCompanionCtor] = new DslBuilderCompanionCtor {
+    lazy val RDslBuilder: Rep[DslBuilderCompanionCtor] = new DslBuilderCompanionCtor {
+    }
   }
 
   object DslBuilderMethods {
@@ -674,49 +678,51 @@ trait SigmaDslDefs extends scalan.Scalan with SigmaDsl {
   object BoxBuilderCompanionMethods {
   }
 
-  // entityProxy: single proxy for each type family
-  implicit def proxyContext(p: Rep[Context]): Context = {
-    proxyOps[Context](p)(scala.reflect.classTag[Context])
-  }
-
-  // familyElem
-  class ContextElem[To <: Context]
-    extends EntityElem[To] {
-    lazy val parent: Option[Elem[_]] = None
-    override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
-    override lazy val tag = {
-      weakTypeTag[Context].asInstanceOf[WeakTypeTag[To]]
-    }
-    override def convert(x: Rep[Def[_]]) = {
-      val conv = fun {x: Rep[Context] => convertContext(x) }
-      tryConvert(element[Context], this, x, conv)
+  object Context {
+    // entityProxy: single proxy for each type family
+    implicit def proxyContext(p: Rep[Context]): Context = {
+      proxyOps[Context](p)(scala.reflect.classTag[Context])
     }
 
-    def convertContext(x: Rep[Context]): Rep[To] = {
-      x.elem match {
-        case _: ContextElem[_] => x.asRep[To]
-        case e => !!!(s"Expected $x to have ContextElem[_], but got $e", x)
+    // familyElem
+    class ContextElem[To <: Context]
+        extends EntityElem[To] {
+      lazy val parent: Option[Elem[_]] = None
+      override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
+      override lazy val tag = {
+        weakTypeTag[Context].asInstanceOf[WeakTypeTag[To]]
       }
+      override def convert(x: Rep[Def[_]]) = {
+        val conv = fun {x: Rep[Context] => convertContext(x) }
+        tryConvert(element[Context], this, x, conv)
+      }
+
+      def convertContext(x: Rep[Context]): Rep[To] = {
+        x.elem match {
+          case _: ContextElem[_] => x.asRep[To]
+          case e => !!!(s"Expected $x to have ContextElem[_], but got $e", x)
+        }
+      }
+      override def getDefaultRep: Rep[To] = ???
     }
-    override def getDefaultRep: Rep[To] = ???
-  }
 
-  implicit def contextElement: Elem[Context] =
-    cachedElem[ContextElem[Context]]()
+    implicit def contextElement: Elem[Context] =
+      cachedElem[ContextElem[Context]]()
 
-  implicit case object ContextCompanionElem extends CompanionElem[ContextCompanionCtor] {
-    lazy val tag = weakTypeTag[ContextCompanionCtor]
-    protected def getDefaultRep = Context
-  }
+    implicit case object ContextCompanionElem extends CompanionElem[ContextCompanionCtor] {
+      lazy val tag = weakTypeTag[ContextCompanionCtor]
+      protected def getDefaultRep = RContext
+    }
 
-  abstract class ContextCompanionCtor extends CompanionDef[ContextCompanionCtor] with ContextCompanion {
-    def selfType = ContextCompanionElem
-    override def toString = "Context"
-  }
-  implicit def proxyContextCompanionCtor(p: Rep[ContextCompanionCtor]): ContextCompanionCtor =
-    proxyOps[ContextCompanionCtor](p)
+    abstract class ContextCompanionCtor extends CompanionDef[ContextCompanionCtor] with ContextCompanion {
+      def selfType = ContextCompanionElem
+      override def toString = "Context"
+    }
+    implicit def proxyContextCompanionCtor(p: Rep[ContextCompanionCtor]): ContextCompanionCtor =
+      proxyOps[ContextCompanionCtor](p)
 
-  lazy val Context: Rep[ContextCompanionCtor] = new ContextCompanionCtor {
+    lazy val RContext: Rep[ContextCompanionCtor] = new ContextCompanionCtor {
+    }
   }
 
   object ContextMethods {

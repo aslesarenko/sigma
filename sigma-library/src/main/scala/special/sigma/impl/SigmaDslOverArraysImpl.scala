@@ -8,7 +8,7 @@ package impl {
 // Abs -----------------------------------
 trait SigmaDslOverArraysDefs extends scalan.Scalan with SigmaDslOverArrays {
   self: SigmaLibrary =>
-
+  import Context._
   // entityProxy: single proxy for each type family
   implicit def proxyDefaultSigma(p: Rep[DefaultSigma]): DefaultSigma = {
     proxyOps[DefaultSigma](p)(scala.reflect.classTag[DefaultSigma])

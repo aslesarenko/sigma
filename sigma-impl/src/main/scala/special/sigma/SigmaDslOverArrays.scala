@@ -3,8 +3,10 @@ package special.sigma
 import org.bouncycastle.math.ec.ECPoint
 
 import scala.reflect.ClassTag
-import scalan.{SpecialPredef, OverloadId}
-import scalan.collection.{Col, ColOverArrayBuilder, ColOverArray, MonoidBuilderInst}
+import special.SpecialPredef
+import special.collection.{MonoidBuilderInst, Col, ColOverArrayBuilder, ColOverArray}
+
+import scalan.OverloadId
 
 class TestBox(
   val idBytes: Array[Byte],

@@ -1,8 +1,7 @@
 package special.sigma
 
 import org.bouncycastle.crypto.ec.CustomNamedCurves
-
-import scalan.collection.{Col, ColOverArray}
+import special.collection.Col
 
 class MockProveDlog(var isValid: Boolean, val propBytes: Col[Byte]) extends ProveDlog with DefaultSigma {
   val curve = CustomNamedCurves.getByName("curve25519")
