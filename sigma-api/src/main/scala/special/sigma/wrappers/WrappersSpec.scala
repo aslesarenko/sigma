@@ -1,6 +1,6 @@
 package special.sigma.wrappers
 
-import library.WrapSpec
+import special.wrappers.WrapSpec
 import org.bouncycastle.math.ec.ECPoint
 import special.sigma.SigmaPredef
 

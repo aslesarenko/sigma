@@ -1,6 +1,6 @@
 package special.ivylang
 
-import scalan.collection.{ColBuilder, Col}
+import special.collection.{ColBuilder, Col}
 
 
 @ivy trait Bytes extends HashableType

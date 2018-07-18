@@ -1,4 +1,4 @@
-package special.sigma {
+package wrappers.special.sigma {
   import scalan._
 
   import impl._
@@ -6,6 +6,7 @@ package special.sigma {
   import special.sigma.wrappers.WrappersModule
 
   trait WSigmaPredefs extends Base { self: WrappersModule =>
+    import WSigmaPredef._;
     @External("SigmaPredef") trait WSigmaPredef extends Def[WSigmaPredef] { self =>
       
     };

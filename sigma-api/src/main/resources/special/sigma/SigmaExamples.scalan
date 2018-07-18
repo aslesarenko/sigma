@@ -2,6 +2,10 @@ package special.sigma {
   import scalan._
 
   trait SigmaExamples extends Base { self: SigmaExamplesModule =>
+    import ProveDlog._;
+    import CrowdFunding._;
+    import SigmaContract._;
+    import DemurrageCurrency._;
     trait CrowdFunding extends Def[CrowdFunding] with SigmaContract {
       def timeout: Rep[Long];
       def minToRaise: Rep[Long];

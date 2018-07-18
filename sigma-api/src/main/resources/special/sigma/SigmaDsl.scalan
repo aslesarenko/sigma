@@ -2,6 +2,21 @@ package special.sigma {
   import scalan._
 
   trait SigmaDsl extends Base { self: SigmaDslModule =>
+    import DslBuilder._;
+    import SigmaDslBuilder._;
+    import Col._;
+    import Sigma._;
+    import WECPoint._;
+    import AnyValue._;
+    import BoxBuilder._;
+    import WOption._;
+    import Box._;
+    import ContextBuilder._;
+    import Context._;
+    import SigmaContractBuilder._;
+    import SigmaContract._;
+    import ColBuilder._;
+    import SigmaBuilder._;
     trait DslBuilder extends Def[DslBuilder];
     @sigmalang trait Sigma extends Def[Sigma] {
       def builder: Rep[SigmaDslBuilder];

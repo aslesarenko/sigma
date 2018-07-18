@@ -24,14 +24,14 @@ class SigmaLibraryConfig extends LibraryConfig {
 
   val ApiModule: SourceModuleConf = new SourceModuleConf(baseDir, "sigma-api")
       .moduleDependencies(specialLibrary.ApiModule)
-      .addUnit("WrappersSpec.scala", "special/sigma/wrappers/WrappersSpec.scala", wrapperConfigs)
-      .addUnit("SigmaDsl.scala", "special/sigma/SigmaDsl.scala")
-      .addUnit("SigmaExamples.scala", "special/sigma/SigmaExamples.scala")
+      .addUnit("special/sigma/wrappers/WrappersSpec.scala", wrapperConfigs)
+      .addUnit("special/sigma/SigmaDsl.scala")
+      .addUnit("special/sigma/SigmaExamples.scala")
 
   val ImplModule = new SourceModuleConf(baseDir, "sigma-impl")
       .moduleDependencies(specialLibrary.ApiModule, specialLibrary.ImplModule)
-      .addUnit("SigmaDslOverArrays.scala", "special/sigma/SigmaDslOverArrays.scala")
-      .addUnit("TestContracts.scala", "special/sigma/TestContracts.scala")
+      .addUnit("special/sigma/SigmaDslOverArrays.scala")
+      .addUnit("special/sigma/TestContracts.scala")
       .dependsOn(ApiModule)
 
   val TargetModule = new TargetModuleConf(baseDir, "sigma-library",
