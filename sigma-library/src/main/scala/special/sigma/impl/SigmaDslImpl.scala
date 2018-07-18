@@ -1034,6 +1034,18 @@ object SigmaContract extends EntityObject("SigmaContract") {
         case _ => None
       }
     }
+
+    object asFunction {
+      def unapply(d: Def[_]): Option[Rep[SigmaContract]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[SigmaContractElem[_]] && method.getName == "asFunction" =>
+          Some(receiver).asInstanceOf[Option[Rep[SigmaContract]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[SigmaContract]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
   }
 
   object SigmaContractCompanionMethods {

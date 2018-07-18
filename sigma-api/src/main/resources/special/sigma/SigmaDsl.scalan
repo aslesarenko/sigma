@@ -71,7 +71,8 @@ package special.sigma {
       def allZK(conditions: Rep[Col[Sigma]]): Rep[Sigma];
       def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean];
       def anyZK(conditions: Rep[Col[Sigma]]): Rep[Sigma];
-      @clause def canOpen(ctx: Rep[Context]): Rep[Boolean]
+      @clause def canOpen(ctx: Rep[Context]): Rep[Boolean];
+      def asFunction: Rep[scala.Function1[Context, Boolean]] = fun(((ctx: Rep[Context]) => this.canOpen(ctx)))
     };
     trait SigmaContractBuilder extends DslBuilder;
     trait SigmaDslBuilder extends SigmaBuilder with BoxBuilder with ContextBuilder with SigmaContractBuilder {

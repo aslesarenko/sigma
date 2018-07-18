@@ -63,7 +63,7 @@ package special.sigma {
     };
     abstract class ProveDlogEvidence(val value: Rep[WECPoint]) extends ProveDlog with DefaultSigma {
       def propBytes: Rep[Col[Byte]] = RColOverArray(ProveDlogEvidence.this.value.getEncoded(toRep(true.asInstanceOf[Boolean])));
-      def isValid: Rep[Boolean] = toRep(true.asInstanceOf[Boolean])
+      def isValid: Rep[Boolean] = delayInvoke
     };
     trait DefaultSigmaCompanion;
     trait DefaultContractCompanion;

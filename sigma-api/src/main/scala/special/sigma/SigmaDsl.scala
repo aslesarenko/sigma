@@ -86,7 +86,7 @@ trait ContextBuilder extends DslBuilder {
 
   @clause def canOpen(ctx: Context): Boolean
 
-  def asFunction: Context => Boolean = (ctx: Context) => canOpen(ctx)
+  def asFunction: Context => Boolean = (ctx: Context) => this.canOpen(ctx)
 }
 
 trait SigmaContractBuilder extends DslBuilder {
