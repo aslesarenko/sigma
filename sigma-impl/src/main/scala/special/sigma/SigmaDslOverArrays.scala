@@ -56,6 +56,15 @@ class TestContext(
 
 class TestSigmaDslBuilder extends SigmaDslBuilder {
   def Cols = new ColOverArrayBuilder
+  def verify(cond: Boolean) = cond
+
+  def verifyZK(proof: Sigma) = proof.isValid
+
+  def allOf(conditions: Col[Boolean]) = conditions.forall(c => c)
+  def anyOf(conditions: Col[Boolean]) = conditions.exists(c => c)
+
+  def allZK(proofs: Col[Sigma]) = new TrivialSigma(proofs.forall(p => p.isValid))
+  def anyZK(proofs: Col[Sigma]) = new TrivialSigma(proofs.forall(p => p.isValid))
 }
 
 trait DefaultSigma extends Sigma {
@@ -80,15 +89,6 @@ class ProveDlogEvidence(val value: ECPoint) extends ProveDlog with DefaultSigma 
 
 trait DefaultContract extends SigmaContract {
   def builder = new TestSigmaDslBuilder
-  def verify(cond: Boolean) = cond
-
-  def verifyZK(proof: Sigma) = proof.isValid
-
-  def allOf(conditions: Col[Boolean]) = conditions.forall(c => c)
-  def anyOf(conditions: Col[Boolean]) = conditions.exists(c => c)
-
-  def allZK(proofs: Col[Sigma]) = new TrivialSigma(proofs.forall(p => p.isValid))
-  def anyZK(proofs: Col[Sigma]) = new TrivialSigma(proofs.forall(p => p.isValid))
 }
 
 

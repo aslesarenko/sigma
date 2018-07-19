@@ -30,7 +30,7 @@ trait AnyValue {
 }
 
 @sigmalang trait Box {
-  def builder: BoxBuilder
+  def builder: SigmaDslBuilder
   def id: Col[Byte]
   def value: Long
   def propositionBytes: Col[Byte]
@@ -62,7 +62,7 @@ trait BoxBuilder extends DslBuilder {
 }
 
 trait Context {
-  def builder: ContextBuilder
+  def builder: SigmaDslBuilder
   def OUTPUTS: Col[Box]
   def INPUTS: Col[Box]
   def HEIGHT: Long
@@ -74,15 +74,15 @@ trait ContextBuilder extends DslBuilder {
 }
 
 @sigmalang trait SigmaContract {
-  def builder: SigmaContractBuilder
-  def verify(cond: Boolean): Boolean
-  def verifyZK(cond: Sigma): Boolean
+  def builder: SigmaDslBuilder
+  def verify(cond: Boolean): Boolean = this.builder.verify(cond)
+  def verifyZK(cond: Sigma): Boolean = this.builder.verifyZK(cond)
 
-  def allOf(conditions: Col[Boolean]): Boolean
-  def allZK(conditions: Col[Sigma]): Sigma
+  def allOf(conditions: Col[Boolean]): Boolean = this.builder.allOf(conditions)
+  def allZK(conditions: Col[Sigma]): Sigma = this.builder.allZK(conditions)
 
-  def anyOf(conditions: Col[Boolean]): Boolean
-  def anyZK(conditions: Col[Sigma]): Sigma
+  def anyOf(conditions: Col[Boolean]): Boolean = this.builder.anyOf(conditions)
+  def anyZK(conditions: Col[Sigma]): Sigma = this.builder.anyZK(conditions)
 
   @clause def canOpen(ctx: Context): Boolean
 
@@ -98,5 +98,14 @@ trait SigmaDslBuilder
      with ContextBuilder
      with SigmaContractBuilder {
   def Cols: ColBuilder
+  def verify(cond: Boolean): Boolean
+  def verifyZK(cond: Sigma): Boolean
+
+  def allOf(conditions: Col[Boolean]): Boolean
+  def allZK(conditions: Col[Sigma]): Sigma
+
+  def anyOf(conditions: Col[Boolean]): Boolean
+  def anyZK(conditions: Col[Sigma]): Sigma
+
 }
 

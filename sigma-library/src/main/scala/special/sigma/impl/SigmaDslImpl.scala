@@ -25,6 +25,9 @@ import SigmaContractBuilder._
 import SigmaContract._
 import ColBuilder._
 import SigmaBuilder._
+import BoxBuilder._
+import ContextBuilder._
+import SigmaContractBuilder._
 import ProveDlog._
 
 object DslBuilder extends EntityObject("DslBuilder") {
@@ -1161,6 +1164,78 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
         case _ => None
       }
       def unapply(exp: Sym): Option[Rep[SigmaDslBuilder]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object verify {
+      def unapply(d: Def[_]): Option[(Rep[SigmaDslBuilder], Rep[Boolean])] = d match {
+        case MethodCall(receiver, method, Seq(cond, _*), _) if receiver.elem.isInstanceOf[SigmaDslBuilderElem[_]] && method.getName == "verify" =>
+          Some((receiver, cond)).asInstanceOf[Option[(Rep[SigmaDslBuilder], Rep[Boolean])]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[(Rep[SigmaDslBuilder], Rep[Boolean])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object verifyZK {
+      def unapply(d: Def[_]): Option[(Rep[SigmaDslBuilder], Rep[Sigma])] = d match {
+        case MethodCall(receiver, method, Seq(cond, _*), _) if receiver.elem.isInstanceOf[SigmaDslBuilderElem[_]] && method.getName == "verifyZK" =>
+          Some((receiver, cond)).asInstanceOf[Option[(Rep[SigmaDslBuilder], Rep[Sigma])]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[(Rep[SigmaDslBuilder], Rep[Sigma])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object allOf {
+      def unapply(d: Def[_]): Option[(Rep[SigmaDslBuilder], Rep[Col[Boolean]])] = d match {
+        case MethodCall(receiver, method, Seq(conditions, _*), _) if receiver.elem.isInstanceOf[SigmaDslBuilderElem[_]] && method.getName == "allOf" =>
+          Some((receiver, conditions)).asInstanceOf[Option[(Rep[SigmaDslBuilder], Rep[Col[Boolean]])]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[(Rep[SigmaDslBuilder], Rep[Col[Boolean]])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object allZK {
+      def unapply(d: Def[_]): Option[(Rep[SigmaDslBuilder], Rep[Col[Sigma]])] = d match {
+        case MethodCall(receiver, method, Seq(conditions, _*), _) if receiver.elem.isInstanceOf[SigmaDslBuilderElem[_]] && method.getName == "allZK" =>
+          Some((receiver, conditions)).asInstanceOf[Option[(Rep[SigmaDslBuilder], Rep[Col[Sigma]])]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[(Rep[SigmaDslBuilder], Rep[Col[Sigma]])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object anyOf {
+      def unapply(d: Def[_]): Option[(Rep[SigmaDslBuilder], Rep[Col[Boolean]])] = d match {
+        case MethodCall(receiver, method, Seq(conditions, _*), _) if receiver.elem.isInstanceOf[SigmaDslBuilderElem[_]] && method.getName == "anyOf" =>
+          Some((receiver, conditions)).asInstanceOf[Option[(Rep[SigmaDslBuilder], Rep[Col[Boolean]])]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[(Rep[SigmaDslBuilder], Rep[Col[Boolean]])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object anyZK {
+      def unapply(d: Def[_]): Option[(Rep[SigmaDslBuilder], Rep[Col[Sigma]])] = d match {
+        case MethodCall(receiver, method, Seq(conditions, _*), _) if receiver.elem.isInstanceOf[SigmaDslBuilderElem[_]] && method.getName == "anyZK" =>
+          Some((receiver, conditions)).asInstanceOf[Option[(Rep[SigmaDslBuilder], Rep[Col[Sigma]])]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[(Rep[SigmaDslBuilder], Rep[Col[Sigma]])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }

@@ -18,6 +18,9 @@ package special.sigma {
     import SigmaContract._;
     import ColBuilder._;
     import SigmaBuilder._;
+    import BoxBuilder._;
+    import ContextBuilder._;
+    import SigmaContractBuilder._;
     trait DslBuilder extends Def[DslBuilder];
     @sigmalang trait Sigma extends Def[Sigma] {
       def builder: Rep[SigmaDslBuilder];
@@ -36,7 +39,7 @@ package special.sigma {
       def cost: Rep[Int]
     };
     @sigmalang trait Box extends Def[Box] {
-      def builder: Rep[BoxBuilder];
+      def builder: Rep[SigmaDslBuilder];
       def id: Rep[Col[Byte]];
       def value: Rep[Long];
       def propositionBytes: Rep[Col[Byte]];
@@ -56,7 +59,7 @@ package special.sigma {
     };
     trait BoxBuilder extends DslBuilder;
     trait Context extends Def[Context] {
-      def builder: Rep[ContextBuilder];
+      def builder: Rep[SigmaDslBuilder];
       def OUTPUTS: Rep[Col[Box]];
       def INPUTS: Rep[Col[Box]];
       def HEIGHT: Rep[Long];
@@ -65,19 +68,25 @@ package special.sigma {
     };
     trait ContextBuilder extends DslBuilder;
     @sigmalang trait SigmaContract extends Def[SigmaContract] {
-      def builder: Rep[SigmaContractBuilder];
-      def verify(cond: Rep[Boolean]): Rep[Boolean];
-      def verifyZK(cond: Rep[Sigma]): Rep[Boolean];
-      def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean];
-      def allZK(conditions: Rep[Col[Sigma]]): Rep[Sigma];
-      def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean];
-      def anyZK(conditions: Rep[Col[Sigma]]): Rep[Sigma];
+      def builder: Rep[SigmaDslBuilder];
+      def verify(cond: Rep[Boolean]): Rep[Boolean] = this.builder.verify(cond);
+      def verifyZK(cond: Rep[Sigma]): Rep[Boolean] = this.builder.verifyZK(cond);
+      def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = this.builder.allOf(conditions);
+      def allZK(conditions: Rep[Col[Sigma]]): Rep[Sigma] = this.builder.allZK(conditions);
+      def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = this.builder.anyOf(conditions);
+      def anyZK(conditions: Rep[Col[Sigma]]): Rep[Sigma] = this.builder.anyZK(conditions);
       @clause def canOpen(ctx: Rep[Context]): Rep[Boolean];
       def asFunction: Rep[scala.Function1[Context, Boolean]] = fun(((ctx: Rep[Context]) => this.canOpen(ctx)))
     };
     trait SigmaContractBuilder extends DslBuilder;
     trait SigmaDslBuilder extends SigmaBuilder with BoxBuilder with ContextBuilder with SigmaContractBuilder {
-      def Cols: Rep[ColBuilder]
+      def Cols: Rep[ColBuilder];
+      def verify(cond: Rep[Boolean]): Rep[Boolean];
+      def verifyZK(cond: Rep[Sigma]): Rep[Boolean];
+      def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean];
+      def allZK(conditions: Rep[Col[Sigma]]): Rep[Sigma];
+      def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean];
+      def anyZK(conditions: Rep[Col[Sigma]]): Rep[Sigma]
     };
     trait DslBuilderCompanion;
     trait SigmaCompanion;

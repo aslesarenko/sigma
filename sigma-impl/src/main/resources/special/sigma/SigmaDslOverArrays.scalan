@@ -25,13 +25,7 @@ package special.sigma {
       @OverloadId(value = "or_bool") def ||(other: Rep[Boolean]): Rep[TrivialSigma] = RTrivialSigma(DefaultSigma.this.isValid.||(other))
     };
     trait DefaultContract extends SigmaContract {
-      def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
-      def verify(cond: Rep[Boolean]): Rep[Boolean] = cond;
-      def verifyZK(proof: Rep[Sigma]): Rep[Boolean] = proof.isValid;
-      def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = conditions.forall(fun(((c: Rep[Boolean]) => c)));
-      def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = conditions.exists(fun(((c: Rep[Boolean]) => c)));
-      def allZK(proofs: Rep[Col[Sigma]]): Rep[TrivialSigma] = RTrivialSigma(proofs.forall(fun(((p: Rep[Sigma]) => p.isValid))));
-      def anyZK(proofs: Rep[Col[Sigma]]): Rep[TrivialSigma] = RTrivialSigma(proofs.forall(fun(((p: Rep[Sigma]) => p.isValid))))
+      def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder()
     };
     abstract class TestBox(val idBytes: Rep[WArray[Byte]], val value: Rep[Long], val propositionBytes: Rep[Col[Byte]], val registers: Rep[Col[AnyValue]]) extends Box {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
@@ -51,7 +45,13 @@ package special.sigma {
       def getVar[T](id: Rep[Byte]): Rep[T] = RWSpecialPredef.cast[T](TestContext.this.vars.apply(id.toInt)).get
     };
     abstract class TestSigmaDslBuilder extends SigmaDslBuilder {
-      def Cols: Rep[ColOverArrayBuilder] = RColOverArrayBuilder()
+      def Cols: Rep[ColOverArrayBuilder] = RColOverArrayBuilder();
+      def verify(cond: Rep[Boolean]): Rep[Boolean] = cond;
+      def verifyZK(proof: Rep[Sigma]): Rep[Boolean] = proof.isValid;
+      def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = conditions.forall(fun(((c: Rep[Boolean]) => c)));
+      def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = conditions.exists(fun(((c: Rep[Boolean]) => c)));
+      def allZK(proofs: Rep[Col[Sigma]]): Rep[TrivialSigma] = RTrivialSigma(proofs.forall(fun(((p: Rep[Sigma]) => p.isValid))));
+      def anyZK(proofs: Rep[Col[Sigma]]): Rep[TrivialSigma] = RTrivialSigma(proofs.forall(fun(((p: Rep[Sigma]) => p.isValid))))
     };
     abstract class TrivialSigma(val isValid: Rep[Boolean]) extends Sigma with DefaultSigma {
       def propBytes: Rep[Col[Byte]] = TrivialSigma.this.builder.Cols.apply[Byte](IF(TrivialSigma.this.isValid).THEN(toRep(1.asInstanceOf[Byte])).ELSE(toRep(0.asInstanceOf[Byte])))
