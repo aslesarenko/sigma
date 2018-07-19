@@ -5,6 +5,9 @@ import scalan.{SigmaLibrary, BaseCtxTests}
 
 class SigmaExamplesStagedTests extends BaseCtxTests {
   lazy val ctx = new TestContext with SigmaLibrary {
+    import TestSigmaDslBuilder._
+    val sigmaDslBuilder = RTestSigmaDslBuilder()
+
     def emitWithMD(name: String, ss: Sym*) = {
       val directory = FileUtil.file(prefix, testName)
       implicit val graphVizConfig = defaultGraphVizConfig.copy(emitMetadata = true)
@@ -20,7 +23,9 @@ class SigmaExamplesStagedTests extends BaseCtxTests {
   lazy val nameKey = MetaKey[String]("name")
 
   test("CrowdFunding.asFunction") {
-    import CrowdFundingContract._; import ProveDlogEvidence._; import WECPoint._
+    import CrowdFundingContract._
+    import ProveDlogEvidence._
+    import WECPoint._
     val backer = RProveDlogEvidence(fresh[WECPoint].setMetadata(nameKey)("backer"))
     val project = RProveDlogEvidence(fresh[WECPoint].setMetadata(nameKey)("project"))
     val timeout = 100L
@@ -30,7 +35,6 @@ class SigmaExamplesStagedTests extends BaseCtxTests {
 
     emitWithMD("f", f)
   }
-  test("DemurrageCurrency.asFunction") {
-    import DemurrageCurrencyContract._; import ProveDlogEvidence._;
+  test("DemurrageCurrency.asFunction") {;
   }
 }

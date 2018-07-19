@@ -53,10 +53,10 @@ package special.sigma {
       def Cols: Rep[ColOverArrayBuilder] = RColOverArrayBuilder();
       def verify(cond: Rep[Boolean]): Rep[Boolean] = cond;
       def verifyZK(proof: Rep[Sigma]): Rep[Boolean] = proof.isValid;
-      def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = conditions.forall(fun(((c: Rep[Boolean]) => c)));
-      def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = conditions.exists(fun(((c: Rep[Boolean]) => c)));
-      def allZK(proofs: Rep[Col[Sigma]]): Rep[TrivialSigma] = RTrivialSigma(proofs.forall(fun(((p: Rep[Sigma]) => p.isValid))));
-      def anyZK(proofs: Rep[Col[Sigma]]): Rep[TrivialSigma] = RTrivialSigma(proofs.forall(fun(((p: Rep[Sigma]) => p.isValid))))
+      def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = delayInvoke //conditions.forall(fun(((c: Rep[Boolean]) => c)));
+      def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = delayInvoke //conditions.exists(fun(((c: Rep[Boolean]) => c)));
+      def allZK(proofs: Rep[Col[Sigma]]): Rep[TrivialSigma] = delayInvoke //RTrivialSigma(proofs.forall(fun(((p: Rep[Sigma]) => p.isValid))));
+      def anyZK(proofs: Rep[Col[Sigma]]): Rep[TrivialSigma] = delayInvoke //RTrivialSigma(proofs.forall(fun(((p: Rep[Sigma]) => p.isValid))))
     };
     abstract class TrivialSigma(val isValid: Rep[Boolean]) extends Sigma with DefaultSigma {
       def propBytes: Rep[Col[Byte]] = TrivialSigma.this.builder.Cols.apply[Byte](IF(TrivialSigma.this.isValid).THEN(toRep(1.asInstanceOf[Byte])).ELSE(toRep(0.asInstanceOf[Byte])))
