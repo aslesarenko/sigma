@@ -24,12 +24,12 @@ trait SigmaLibrary extends Library
 
   implicit lazy val EcPointElement: Elem[ECPoint] = new BaseElem(CustomNamedCurves.getByName("curve25519").getG)
 
-  val WA = WArrayMethods
-  val CM = ColMethods
-  val CBM = ColBuilderMethods
-  val SM = SigmaMethods
-  val SCM = SigmaContractMethods
-  val SDBM = SigmaDslBuilderMethods
+  private val WA = WArrayMethods
+  private val CM = ColMethods
+  private val CBM = ColBuilderMethods
+  private val SM = SigmaMethods
+  private val SCM = SigmaContractMethods
+  private val SDBM = SigmaDslBuilderMethods
 
   val sigmaDslBuilder: Rep[SigmaDslBuilder]
 
