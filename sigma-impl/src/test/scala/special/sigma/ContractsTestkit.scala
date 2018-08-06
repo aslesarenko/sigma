@@ -32,4 +32,13 @@ trait ContractsTestkit {
     Cols.fromArray(res)
   }
 
+  def contextVars(m: Map[Byte, Any]): Col[AnyValue] = {
+    val res = new Array[AnyValue](m.keys.max)
+    for ((id, v) <- m) {
+      val i = id - 1
+      assert(res(i) == null, s"register $id is defined more then once")
+      res(i) = new TestValue(v)
+    }
+    Cols.fromArray(res)
+  }
 }

@@ -51,7 +51,7 @@ class TestContext(
 
   def OUTPUTS = builder.Cols.fromArray(outputs)
 
-  def getVar[T: ClassTag](id: Byte) = SpecialPredef.cast[T](vars(id)).get
+  def getVar[T: ClassTag](id: Byte) = SpecialPredef.cast[TestValue[T]](vars(id - 1)).map(_.value).get
 }
 
 class TestSigmaDslBuilder extends SigmaDslBuilder {
