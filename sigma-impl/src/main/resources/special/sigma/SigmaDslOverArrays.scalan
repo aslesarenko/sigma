@@ -22,7 +22,9 @@ package special.sigma {
       @OverloadId(value = "and_sigma") def &&(other: Rep[Sigma]): Rep[TrivialSigma] = RTrivialSigma(DefaultSigma.this.isValid.&&(other.isValid));
       @OverloadId(value = "and_bool") def &&(other: Rep[Boolean]): Rep[TrivialSigma] = RTrivialSigma(DefaultSigma.this.isValid.&&(other));
       @OverloadId(value = "or_sigma") def ||(other: Rep[Sigma]): Rep[TrivialSigma] = RTrivialSigma(DefaultSigma.this.isValid.||(other.isValid));
-      @OverloadId(value = "or_bool") def ||(other: Rep[Boolean]): Rep[TrivialSigma] = RTrivialSigma(DefaultSigma.this.isValid.||(other))
+      @OverloadId(value = "or_bool") def ||(other: Rep[Boolean]): Rep[TrivialSigma] = RTrivialSigma(DefaultSigma.this.isValid.||(other));
+      def lazyAnd(other: Rep[Thunk[Sigma]]): Rep[TrivialSigma] = RTrivialSigma(DefaultSigma.this.isValid.&&(other.isValid));
+      def lazyOr(other: Rep[Thunk[Sigma]]): Rep[TrivialSigma] = RTrivialSigma(DefaultSigma.this.isValid.||(other.isValid))
     };
     trait DefaultContract extends SigmaContract {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder()
@@ -42,7 +44,7 @@ package special.sigma {
       def SELF: Rep[Box] = TestContext.this.selfBox;
       def INPUTS: Rep[Col[Box]] = TestContext.this.builder.Cols.fromArray[Box](TestContext.this.outputs);
       def OUTPUTS: Rep[Col[Box]] = TestContext.this.builder.Cols.fromArray[Box](TestContext.this.outputs);
-      def getVar[T](id: Rep[Byte]): Rep[T] = RWSpecialPredef.cast[T](TestContext.this.vars.apply(id.toInt)).get
+      def getVar[T](id: Rep[Byte]): Rep[T] = RWSpecialPredef.cast[TestValue[T]](TestContext.this.vars.apply(id.-(toRep(1.asInstanceOf[Int]))))(((ClassTag.apply[TestValue[T]](toRep(classOf[special.sigma.TestValue].asInstanceOf[Class[TestValue[T]]]))): ClassTag[TestValue[T]])).map[T](fun(((x$2: Rep[TestValue[T]]) => x$2.value))).get
     };
     abstract class TestSigmaDslBuilder extends SigmaDslBuilder {
       def Cols: Rep[ColOverArrayBuilder] = RColOverArrayBuilder();

@@ -76,6 +76,9 @@ trait DefaultSigma extends Sigma {
   @OverloadId("or_sigma") def ||(other: Sigma) = new TrivialSigma(isValid || other.isValid)
 
   @OverloadId("or_bool")  def ||(other: Boolean) = new TrivialSigma(isValid || other)
+
+  def lazyAnd(other: => Sigma) = new TrivialSigma(isValid && other.isValid)
+  def lazyOr(other: => Sigma) = new TrivialSigma(isValid || other.isValid)
 }
 
 class TrivialSigma(val isValid: Boolean) extends Sigma with DefaultSigma {

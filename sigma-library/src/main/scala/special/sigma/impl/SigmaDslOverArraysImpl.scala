@@ -139,6 +139,30 @@ object DefaultSigma extends EntityObject("DefaultSigma") {
         case _ => None
       }
     }
+
+    object lazyAnd {
+      def unapply(d: Def[_]): Option[(Rep[DefaultSigma], Rep[Thunk[Sigma]])] = d match {
+        case MethodCall(receiver, method, Seq(other, _*), _) if receiver.elem.isInstanceOf[DefaultSigmaElem[_]] && method.getName == "lazyAnd" =>
+          Some((receiver, other)).asInstanceOf[Option[(Rep[DefaultSigma], Rep[Thunk[Sigma]])]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[(Rep[DefaultSigma], Rep[Thunk[Sigma]])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object lazyOr {
+      def unapply(d: Def[_]): Option[(Rep[DefaultSigma], Rep[Thunk[Sigma]])] = d match {
+        case MethodCall(receiver, method, Seq(other, _*), _) if receiver.elem.isInstanceOf[DefaultSigmaElem[_]] && method.getName == "lazyOr" =>
+          Some((receiver, other)).asInstanceOf[Option[(Rep[DefaultSigma], Rep[Thunk[Sigma]])]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[(Rep[DefaultSigma], Rep[Thunk[Sigma]])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
   }
 
   object DefaultSigmaCompanionMethods {

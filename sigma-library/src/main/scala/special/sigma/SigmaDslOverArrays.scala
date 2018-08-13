@@ -27,7 +27,9 @@ package special.sigma {
       @OverloadId(value = "and_sigma") def &&(other: Rep[Sigma]): Rep[TrivialSigma] = RTrivialSigma(DefaultSigma.this.isValid.&&(other.isValid));
       @OverloadId(value = "and_bool") def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[TrivialSigma] = RTrivialSigma(DefaultSigma.this.isValid.&&(other));
       @OverloadId(value = "or_sigma") def ||(other: Rep[Sigma]): Rep[TrivialSigma] = RTrivialSigma(DefaultSigma.this.isValid.||(other.isValid));
-      @OverloadId(value = "or_bool") def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[TrivialSigma] = RTrivialSigma(DefaultSigma.this.isValid.||(other))
+      @OverloadId(value = "or_bool") def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[TrivialSigma] = RTrivialSigma(DefaultSigma.this.isValid.||(other));
+      def lazyAnd(other: Rep[Thunk[Sigma]]): Rep[TrivialSigma] = RTrivialSigma(DefaultSigma.this.isValid.lazy_&&(Thunk(other.force.isValid)));
+      def lazyOr(other: Rep[Thunk[Sigma]]): Rep[TrivialSigma] = RTrivialSigma(DefaultSigma.this.isValid.lazy_||(Thunk(other.force.isValid)))
     };
     trait DefaultContract extends SigmaContract {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder()
@@ -59,7 +61,7 @@ package special.sigma {
       def anyZK(proofs: Rep[Col[Sigma]]): Rep[TrivialSigma] = delayInvoke //RTrivialSigma(proofs.forall(fun(((p: Rep[Sigma]) => p.isValid))))
     };
     abstract class TrivialSigma(val isValid: Rep[Boolean]) extends Sigma with DefaultSigma {
-      def propBytes: Rep[Col[Byte]] = TrivialSigma.this.builder.Cols.apply[Byte](IF(TrivialSigma.this.isValid).THEN(toRep(1.asInstanceOf[Byte])).ELSE(toRep(0.asInstanceOf[Byte])))
+      def propBytes: Rep[Col[Byte]] = delayInvoke //TrivialSigma.this.builder.Cols.apply[Byte](IF(TrivialSigma.this.isValid).THEN(toRep(1.asInstanceOf[Byte])).ELSE(toRep(0.asInstanceOf[Byte])))
     };
     abstract class ProveDlogEvidence(val value: Rep[WECPoint]) extends ProveDlog with DefaultSigma {
       def propBytes: Rep[Col[Byte]] = RColOverArray(ProveDlogEvidence.this.value.getEncoded(toRep(true.asInstanceOf[Boolean])));

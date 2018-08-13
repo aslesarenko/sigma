@@ -104,7 +104,6 @@ trait SigmaLibrary extends Library
         case _ => super.rewriteDef(d)
       }
 
-    //    case SM.and_bool_&&(SCM.allZK(sigmas), b) =>
     case _ =>
       if (currentPass.config.constantPropagation) {
         // additional constant propagation rules (see other similar cases)

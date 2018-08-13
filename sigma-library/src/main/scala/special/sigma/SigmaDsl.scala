@@ -29,7 +29,9 @@ package special.sigma {
       @OverloadId(value = "and_sigma") def &&(other: Rep[Sigma]): Rep[Sigma];
       @OverloadId(value = "and_bool") def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[Sigma];
       @OverloadId(value = "or_sigma") def ||(other: Rep[Sigma]): Rep[Sigma];
-      @OverloadId(value = "or_bool") def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[Sigma]
+      @OverloadId(value = "or_bool") def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[Sigma];
+      def lazyAnd(other: Rep[Thunk[Sigma]]): Rep[Sigma];
+      def lazyOr(other: Rep[Thunk[Sigma]]): Rep[Sigma]
     };
     trait SigmaBuilder extends DslBuilder;
     @sigmalang trait ProveDlog extends Sigma {

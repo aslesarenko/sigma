@@ -17,6 +17,8 @@ trait DslBuilder {}
   @OverloadId("and_bool")  def &&(other: Boolean): Sigma
   @OverloadId("or_sigma") def ||(other: Sigma): Sigma
   @OverloadId("or_bool")  def ||(other: Boolean): Sigma
+  def lazyAnd(other: => Sigma): Sigma
+  def lazyOr(other: => Sigma): Sigma
 }
 trait SigmaBuilder extends DslBuilder {
 }

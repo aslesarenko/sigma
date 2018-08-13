@@ -6,6 +6,7 @@ unmanagedBase := baseDirectory.value / "libs"
 lazy val buildSettings = Seq(
   scalaVersion := "2.12.6",
   organization := "special.sigma",
+  resolvers += Resolver.sonatypeRepo("public"),
   javacOptions ++= Seq("-source", "1.7", "-target", "1.7"),
   scalacOptions ++= Seq(
     "-encoding", "UTF-8",
@@ -87,7 +88,7 @@ lazy val sigmaapi = Project("sigma-api", file("sigma-api"))
       libraryDependencies ++= Seq(
         common % allConfigDependency, meta, libraryapi,
         "org.typelevel" %% "macro-compat" % "1.1.1",
-        "org.scorexfoundation" %% "scrypto" % "2.1.+",
+        "org.scorexfoundation" %% "scrypto" % "2.1.2",
         "org.bouncycastle" % "bcprov-jdk15on" % "1.+"
       ))
 
@@ -96,7 +97,7 @@ lazy val sigmaimpl = Project("sigma-impl", file("sigma-impl"))
     .settings(libraryDefSettings,
       libraryDependencies ++= Seq(
         libraryapi, libraryimpl,
-        "org.scorexfoundation" %% "scrypto" % "2.1.+",
+        "org.scorexfoundation" %% "scrypto" % "2.1.2",
         "org.bouncycastle" % "bcprov-jdk15on" % "1.+"
       ))
 
@@ -110,7 +111,7 @@ lazy val sigmalibrary = Project("sigma-library", file("sigma-library"))
         libraryapi % allConfigDependency,
         libraryimpl % allConfigDependency,
         library % allConfigDependency,
-        "org.scorexfoundation" %% "scrypto" % "2.1.+",
+        "org.scorexfoundation" %% "scrypto" % "2.1.2",
         "org.bouncycastle" % "bcprov-jdk15on" % "1.+"
       ))
 
