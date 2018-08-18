@@ -24,10 +24,10 @@ package special.sigma {
     import TestValue._;
     trait DefaultSigma extends Sigma {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
-      @OverloadId(value = "and_sigma") def &&(other: Rep[Sigma]): Rep[TrivialSigma] = RTrivialSigma(DefaultSigma.this.isValid.&&(other.isValid));
-      @OverloadId(value = "and_bool") def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[TrivialSigma] = RTrivialSigma(DefaultSigma.this.isValid.&&(other));
-      @OverloadId(value = "or_sigma") def ||(other: Rep[Sigma]): Rep[TrivialSigma] = RTrivialSigma(DefaultSigma.this.isValid.||(other.isValid));
-      @OverloadId(value = "or_bool") def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[TrivialSigma] = RTrivialSigma(DefaultSigma.this.isValid.||(other));
+      @OverloadId(value = "and_sigma") def &&(other: Rep[Sigma]): Rep[Sigma] = delayInvoke //RTrivialSigma(DefaultSigma.this.isValid.&&(other.isValid));
+      @OverloadId(value = "and_bool") def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[Sigma] = delayInvoke //RTrivialSigma(DefaultSigma.this.isValid.&&(other));
+      @OverloadId(value = "or_sigma") def ||(other: Rep[Sigma]): Rep[Sigma] = delayInvoke //RTrivialSigma(DefaultSigma.this.isValid.||(other.isValid));
+      @OverloadId(value = "or_bool") def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[Sigma] = delayInvoke //RTrivialSigma(DefaultSigma.this.isValid.||(other));
       def lazyAnd(other: Rep[Thunk[Sigma]]): Rep[Sigma] = delayInvoke //RTrivialSigma(DefaultSigma.this.isValid.lazy_&&(Thunk(other.force.isValid)));
       def lazyOr(other: Rep[Thunk[Sigma]]): Rep[Sigma] = delayInvoke //RTrivialSigma(DefaultSigma.this.isValid.lazy_||(Thunk(other.force.isValid)))
     };
