@@ -7,7 +7,9 @@ import scala.reflect.runtime.universe._
 import scala.reflect._
 
 package impl {
-// Abs -----------------------------------
+  import org.bouncycastle.math.ec.ECPoint
+
+  // Abs -----------------------------------
 trait WECPointsDefs extends scalan.Scalan with WECPoints {
   self: WrappersModule =>
 import IsoUR._
@@ -16,6 +18,13 @@ import WArray._
 import WECPoint._
 
 object WECPoint extends EntityObject("WECPoint") {
+  case class WECPointConst(value: ECPoint) extends WECPoint {
+    val selfType: Elem[WECPoint] = wECPointElement
+    def getEncoded(x$1: Rep[Boolean]): Rep[WArray[Byte]] = delayInvoke
+  }
+  
+  def mkWECPointConst(value: ECPoint): Rep[WECPoint] = WECPointConst(value)
+
   // entityProxy: single proxy for each type family
   implicit def proxyWECPoint(p: Rep[WECPoint]): WECPoint = {
     proxyOps[WECPoint](p)(scala.reflect.classTag[WECPoint])

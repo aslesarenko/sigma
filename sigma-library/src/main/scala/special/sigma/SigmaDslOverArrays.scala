@@ -64,7 +64,7 @@ package special.sigma {
       def propBytes: Rep[Col[Byte]] = delayInvoke //TrivialSigma.this.builder.Cols.apply[Byte](IF(TrivialSigma.this.isValid).THEN(toRep(1.asInstanceOf[Byte])).ELSE(toRep(0.asInstanceOf[Byte])))
     };
     abstract class ProveDlogEvidence(val value: Rep[WECPoint]) extends ProveDlog with DefaultSigma {
-      def propBytes: Rep[Col[Byte]] = RColOverArray(ProveDlogEvidence.this.value.getEncoded(toRep(true.asInstanceOf[Boolean])));
+      def propBytes: Rep[Col[Byte]] = delayInvoke //RColOverArray(ProveDlogEvidence.this.value.getEncoded(toRep(true.asInstanceOf[Boolean])));
       def isValid: Rep[Boolean] = delayInvoke
     };
     trait DefaultSigmaCompanion;

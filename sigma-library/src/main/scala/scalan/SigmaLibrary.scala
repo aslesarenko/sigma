@@ -128,8 +128,4 @@ trait SigmaLibrary extends Library
     case _ => super.toRep(x)
   }
 
-  case class WEcPointNew(p: Rep[ECPoint]) extends Def[WECPoint] {
-    def selfType: Elem[WECPoint] = wECPointElement
-  }
-
 }
