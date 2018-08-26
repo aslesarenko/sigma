@@ -1,7 +1,7 @@
 package special.sigma
 
 class CrowdFundingContract(
-    val timeout: Long, val minToRaise: Long,
+    val deadline: Long, val minToRaise: Long,
     val backerPubKey: ProveDlog,
     val projectPubKey: ProveDlog
 ) extends CrowdFunding with DefaultContract {

@@ -1,20 +1,103 @@
 package special.sigma
 
+import special.collection.Col
+
 trait CrowdFunding extends SigmaContract {
-  def timeout: Long
+  def deadline: Long
   def minToRaise: Long
   def backerPubKey: ProveDlog
   def projectPubKey: ProveDlog
 
-  @clause def canOpen(ctx: Context) = {
-    val c1 = ctx.HEIGHT >= timeout && backerPubKey.isValid
-    val c2 =
-      ctx.HEIGHT < timeout &&
-      projectPubKey.isValid &&
-      ctx.OUTPUTS.exists(out => {
-        out.value >= minToRaise && out.propositionBytes == projectPubKey.propBytes
-      })
-    this.verify( c1 || c2 )
+  @clause def canOpen(ctx: Context) = verifyZK {
+    val fundraisingFailure = sigmaProp(ctx.HEIGHT >= deadline) && backerPubKey
+    val enoughRaised = (outBox: Box) => {
+      outBox.value >= minToRaise &&
+          outBox.propositionBytes == projectPubKey.propBytes
+    }
+    val fundraisingSuccess = ctx.HEIGHT < deadline &&
+        projectPubKey.isValid &&
+        ctx.OUTPUTS.exists(enoughRaised)
+
+    fundraisingFailure || fundraisingSuccess
+  }
+}
+
+trait CrossChainAtomicSwap extends SigmaContract {
+  def deadlineBob: Long
+  def deadlineAlice: Long
+  def pkA: Sigma
+  def pkB: Sigma
+  def hx: Col[Byte]
+
+  def templateForBobChain(ctx: Context) = verifyZK {
+    anyZK(Collection(
+      sigmaProp(ctx.HEIGHT > deadlineBob) && pkA,
+      pkB && blake2b256(ctx.getVar[Col[Byte]](1).get) == hx
+    ))
+  }
+
+  def templateForAliceChain(ctx: Context) = verifyZK {
+    val x = ctx.getVar[Col[Byte]](1).get
+    anyZK(Collection(
+      sigmaProp(ctx.HEIGHT > deadlineAlice) && pkB,
+      allZK( Collection(
+        pkA,
+        sigmaProp(x.length < 33),
+        sigmaProp(blake2b256(x) == hx)
+      ))
+    ))
+  }
+}
+
+trait InChainAtomicSwap extends SigmaContract {
+  def deadline: Long
+  def pkA: Sigma
+  def pkB: Sigma
+  def token1: Col[Byte]
+
+  def templateForAlice(ctx: Context) = verifyZK {
+    (pkA && ctx.HEIGHT > deadline) || {
+      val tokenData = ctx.OUTPUTS(0).tokens(0)
+      allOf(Collection(
+        tokenData._1 == token1,
+        tokenData._2 >= 60L,
+        ctx.OUTPUTS(0).propositionBytes == pkA.propBytes,
+        ctx.OUTPUTS(0).value >= 1L
+      ))
+    }
+  }
+  def templateForBob(ctx: Context) = verifyZK {
+    (pkB && ctx.HEIGHT > deadline) ||
+        allOf( Collection(
+          ctx.OUTPUTS(1).value >= 100,
+          ctx.OUTPUTS(1).propositionBytes == pkB.propBytes
+        ))
+  }
+}
+
+trait CoinEmission extends SigmaContract {
+  def fixedRatePeriod: Long
+  def epochLength: Long
+  def fixedRate: Long
+  def oneEpochReduction: Long
+
+  def templateForTotalAmountBox(ctx: Context) = {
+    val epoch = 1L + ((ctx.HEIGHT - fixedRatePeriod) / epochLength)
+    val out = ctx.OUTPUTS(0)
+    val coinsToIssue =
+      if (ctx.HEIGHT < fixedRatePeriod) fixedRate
+      else fixedRate - (oneEpochReduction * epoch)
+    val correctCoinsConsumed = coinsToIssue == (ctx.SELF.value - out.value)
+    val sameScriptRule = ctx.SELF.propositionBytes == out.propositionBytes
+    val heightIncreased = ctx.HEIGHT > ctx.SELF.R4[Long].get
+    val heightCorrect = out.R4[Long].get == ctx.HEIGHT
+    val lastCoins = ctx.SELF.value <= oneEpochReduction
+    allOf(Collection(
+      correctCoinsConsumed,
+      heightCorrect,
+      heightIncreased,
+      sameScriptRule)) ||
+      (heightIncreased && lastCoins)
   }
 }
 
@@ -23,13 +106,13 @@ trait DemurrageCurrency extends SigmaContract {
   def demurrageCost: Long
   def regScript: ProveDlog
 
-  @clause def canOpen(ctx: Context) = {
+  @clause def canOpen(ctx: Context) = verifyZK {
     val c2 =
       ctx.HEIGHT >= ctx.SELF.R4[Long].get + demurragePeriod &&
       ctx.OUTPUTS.exists(out => {
         out.value >= ctx.SELF.value - demurrageCost && out.propositionBytes == ctx.SELF.propositionBytes
       })
-    this.verifyZK ( regScript || c2 )
+    regScript || c2
   }
 }
 

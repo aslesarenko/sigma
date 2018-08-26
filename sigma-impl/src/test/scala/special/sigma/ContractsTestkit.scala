@@ -3,6 +3,8 @@ package special.sigma
 import special.collection.{Col, ColOverArrayBuilder}
 import org.bouncycastle.crypto.ec.CustomNamedCurves
 
+import scala.reflect.ClassTag
+
 trait ContractsTestkit {
   val R0 = 0.toByte;
   val R1 = 1.toByte;
@@ -15,13 +17,16 @@ trait ContractsTestkit {
   val R8 = 8.toByte;
   val R9 = 9.toByte;
 
-  val curve = CustomNamedCurves.getByName("curve25519")
-  val g = curve.getG
+
   val Cols = new ColOverArrayBuilder
-  val noRegisters = Cols.fromArray(Array[AnyValue]())
-  val noBytes = Cols.fromArray(Array[Byte]())
+  val SigmaDsl = new TestSigmaDslBuilder
+  val noRegisters = collection[AnyValue]()
+  val noBytes = collection[Byte]()
   val noInputs = Array[Box]()
   val noOutputs = Array[Box]()
+  val emptyAvlTree = new TestAvlTree(noBytes, 0, None, None, None)
+
+  def collection[T:ClassTag](items: T*) = Cols.fromArray(items.toArray)
 
   def regs(m: Map[Byte, Any]): Col[AnyValue] = {
     val res = new Array[AnyValue](10)
@@ -41,4 +46,6 @@ trait ContractsTestkit {
     }
     Cols.fromArray(res)
   }
+
+  implicit def boolToSigma(b: Boolean): Sigma = TrivialSigma(b)
 }

@@ -1,39 +1,47 @@
 package special.sigma
 
+import java.math.BigInteger
+
+import com.google.common.primitives.Longs
+import org.bouncycastle.crypto.ec.CustomNamedCurves
 import org.bouncycastle.math.ec.ECPoint
 
 import scala.reflect.ClassTag
 import special.SpecialPredef
-import special.collection.{MonoidBuilderInst, Col, ColOverArrayBuilder, ColOverArray}
+import special.collection.{Col, ColOverArrayBuilder, ColOverArray}
 
-import scalan.OverloadId
+import scalan.{NeverInline, OverloadId}
 
 class TestBox(
-  val idBytes: Array[Byte],
+  val id: Col[Byte],
   val value: Long,
+  val bytes: Col[Byte],
+  val bytesWithoutRef: Col[Byte],
   val propositionBytes: Col[Byte],
-  val registers: Col[AnyValue]
-) extends Box {
+  val registers: Col[AnyValue]) extends Box
+{
   def builder = new TestSigmaDslBuilder
-  def id = builder.Cols.fromArray(idBytes)
-  def getReg[T:ClassTag](i: Int): Option[T] = SpecialPredef.cast[TestValue[T]](registers(i)).map(x => x.value)
-  def cost = idBytes.length + propositionBytes.length + registers.map(_.cost).sum(new MonoidBuilderInst().intPlusMonoid)
+  def getReg[T:ClassTag](i: Int): Option[T] =
+    SpecialPredef.cast[TestValue[T]](registers(i)).map(x => x.value)
+  def dataSize = bytes.length
+  @NeverInline
+  def deserialize[T: ClassTag](i: Int): Option[T] = ???
 }
 
-//class BooleanValue(val value: Boolean) extends AnyValue {
-//  def cost = 1
-//}
-//class ByteValue(val value: Byte) extends AnyValue {
-//  def cost = 1
-//}
-//class IntValue(val value: Int) extends AnyValue {
-//  def cost = 4
-//}
-//class LongValue(val value: Long) extends AnyValue {
-//  def cost = 4
-//}
+case class TestAvlTree(
+    startingDigest: Col[Byte],
+    keyLength: Int,
+    valueLengthOpt: Option[Int] = None,
+    maxNumOperations: Option[Int] = None,
+    maxDeletes: Option[Int] = None ) extends AvlTree {
+  def builder = new TestSigmaDslBuilder
+  @NeverInline
+  def dataSize = startingDigest.length + 4 + valueLengthOpt.fold(0L)(_ => 4)
+}
+
 class TestValue[T](val value: T) extends AnyValue {
-  def cost = SigmaPredef.cost(value)
+  @NeverInline
+  def dataSize = SigmaPredef.dataSize(value)
 }
 
 class TestContext(
@@ -41,6 +49,7 @@ class TestContext(
     val outputs: Array[Box],
     val height: Long,
     val selfBox: Box,
+    val LastBlockUtxoRootHash: AvlTree,
     val vars: Array[AnyValue]
 ) extends Context {
   def builder = new TestSigmaDslBuilder
@@ -51,20 +60,64 @@ class TestContext(
 
   def OUTPUTS = builder.Cols.fromArray(outputs)
 
-  def getVar[T: ClassTag](id: Byte) = SpecialPredef.cast[TestValue[T]](vars(id - 1)).map(_.value).get
+  def getVar[T: ClassTag](id: Byte): Option[T] = SpecialPredef.cast[TestValue[T]](vars(id - 1)).map(_.value)
+
+  @NeverInline
+  def deserialize[T: ClassTag](id: Byte): Option[T] = ???
 }
 
 class TestSigmaDslBuilder extends SigmaDslBuilder {
   def Cols = new ColOverArrayBuilder
-  def verify(cond: Boolean) = cond
 
-  def verifyZK(proof: Sigma) = proof.isValid
+  def verifyZK(proof: => Sigma) = proof.isValid
+
+  @NeverInline
+  def atLeast(bound: Int, props: Col[Sigma]): Sigma = {
+    if (bound <= 0) return TrivialSigma(true)
+    if (bound > props.length) return TrivialSigma(false)
+    var nValids = 0
+    for (p <- props) {
+      if (p.isValid)  nValids += 1
+      if (nValids == bound) return TrivialSigma(true)
+    }
+    TrivialSigma(false)
+  }
 
   def allOf(conditions: Col[Boolean]) = conditions.forall(c => c)
   def anyOf(conditions: Col[Boolean]) = conditions.exists(c => c)
 
   def allZK(proofs: Col[Sigma]) = new TrivialSigma(proofs.forall(p => p.isValid))
-  def anyZK(proofs: Col[Sigma]) = new TrivialSigma(proofs.forall(p => p.isValid))
+  def anyZK(proofs: Col[Sigma]) = new TrivialSigma(proofs.exists(p => p.isValid))
+
+  def sigmaProp(b: Boolean): Sigma = TrivialSigma(b)
+
+  @NeverInline
+  def blake2b256(bytes: Col[Byte]): Col[Byte] = ???
+
+  @NeverInline
+  def sha256(bytes: Col[Byte]): Col[Byte] = ???
+
+  @NeverInline
+  def PubKey(base64String: String) = ???
+
+  @NeverInline
+  def byteArrayToBigInt(bytes: Col[Byte]): BigInteger = new BigInteger(bytes.arr)
+
+  @NeverInline
+  def longToByteArray(l: Long): Col[Byte] = Cols.fromArray(Longs.toByteArray(l))
+
+  @NeverInline
+  def proveDlog(g: ECPoint): Sigma = new ProveDlogEvidence(g)
+
+  @NeverInline
+  def proveDHTuple(g: ECPoint, h: ECPoint, u: ECPoint, v: ECPoint): Sigma = ???
+
+  @NeverInline
+  def isMember(tree: AvlTree, key: Col[Byte], proof: Col[Byte]): Boolean = ???
+
+  val curve = CustomNamedCurves.getByName("curve25519")
+  val g = curve.getG
+  def groupGenerator: ECPoint = g
 }
 
 trait DefaultSigma extends Sigma {
@@ -81,11 +134,16 @@ trait DefaultSigma extends Sigma {
   def lazyOr(other: => Sigma) = new TrivialSigma(isValid || other.isValid)
 }
 
-class TrivialSigma(val isValid: Boolean) extends Sigma with DefaultSigma {
+case class TrivialSigma(val isValid: Boolean) extends Sigma with DefaultSigma {
   def propBytes = builder.Cols(if(isValid) 1 else 0)
 }
 
-class ProveDlogEvidence(val value: ECPoint) extends ProveDlog with DefaultSigma {
+case class ProveDlogEvidence(val value: ECPoint) extends ProveDlog with DefaultSigma {
+  def propBytes: Col[Byte] = new ColOverArray(value.getEncoded(true))
+  def isValid = true
+}
+
+case class ProveDHTEvidence(val value: ECPoint) extends ProveDlog with DefaultSigma {
   def propBytes: Col[Byte] = new ColOverArray(value.getEncoded(true))
   def isValid = true
 }

@@ -41,7 +41,7 @@ package special.sigma {
       def cost: Rep[Int] = TestBox.this.idBytes.length.+(TestBox.this.propositionBytes.length).+(TestBox.this.registers.map[Int](fun(((x$1: Rep[AnyValue]) => x$1.cost))).sum(RMonoidBuilderInst().intPlusMonoid))
     };
     abstract class TestValue[T](val value: Rep[T]) extends AnyValue {
-      def cost: Rep[Int] = SigmaPredef.cost(TestValue.this.value)
+      def cost: Rep[Int] = delayInvoke
     };
     abstract class TestContext(val inputs: Rep[WArray[Box]], val outputs: Rep[WArray[Box]], val height: Rep[Long], val selfBox: Rep[Box], val vars: Rep[WArray[AnyValue]]) extends Context {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
