@@ -10,7 +10,7 @@ import scala.reflect.ClassTag
 import special.SpecialPredef
 import special.collection.{Col, ColOverArrayBuilder, ColOverArray}
 
-import scalan.{NeverInline, OverloadId}
+import scalan.{NeverInline, OverloadId, Internal}
 
 class TestBox(
   val id: Col[Byte],
@@ -21,11 +21,13 @@ class TestBox(
   val registers: Col[AnyValue]) extends Box
 {
   def builder = new TestSigmaDslBuilder
+  @NeverInline
   def getReg[T:ClassTag](i: Int): Option[T] =
     SpecialPredef.cast[TestValue[T]](registers(i)).map(x => x.value)
+  @NeverInline
   def dataSize = bytes.length
   @NeverInline
-  def deserialize[T: ClassTag](i: Int): Option[T] = ???
+  def deserialize[T](i: Int)(implicit cT:ClassTag[T]): Option[T] = ???
 }
 
 case class TestAvlTree(
@@ -54,21 +56,27 @@ class TestContext(
 ) extends Context {
   def builder = new TestSigmaDslBuilder
 
+  @NeverInline
   def HEIGHT = height
+  @NeverInline
   def SELF   = selfBox
+  @NeverInline
   def INPUTS = builder.Cols.fromArray(outputs)
 
+  @NeverInline
   def OUTPUTS = builder.Cols.fromArray(outputs)
 
-  def getVar[T: ClassTag](id: Byte): Option[T] = SpecialPredef.cast[TestValue[T]](vars(id - 1)).map(_.value)
+  @NeverInline
+  def getVar[T](id: Byte)(implicit cT: ClassTag[T]): Option[T] = SpecialPredef.cast[TestValue[T]](vars(id - 1)).map(_.value)
 
   @NeverInline
-  def deserialize[T: ClassTag](id: Byte): Option[T] = ???
+  def deserialize[T](id: Byte)(implicit cT: ClassTag[T]): Option[T] = ???
 }
 
 class TestSigmaDslBuilder extends SigmaDslBuilder {
   def Cols = new ColOverArrayBuilder
 
+  @NeverInline
   def verifyZK(proof: => Sigma) = proof.isValid
 
   @NeverInline
@@ -83,12 +91,17 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
     TrivialSigma(false)
   }
 
+  @NeverInline
   def allOf(conditions: Col[Boolean]) = conditions.forall(c => c)
+  @NeverInline
   def anyOf(conditions: Col[Boolean]) = conditions.exists(c => c)
 
+  @NeverInline
   def allZK(proofs: Col[Sigma]) = new TrivialSigma(proofs.forall(p => p.isValid))
+  @NeverInline
   def anyZK(proofs: Col[Sigma]) = new TrivialSigma(proofs.exists(p => p.isValid))
 
+  @NeverInline
   def sigmaProp(b: Boolean): Sigma = TrivialSigma(b)
 
   @NeverInline
@@ -115,36 +128,53 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
   @NeverInline
   def isMember(tree: AvlTree, key: Col[Byte], proof: Col[Byte]): Boolean = ???
 
-  val curve = CustomNamedCurves.getByName("curve25519")
-  val g = curve.getG
-  def groupGenerator: ECPoint = g
+  @Internal val __curve__ = CustomNamedCurves.getByName("curve25519")
+  @Internal val __g__ = __curve__.getG
+
+  @NeverInline
+  def groupGenerator: ECPoint = __g__
 }
 
 trait DefaultSigma extends Sigma {
   def builder = new TestSigmaDslBuilder
-  @OverloadId("and_sigma") def &&(other: Sigma) = new TrivialSigma(isValid && other.isValid)
+  @NeverInline
+  @OverloadId("and_sigma")
+  def &&(other: Sigma) = new TrivialSigma(isValid && other.isValid)
 
-  @OverloadId("and_bool")  def &&(other: Boolean) = new TrivialSigma(isValid && other)
+  @NeverInline
+  @OverloadId("and_bool")
+  def &&(other: Boolean) = new TrivialSigma(isValid && other)
 
-  @OverloadId("or_sigma") def ||(other: Sigma) = new TrivialSigma(isValid || other.isValid)
+  @NeverInline
+  @OverloadId("or_sigma")
+  def ||(other: Sigma) = new TrivialSigma(isValid || other.isValid)
 
-  @OverloadId("or_bool")  def ||(other: Boolean) = new TrivialSigma(isValid || other)
+  @NeverInline
+  @OverloadId("or_bool")
+  def ||(other: Boolean) = new TrivialSigma(isValid || other)
 
+  @NeverInline
   def lazyAnd(other: => Sigma) = new TrivialSigma(isValid && other.isValid)
+  @NeverInline
   def lazyOr(other: => Sigma) = new TrivialSigma(isValid || other.isValid)
 }
 
 case class TrivialSigma(val isValid: Boolean) extends Sigma with DefaultSigma {
+  @NeverInline
   def propBytes = builder.Cols(if(isValid) 1 else 0)
 }
 
 case class ProveDlogEvidence(val value: ECPoint) extends ProveDlog with DefaultSigma {
+  @NeverInline
   def propBytes: Col[Byte] = new ColOverArray(value.getEncoded(true))
+  @NeverInline
   def isValid = true
 }
 
 case class ProveDHTEvidence(val value: ECPoint) extends ProveDlog with DefaultSigma {
+  @NeverInline
   def propBytes: Col[Byte] = new ColOverArray(value.getEncoded(true))
+  @NeverInline
   def isValid = true
 }
 
