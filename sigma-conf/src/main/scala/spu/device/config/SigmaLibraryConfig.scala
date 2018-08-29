@@ -17,6 +17,10 @@ class SigmaLibraryConfig extends LibraryConfig {
       name = "ECPoint"
     ),
     WrapperConf(baseDir,
+      packageName = "java.math",
+      name = "BigInteger"
+    ),
+    WrapperConf(baseDir,
       packageName = "special.sigma",
       name = "SigmaPredef"
     )
