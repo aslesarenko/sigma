@@ -3,12 +3,15 @@ package special.sigma.wrappers {
 
   trait WrappersSpec extends Base { self: WrappersSpecModule =>
     import WArray._;
+    import WECPoint._;
     import WrapSpec._;
     abstract class ECPointWrapSpec extends WrapSpec {
-      def getEncoded[A](g: Rep[WECPoint]): Rep[WArray[Byte]] = g.getEncoded(toRep(true.asInstanceOf[Boolean]))
+      def getEncoded[A](g: Rep[WECPoint]): Rep[WArray[Byte]] = g.getEncoded(toRep(true.asInstanceOf[Boolean]));
+      def exponentiate(l: Rep[WECPoint], r: Rep[WBigInteger]): Rep[WECPoint] = l.multiply(r);
+      def groupOp(l: Rep[WECPoint], r: Rep[WECPoint]): Rep[WECPoint] = l.add(r)
     };
     abstract class SigmaPredefWrapSpec extends WrapSpec {
-      def cost(v: Rep[Any]): Rep[Int] = RWSigmaPredef.cost(v)
+      def dataSize(v: Rep[Any]): Rep[Long] = RWSigmaPredef.dataSize[Any](v)
     };
     trait ECPointWrapSpecCompanion;
     trait SigmaPredefWrapSpecCompanion

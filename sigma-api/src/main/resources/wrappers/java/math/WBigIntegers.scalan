@@ -1,0 +1,15 @@
+package wrappers.java.math {
+  import scalan._
+
+  import impl._
+
+  import special.sigma.wrappers.WrappersModule
+
+  trait WBigIntegers extends Base { self: WrappersModule =>
+    import WBigInteger._;
+    @External("BigInteger") trait WBigInteger extends Def[WBigInteger] { self =>
+      
+    };
+    trait WBigIntegerCompanion
+  }
+}

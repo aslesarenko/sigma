@@ -11,7 +11,7 @@ package wrappers.special.sigma {
       
     };
     trait WSigmaPredefCompanion {
-      @External def cost(v: Rep[Any]): Rep[Int]
+      @External def dataSize[T](v: Rep[T]): Rep[Long]
     }
   }
 }
