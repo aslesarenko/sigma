@@ -43,28 +43,28 @@ trait AnyValue {
   def propositionBytes: Col[Byte]
   def dataSize: Long
   def registers: Col[AnyValue]
-  def deserialize[@Reified T:ClassTag](i: Int): Option[T]
-  def getReg[@Reified T:ClassTag](i: Int): Option[T]
+  def deserialize[@Reified T](i: Int)(implicit cT:ClassTag[T]): Option[T]
+  def getReg[@Reified T](i: Int)(implicit cT:ClassTag[T]): Option[T]
 
   /** Mandatory: Monetary value, in Ergo tokens */
-  def R0[@Reified T:ClassTag]: Option[T] = this.getReg[T](0)
+  def R0[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](0)
 
   /** Mandatory: Guarding script */
-  def R1[@Reified T:ClassTag]: Option[T] = this.getReg[T](1)
+  def R1[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](1)
 
   /** Mandatory: Secondary tokens */
-  def R2[@Reified T:ClassTag]: Option[T] = this.getReg[T](2)
+  def R2[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](2)
 
   /** Mandatory: Reference to transaction and output id where the box was created */
-  def R3[@Reified T:ClassTag]: Option[T] = this.getReg[T](3)
+  def R3[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](3)
 
   // Non-mandatory registers
-  def R4[@Reified T:ClassTag]: Option[T] = this.getReg[T](4)
-  def R5[@Reified T:ClassTag]: Option[T] = this.getReg[T](5)
-  def R6[@Reified T:ClassTag]: Option[T] = this.getReg[T](6)
-  def R7[@Reified T:ClassTag]: Option[T] = this.getReg[T](7)
-  def R8[@Reified T:ClassTag]: Option[T] = this.getReg[T](8)
-  def R9[@Reified T:ClassTag]: Option[T] = this.getReg[T](9)
+  def R4[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](4)
+  def R5[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](5)
+  def R6[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](6)
+  def R7[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](7)
+  def R8[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](8)
+  def R9[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](9)
 
   def tokens: Col[(Col[Byte], Long)] = this.R2[Col[(Col[Byte], Long)]].get
 }
@@ -89,8 +89,8 @@ trait Context {
   def HEIGHT: Long
   def SELF: Box
   def LastBlockUtxoRootHash: AvlTree
-  def getVar[T:ClassTag](id: Byte): Option[T]
-  def deserialize[T:ClassTag](id: Byte): Option[T]
+  def getVar[T](id: Byte)(implicit cT:ClassTag[T]): Option[T]
+  def deserialize[T](id: Byte)(implicit cT:ClassTag[T]): Option[T]
 }
 
 trait ContextBuilder extends DslBuilder {
@@ -98,7 +98,11 @@ trait ContextBuilder extends DslBuilder {
 
 @sigmalang trait SigmaContract {
   def builder: SigmaDslBuilder
+  @NeverInline
   def Collection[T](items: T*): Col[T] = this.builder.Cols.apply[T](items:_*)
+
+  /** !!! all methods should delegate to builder */
+
   def verifyZK(cond: => Sigma): Boolean = this.builder.verifyZK(cond)
   def atLeast(bound: Int, props: Col[Sigma]): Sigma = this.builder.atLeast(bound, props)
 
