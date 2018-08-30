@@ -9,7 +9,7 @@ package wrappers.special.sigma {
     import WSigmaPredef._;
     @External("SigmaPredef") trait WSigmaPredef extends Def[WSigmaPredef];
     trait WSigmaPredefCompanion {
-      @External def cost(v: Rep[Any]): Rep[Int]
+      @External def dataSize[T](v: Rep[T]): Rep[Long]
     }
   }
 }

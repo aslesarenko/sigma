@@ -58,11 +58,12 @@ object WSigmaPredef extends EntityObject("WSigmaPredef") {
     proxyOps[WSigmaPredefCompanionCtor](p)
 
   lazy val RWSigmaPredef: Rep[WSigmaPredefCompanionCtor] = new WSigmaPredefCompanionCtor {
-    def cost(v: Rep[Any]): Rep[Int] = {
+    def dataSize[T](v: Rep[T]): Rep[Long] = {
+      implicit val eT = v.elem
       mkMethodCall(self,
-        this.getClass.getMethod("cost", classOf[Sym]),
+        this.getClass.getMethod("dataSize", classOf[Sym]),
         List(v),
-        true, element[Int]).asRep[Int]
+        true, element[Long]).asRep[Long]
     }
   }
 
@@ -70,13 +71,13 @@ object WSigmaPredef extends EntityObject("WSigmaPredef") {
   }
 
   object WSigmaPredefCompanionMethods {
-    object cost {
-      def unapply(d: Def[_]): Option[Rep[Any]] = d match {
-        case MethodCall(receiver, method, Seq(v, _*), _) if receiver.elem == WSigmaPredefCompanionElem && method.getName == "cost" =>
-          Some(v).asInstanceOf[Option[Rep[Any]]]
+    object dataSize {
+      def unapply(d: Def[_]): Option[Rep[T] forSome {type T}] = d match {
+        case MethodCall(receiver, method, Seq(v, _*), _) if receiver.elem == WSigmaPredefCompanionElem && method.getName == "dataSize" =>
+          Some(v).asInstanceOf[Option[Rep[T] forSome {type T}]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[Rep[Any]] = exp match {
+      def unapply(exp: Sym): Option[Rep[T] forSome {type T}] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }

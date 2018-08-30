@@ -4,76 +4,94 @@ package special.sigma {
 
   trait SigmaDslOverArrays extends Base { self: SigmaLibrary =>
     import TestSigmaDslBuilder._;
-    import TrivialSigma._;
     import Sigma._;
     import SigmaContract._;
-    import Col._;
     import WOption._;
-    import WArray._;
-    import WECPoint._;
-    import WSpecialPredef._;
-    import MonoidBuilderInst._;
     import Box._;
+    import AvlTree._;
     import AnyValue._;
+    import Col._;
     import Context._;
     import ColOverArrayBuilder._;
+    import TrivialSigma._;
+    import WBigInteger._;
+    import WECPoint._;
     import SigmaDslBuilder._;
     import DefaultSigma._;
-    import ColOverArray._;
     import ProveDlog._;
-    import TestValue._;
     trait DefaultSigma extends Sigma {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
-      @OverloadId(value = "and_sigma") def &&(other: Rep[Sigma]): Rep[Sigma] = delayInvoke //RTrivialSigma(DefaultSigma.this.isValid.&&(other.isValid));
-      @OverloadId(value = "and_bool") def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[Sigma] = delayInvoke //RTrivialSigma(DefaultSigma.this.isValid.&&(other));
-      @OverloadId(value = "or_sigma") def ||(other: Rep[Sigma]): Rep[Sigma] = delayInvoke //RTrivialSigma(DefaultSigma.this.isValid.||(other.isValid));
-      @OverloadId(value = "or_bool") def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[Sigma] = delayInvoke //RTrivialSigma(DefaultSigma.this.isValid.||(other));
-      def lazyAnd(other: Rep[Thunk[Sigma]]): Rep[Sigma] = delayInvoke //RTrivialSigma(DefaultSigma.this.isValid.lazy_&&(Thunk(other.force.isValid)));
-      def lazyOr(other: Rep[Thunk[Sigma]]): Rep[Sigma] = delayInvoke //RTrivialSigma(DefaultSigma.this.isValid.lazy_||(Thunk(other.force.isValid)))
+      @NeverInline @OverloadId(value = "and_sigma") def &&(other: Rep[Sigma]): Rep[Sigma] = delayInvoke;
+      @NeverInline @OverloadId(value = "and_bool") def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[Sigma] = delayInvoke;
+      @NeverInline @OverloadId(value = "or_sigma") def ||(other: Rep[Sigma]): Rep[Sigma] = delayInvoke;
+      @NeverInline @OverloadId(value = "or_bool") def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[Sigma] = delayInvoke;
+      @NeverInline def lazyAnd(other: Rep[Thunk[Sigma]]): Rep[Sigma] = delayInvoke;
+      @NeverInline def lazyOr(other: Rep[Thunk[Sigma]]): Rep[Sigma] = delayInvoke
     };
     trait DefaultContract extends SigmaContract {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder()
     };
-    abstract class TestBox(val idBytes: Rep[WArray[Byte]], val value: Rep[Long], val propositionBytes: Rep[Col[Byte]], val registers: Rep[Col[AnyValue]]) extends Box {
+    abstract class TestBox(val id: Rep[Col[Byte]], val value: Rep[Long], val bytes: Rep[Col[Byte]], val bytesWithoutRef: Rep[Col[Byte]], val propositionBytes: Rep[Col[Byte]], val registers: Rep[Col[AnyValue]]) extends Box {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
-      def id: Rep[Col[Byte]] = TestBox.this.builder.Cols.fromArray[Byte](TestBox.this.idBytes);
-      def getReg[T:Elem](i: Rep[Int]): Rep[WOption[T]] = RWSpecialPredef.cast[TestValue[T]](TestBox.this.registers.apply(i)).map[T](fun(((x: Rep[TestValue[T]]) => x.value)).asRep[scala.Function1[TestValue[T], T]]);
-      def cost: Rep[Int] = TestBox.this.idBytes.length.+(TestBox.this.propositionBytes.length).+(TestBox.this.registers.map[Int](fun(((x$1: Rep[AnyValue]) => x$1.cost))).sum(RMonoidBuilderInst().intPlusMonoid))
+      @NeverInline def getReg[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke;
+      @NeverInline def dataSize: Rep[Long] = delayInvoke;
+      @NeverInline def deserialize[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke
+    };
+    abstract class TestAvlTree(val startingDigest: Rep[Col[Byte]], val keyLength: Rep[Int], val valueLengthOpt: Rep[WOption[Int]], val maxNumOperations: Rep[WOption[Int]], val maxDeletes: Rep[WOption[Int]]) extends AvlTree with Product with Serializable {
+      def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
+      @NeverInline def dataSize: Rep[Long] = delayInvoke
     };
     abstract class TestValue[T](val value: Rep[T]) extends AnyValue {
-      def cost: Rep[Int] = delayInvoke
+      @NeverInline def dataSize: Rep[Long] = delayInvoke
     };
-    abstract class TestContext(val inputs: Rep[WArray[Box]], val outputs: Rep[WArray[Box]], val height: Rep[Long], val selfBox: Rep[Box], val vars: Rep[WArray[AnyValue]]) extends Context {
+    abstract class TestContext(val inputs: Rep[WArray[Box]], val outputs: Rep[WArray[Box]], val height: Rep[Long], val selfBox: Rep[Box], val LastBlockUtxoRootHash: Rep[AvlTree], val vars: Rep[WArray[AnyValue]]) extends Context {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
-      def HEIGHT: Rep[Long] = TestContext.this.height;
-      def SELF: Rep[Box] = TestContext.this.selfBox;
-      def INPUTS: Rep[Col[Box]] = TestContext.this.builder.Cols.fromArray[Box](TestContext.this.outputs);
-      def OUTPUTS: Rep[Col[Box]] = TestContext.this.builder.Cols.fromArray[Box](TestContext.this.outputs);
-      def getVar[T:Elem](id: Rep[Byte]): Rep[T] = RWSpecialPredef.cast[T](TestContext.this.vars.apply(id.toInt)).get
+      @NeverInline def HEIGHT: Rep[Long] = delayInvoke;
+      @NeverInline def SELF: Rep[Box] = delayInvoke;
+      @NeverInline def INPUTS: Rep[Col[Box]] = delayInvoke;
+      @NeverInline def OUTPUTS: Rep[Col[Box]] = delayInvoke;
+      @NeverInline def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke;
+      @NeverInline def deserialize[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke
     };
     abstract class TestSigmaDslBuilder extends SigmaDslBuilder {
       def Cols: Rep[ColOverArrayBuilder] = RColOverArrayBuilder();
-      def verify(cond: Rep[Boolean]): Rep[Boolean] = cond;
-      def verifyZK(proof: Rep[Sigma]): Rep[Boolean] = proof.isValid;
-      def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = delayInvoke //conditions.forall(fun(((c: Rep[Boolean]) => c)));
-      def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = delayInvoke //conditions.exists(fun(((c: Rep[Boolean]) => c)));
-      def allZK(proofs: Rep[Col[Sigma]]): Rep[TrivialSigma] = delayInvoke //RTrivialSigma(proofs.forall(fun(((p: Rep[Sigma]) => p.isValid))));
-      def anyZK(proofs: Rep[Col[Sigma]]): Rep[TrivialSigma] = delayInvoke //RTrivialSigma(proofs.forall(fun(((p: Rep[Sigma]) => p.isValid))))
+      @NeverInline def verifyZK(proof: Rep[Thunk[Sigma]]): Rep[Boolean] = delayInvoke;
+      @NeverInline def atLeast(bound: Rep[Int], props: Rep[Col[Sigma]]): Rep[Sigma] = delayInvoke;
+      @NeverInline def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = delayInvoke;
+      @NeverInline def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = delayInvoke;
+      @NeverInline def allZK(proofs: Rep[Col[Sigma]]): Rep[TrivialSigma] = delayInvoke;
+      @NeverInline def anyZK(proofs: Rep[Col[Sigma]]): Rep[TrivialSigma] = delayInvoke;
+      @NeverInline def sigmaProp(b: Rep[Boolean]): Rep[Sigma] = delayInvoke;
+      @NeverInline def blake2b256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = delayInvoke;
+      @NeverInline def sha256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = delayInvoke;
+      @NeverInline def PubKey(base64String: Rep[String]): Rep[Nothing] = delayInvoke;
+      @NeverInline def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[WBigInteger] = delayInvoke;
+      @NeverInline def longToByteArray(l: Rep[Long]): Rep[Col[Byte]] = delayInvoke;
+      @NeverInline def proveDlog(g: Rep[WECPoint]): Rep[Sigma] = delayInvoke;
+      @NeverInline def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[Sigma] = delayInvoke;
+      @NeverInline def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean] = delayInvoke;
+      @NeverInline def groupGenerator: Rep[WECPoint] = delayInvoke
     };
-    abstract class TrivialSigma(val isValid: Rep[Boolean]) extends Sigma with DefaultSigma {
-      def propBytes: Rep[Col[Byte]] = delayInvoke //TrivialSigma.this.builder.Cols.apply[Byte](IF(TrivialSigma.this.isValid).THEN(toRep(1.asInstanceOf[Byte])).ELSE(toRep(0.asInstanceOf[Byte])))
+    abstract class TrivialSigma(val isValid: Rep[Boolean]) extends Sigma with DefaultSigma with Product with Serializable {
+      @NeverInline def propBytes: Rep[Col[Byte]] = delayInvoke
     };
-    abstract class ProveDlogEvidence(val value: Rep[WECPoint]) extends ProveDlog with DefaultSigma {
-      def propBytes: Rep[Col[Byte]] = delayInvoke //RColOverArray(ProveDlogEvidence.this.value.getEncoded(toRep(true.asInstanceOf[Boolean])));
-      def isValid: Rep[Boolean] = delayInvoke
+    abstract class ProveDlogEvidence(val value: Rep[WECPoint]) extends ProveDlog with DefaultSigma with Product with Serializable {
+      @NeverInline def propBytes: Rep[Col[Byte]] = delayInvoke;
+      @NeverInline def isValid: Rep[Boolean] = delayInvoke
+    };
+    abstract class ProveDHTEvidence(val value: Rep[WECPoint]) extends ProveDlog with DefaultSigma with Product with Serializable {
+      @NeverInline def propBytes: Rep[Col[Byte]] = delayInvoke;
+      @NeverInline def isValid: Rep[Boolean] = delayInvoke
     };
     trait DefaultSigmaCompanion;
     trait DefaultContractCompanion;
     trait TestBoxCompanion;
+    trait TestAvlTreeCompanion;
     trait TestValueCompanion;
     trait TestContextCompanion;
     trait TestSigmaDslBuilderCompanion;
     trait TrivialSigmaCompanion;
-    trait ProveDlogEvidenceCompanion
+    trait ProveDlogEvidenceCompanion;
+    trait ProveDHTEvidenceCompanion
   }
 }

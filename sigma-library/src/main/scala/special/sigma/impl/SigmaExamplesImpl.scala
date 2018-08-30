@@ -13,6 +13,11 @@ import Converter._
 import ProveDlog._
 import CrowdFunding._
 import SigmaContract._
+import Sigma._
+import Col._
+import CrossChainAtomicSwap._
+import InChainAtomicSwap._
+import CoinEmission._
 import DemurrageCurrency._
 
 object CrowdFunding extends EntityObject("CrowdFunding") {
@@ -62,9 +67,9 @@ object CrowdFunding extends EntityObject("CrowdFunding") {
   }
 
   object CrowdFundingMethods {
-    object timeout {
+    object deadline {
       def unapply(d: Def[_]): Option[Rep[CrowdFunding]] = d match {
-        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CrowdFundingElem[_]] && method.getName == "timeout" =>
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CrowdFundingElem[_]] && method.getName == "deadline" =>
           Some(receiver).asInstanceOf[Option[Rep[CrowdFunding]]]
         case _ => None
       }
@@ -127,6 +132,381 @@ object CrowdFunding extends EntityObject("CrowdFunding") {
   }
 } // of object CrowdFunding
   registerEntityObject("CrowdFunding", CrowdFunding)
+
+object CrossChainAtomicSwap extends EntityObject("CrossChainAtomicSwap") {
+  // entityProxy: single proxy for each type family
+  implicit def proxyCrossChainAtomicSwap(p: Rep[CrossChainAtomicSwap]): CrossChainAtomicSwap = {
+    proxyOps[CrossChainAtomicSwap](p)(scala.reflect.classTag[CrossChainAtomicSwap])
+  }
+
+  // familyElem
+  class CrossChainAtomicSwapElem[To <: CrossChainAtomicSwap]
+    extends SigmaContractElem[To] {
+    override lazy val parent: Option[Elem[_]] = Some(sigmaContractElement)
+    override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
+    override lazy val tag = {
+      weakTypeTag[CrossChainAtomicSwap].asInstanceOf[WeakTypeTag[To]]
+    }
+    override def convert(x: Rep[Def[_]]) = {
+      val conv = fun {x: Rep[CrossChainAtomicSwap] => convertCrossChainAtomicSwap(x) }
+      tryConvert(element[CrossChainAtomicSwap], this, x, conv)
+    }
+
+    def convertCrossChainAtomicSwap(x: Rep[CrossChainAtomicSwap]): Rep[To] = {
+      x.elem match {
+        case _: CrossChainAtomicSwapElem[_] => x.asRep[To]
+        case e => !!!(s"Expected $x to have CrossChainAtomicSwapElem[_], but got $e", x)
+      }
+    }
+    override def getDefaultRep: Rep[To] = ???
+  }
+
+  implicit def crossChainAtomicSwapElement: Elem[CrossChainAtomicSwap] =
+    cachedElem[CrossChainAtomicSwapElem[CrossChainAtomicSwap]]()
+
+  implicit case object CrossChainAtomicSwapCompanionElem extends CompanionElem[CrossChainAtomicSwapCompanionCtor] {
+    lazy val tag = weakTypeTag[CrossChainAtomicSwapCompanionCtor]
+    protected def getDefaultRep = RCrossChainAtomicSwap
+  }
+
+  abstract class CrossChainAtomicSwapCompanionCtor extends CompanionDef[CrossChainAtomicSwapCompanionCtor] with CrossChainAtomicSwapCompanion {
+    def selfType = CrossChainAtomicSwapCompanionElem
+    override def toString = "CrossChainAtomicSwap"
+  }
+  implicit def proxyCrossChainAtomicSwapCompanionCtor(p: Rep[CrossChainAtomicSwapCompanionCtor]): CrossChainAtomicSwapCompanionCtor =
+    proxyOps[CrossChainAtomicSwapCompanionCtor](p)
+
+  lazy val RCrossChainAtomicSwap: Rep[CrossChainAtomicSwapCompanionCtor] = new CrossChainAtomicSwapCompanionCtor {
+  }
+
+  object CrossChainAtomicSwapMethods {
+    object deadlineBob {
+      def unapply(d: Def[_]): Option[Rep[CrossChainAtomicSwap]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CrossChainAtomicSwapElem[_]] && method.getName == "deadlineBob" =>
+          Some(receiver).asInstanceOf[Option[Rep[CrossChainAtomicSwap]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[CrossChainAtomicSwap]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object deadlineAlice {
+      def unapply(d: Def[_]): Option[Rep[CrossChainAtomicSwap]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CrossChainAtomicSwapElem[_]] && method.getName == "deadlineAlice" =>
+          Some(receiver).asInstanceOf[Option[Rep[CrossChainAtomicSwap]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[CrossChainAtomicSwap]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object pkA {
+      def unapply(d: Def[_]): Option[Rep[CrossChainAtomicSwap]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CrossChainAtomicSwapElem[_]] && method.getName == "pkA" =>
+          Some(receiver).asInstanceOf[Option[Rep[CrossChainAtomicSwap]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[CrossChainAtomicSwap]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object pkB {
+      def unapply(d: Def[_]): Option[Rep[CrossChainAtomicSwap]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CrossChainAtomicSwapElem[_]] && method.getName == "pkB" =>
+          Some(receiver).asInstanceOf[Option[Rep[CrossChainAtomicSwap]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[CrossChainAtomicSwap]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object hx {
+      def unapply(d: Def[_]): Option[Rep[CrossChainAtomicSwap]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CrossChainAtomicSwapElem[_]] && method.getName == "hx" =>
+          Some(receiver).asInstanceOf[Option[Rep[CrossChainAtomicSwap]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[CrossChainAtomicSwap]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object templateForBobChain {
+      def unapply(d: Def[_]): Option[(Rep[CrossChainAtomicSwap], Rep[Context])] = d match {
+        case MethodCall(receiver, method, Seq(ctx, _*), _) if receiver.elem.isInstanceOf[CrossChainAtomicSwapElem[_]] && method.getName == "templateForBobChain" =>
+          Some((receiver, ctx)).asInstanceOf[Option[(Rep[CrossChainAtomicSwap], Rep[Context])]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[(Rep[CrossChainAtomicSwap], Rep[Context])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object templateForAliceChain {
+      def unapply(d: Def[_]): Option[(Rep[CrossChainAtomicSwap], Rep[Context])] = d match {
+        case MethodCall(receiver, method, Seq(ctx, _*), _) if receiver.elem.isInstanceOf[CrossChainAtomicSwapElem[_]] && method.getName == "templateForAliceChain" =>
+          Some((receiver, ctx)).asInstanceOf[Option[(Rep[CrossChainAtomicSwap], Rep[Context])]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[(Rep[CrossChainAtomicSwap], Rep[Context])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+  }
+
+  object CrossChainAtomicSwapCompanionMethods {
+  }
+} // of object CrossChainAtomicSwap
+  registerEntityObject("CrossChainAtomicSwap", CrossChainAtomicSwap)
+
+object InChainAtomicSwap extends EntityObject("InChainAtomicSwap") {
+  // entityProxy: single proxy for each type family
+  implicit def proxyInChainAtomicSwap(p: Rep[InChainAtomicSwap]): InChainAtomicSwap = {
+    proxyOps[InChainAtomicSwap](p)(scala.reflect.classTag[InChainAtomicSwap])
+  }
+
+  // familyElem
+  class InChainAtomicSwapElem[To <: InChainAtomicSwap]
+    extends SigmaContractElem[To] {
+    override lazy val parent: Option[Elem[_]] = Some(sigmaContractElement)
+    override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
+    override lazy val tag = {
+      weakTypeTag[InChainAtomicSwap].asInstanceOf[WeakTypeTag[To]]
+    }
+    override def convert(x: Rep[Def[_]]) = {
+      val conv = fun {x: Rep[InChainAtomicSwap] => convertInChainAtomicSwap(x) }
+      tryConvert(element[InChainAtomicSwap], this, x, conv)
+    }
+
+    def convertInChainAtomicSwap(x: Rep[InChainAtomicSwap]): Rep[To] = {
+      x.elem match {
+        case _: InChainAtomicSwapElem[_] => x.asRep[To]
+        case e => !!!(s"Expected $x to have InChainAtomicSwapElem[_], but got $e", x)
+      }
+    }
+    override def getDefaultRep: Rep[To] = ???
+  }
+
+  implicit def inChainAtomicSwapElement: Elem[InChainAtomicSwap] =
+    cachedElem[InChainAtomicSwapElem[InChainAtomicSwap]]()
+
+  implicit case object InChainAtomicSwapCompanionElem extends CompanionElem[InChainAtomicSwapCompanionCtor] {
+    lazy val tag = weakTypeTag[InChainAtomicSwapCompanionCtor]
+    protected def getDefaultRep = RInChainAtomicSwap
+  }
+
+  abstract class InChainAtomicSwapCompanionCtor extends CompanionDef[InChainAtomicSwapCompanionCtor] with InChainAtomicSwapCompanion {
+    def selfType = InChainAtomicSwapCompanionElem
+    override def toString = "InChainAtomicSwap"
+  }
+  implicit def proxyInChainAtomicSwapCompanionCtor(p: Rep[InChainAtomicSwapCompanionCtor]): InChainAtomicSwapCompanionCtor =
+    proxyOps[InChainAtomicSwapCompanionCtor](p)
+
+  lazy val RInChainAtomicSwap: Rep[InChainAtomicSwapCompanionCtor] = new InChainAtomicSwapCompanionCtor {
+  }
+
+  object InChainAtomicSwapMethods {
+    object deadline {
+      def unapply(d: Def[_]): Option[Rep[InChainAtomicSwap]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[InChainAtomicSwapElem[_]] && method.getName == "deadline" =>
+          Some(receiver).asInstanceOf[Option[Rep[InChainAtomicSwap]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[InChainAtomicSwap]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object pkA {
+      def unapply(d: Def[_]): Option[Rep[InChainAtomicSwap]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[InChainAtomicSwapElem[_]] && method.getName == "pkA" =>
+          Some(receiver).asInstanceOf[Option[Rep[InChainAtomicSwap]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[InChainAtomicSwap]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object pkB {
+      def unapply(d: Def[_]): Option[Rep[InChainAtomicSwap]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[InChainAtomicSwapElem[_]] && method.getName == "pkB" =>
+          Some(receiver).asInstanceOf[Option[Rep[InChainAtomicSwap]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[InChainAtomicSwap]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object token1 {
+      def unapply(d: Def[_]): Option[Rep[InChainAtomicSwap]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[InChainAtomicSwapElem[_]] && method.getName == "token1" =>
+          Some(receiver).asInstanceOf[Option[Rep[InChainAtomicSwap]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[InChainAtomicSwap]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object templateForAlice {
+      def unapply(d: Def[_]): Option[(Rep[InChainAtomicSwap], Rep[Context])] = d match {
+        case MethodCall(receiver, method, Seq(ctx, _*), _) if receiver.elem.isInstanceOf[InChainAtomicSwapElem[_]] && method.getName == "templateForAlice" =>
+          Some((receiver, ctx)).asInstanceOf[Option[(Rep[InChainAtomicSwap], Rep[Context])]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[(Rep[InChainAtomicSwap], Rep[Context])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object templateForBob {
+      def unapply(d: Def[_]): Option[(Rep[InChainAtomicSwap], Rep[Context])] = d match {
+        case MethodCall(receiver, method, Seq(ctx, _*), _) if receiver.elem.isInstanceOf[InChainAtomicSwapElem[_]] && method.getName == "templateForBob" =>
+          Some((receiver, ctx)).asInstanceOf[Option[(Rep[InChainAtomicSwap], Rep[Context])]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[(Rep[InChainAtomicSwap], Rep[Context])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+  }
+
+  object InChainAtomicSwapCompanionMethods {
+  }
+} // of object InChainAtomicSwap
+  registerEntityObject("InChainAtomicSwap", InChainAtomicSwap)
+
+object CoinEmission extends EntityObject("CoinEmission") {
+  // entityProxy: single proxy for each type family
+  implicit def proxyCoinEmission(p: Rep[CoinEmission]): CoinEmission = {
+    proxyOps[CoinEmission](p)(scala.reflect.classTag[CoinEmission])
+  }
+
+  // familyElem
+  class CoinEmissionElem[To <: CoinEmission]
+    extends SigmaContractElem[To] {
+    override lazy val parent: Option[Elem[_]] = Some(sigmaContractElement)
+    override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
+    override lazy val tag = {
+      weakTypeTag[CoinEmission].asInstanceOf[WeakTypeTag[To]]
+    }
+    override def convert(x: Rep[Def[_]]) = {
+      val conv = fun {x: Rep[CoinEmission] => convertCoinEmission(x) }
+      tryConvert(element[CoinEmission], this, x, conv)
+    }
+
+    def convertCoinEmission(x: Rep[CoinEmission]): Rep[To] = {
+      x.elem match {
+        case _: CoinEmissionElem[_] => x.asRep[To]
+        case e => !!!(s"Expected $x to have CoinEmissionElem[_], but got $e", x)
+      }
+    }
+    override def getDefaultRep: Rep[To] = ???
+  }
+
+  implicit def coinEmissionElement: Elem[CoinEmission] =
+    cachedElem[CoinEmissionElem[CoinEmission]]()
+
+  implicit case object CoinEmissionCompanionElem extends CompanionElem[CoinEmissionCompanionCtor] {
+    lazy val tag = weakTypeTag[CoinEmissionCompanionCtor]
+    protected def getDefaultRep = RCoinEmission
+  }
+
+  abstract class CoinEmissionCompanionCtor extends CompanionDef[CoinEmissionCompanionCtor] with CoinEmissionCompanion {
+    def selfType = CoinEmissionCompanionElem
+    override def toString = "CoinEmission"
+  }
+  implicit def proxyCoinEmissionCompanionCtor(p: Rep[CoinEmissionCompanionCtor]): CoinEmissionCompanionCtor =
+    proxyOps[CoinEmissionCompanionCtor](p)
+
+  lazy val RCoinEmission: Rep[CoinEmissionCompanionCtor] = new CoinEmissionCompanionCtor {
+  }
+
+  object CoinEmissionMethods {
+    object fixedRatePeriod {
+      def unapply(d: Def[_]): Option[Rep[CoinEmission]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CoinEmissionElem[_]] && method.getName == "fixedRatePeriod" =>
+          Some(receiver).asInstanceOf[Option[Rep[CoinEmission]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[CoinEmission]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object epochLength {
+      def unapply(d: Def[_]): Option[Rep[CoinEmission]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CoinEmissionElem[_]] && method.getName == "epochLength" =>
+          Some(receiver).asInstanceOf[Option[Rep[CoinEmission]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[CoinEmission]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object fixedRate {
+      def unapply(d: Def[_]): Option[Rep[CoinEmission]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CoinEmissionElem[_]] && method.getName == "fixedRate" =>
+          Some(receiver).asInstanceOf[Option[Rep[CoinEmission]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[CoinEmission]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object oneEpochReduction {
+      def unapply(d: Def[_]): Option[Rep[CoinEmission]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CoinEmissionElem[_]] && method.getName == "oneEpochReduction" =>
+          Some(receiver).asInstanceOf[Option[Rep[CoinEmission]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[CoinEmission]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object templateForTotalAmountBox {
+      def unapply(d: Def[_]): Option[(Rep[CoinEmission], Rep[Context])] = d match {
+        case MethodCall(receiver, method, Seq(ctx, _*), _) if receiver.elem.isInstanceOf[CoinEmissionElem[_]] && method.getName == "templateForTotalAmountBox" =>
+          Some((receiver, ctx)).asInstanceOf[Option[(Rep[CoinEmission], Rep[Context])]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[(Rep[CoinEmission], Rep[Context])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+  }
+
+  object CoinEmissionCompanionMethods {
+  }
+} // of object CoinEmission
+  registerEntityObject("CoinEmission", CoinEmission)
 
 object DemurrageCurrency extends EntityObject("DemurrageCurrency") {
   // entityProxy: single proxy for each type family

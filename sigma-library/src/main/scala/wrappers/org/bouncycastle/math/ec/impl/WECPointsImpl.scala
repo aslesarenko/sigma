@@ -7,24 +7,15 @@ import scala.reflect.runtime.universe._
 import scala.reflect._
 
 package impl {
-  import org.bouncycastle.math.ec.ECPoint
-
-  // Abs -----------------------------------
+// Abs -----------------------------------
 trait WECPointsDefs extends scalan.Scalan with WECPoints {
   self: WrappersModule =>
 import IsoUR._
 import Converter._
-import WArray._
 import WECPoint._
+import WArray._
 
 object WECPoint extends EntityObject("WECPoint") {
-  case class WECPointConst(value: ECPoint) extends WECPoint {
-    val selfType: Elem[WECPoint] = wECPointElement
-    def getEncoded(x$1: Rep[Boolean]): Rep[WArray[Byte]] = delayInvoke
-  }
-  
-  def mkWECPointConst(value: ECPoint): Rep[WECPoint] = WECPointConst(value)
-
   // entityProxy: single proxy for each type family
   implicit def proxyWECPoint(p: Rep[WECPoint]): WECPoint = {
     proxyOps[WECPoint](p)(scala.reflect.classTag[WECPoint])
@@ -71,6 +62,30 @@ object WECPoint extends EntityObject("WECPoint") {
   }
 
   object WECPointMethods {
+    object add {
+      def unapply(d: Def[_]): Option[(Rep[WECPoint], Rep[WECPoint])] = d match {
+        case MethodCall(receiver, method, Seq(x$1, _*), _) if receiver.elem.isInstanceOf[WECPointElem[_]] && method.getName == "add" =>
+          Some((receiver, x$1)).asInstanceOf[Option[(Rep[WECPoint], Rep[WECPoint])]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[(Rep[WECPoint], Rep[WECPoint])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object multiply {
+      def unapply(d: Def[_]): Option[(Rep[WECPoint], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, Seq(x$1, _*), _) if receiver.elem.isInstanceOf[WECPointElem[_]] && method.getName == "multiply" =>
+          Some((receiver, x$1)).asInstanceOf[Option[(Rep[WECPoint], Rep[WBigInteger])]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[(Rep[WECPoint], Rep[WBigInteger])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
     object getEncoded {
       def unapply(d: Def[_]): Option[(Rep[WECPoint], Rep[Boolean])] = d match {
         case MethodCall(receiver, method, Seq(x$1, _*), _) if receiver.elem.isInstanceOf[WECPointElem[_]] && method.getName == "getEncoded" =>

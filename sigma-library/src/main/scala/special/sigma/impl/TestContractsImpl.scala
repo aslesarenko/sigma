@@ -16,12 +16,11 @@ import DemurrageCurrency._
 import CrowdFundingContract._
 import DemurrageCurrencyContract._
 import ProveDlog._
-import ProveDlogEvidence._
 
 object CrowdFundingContract extends EntityObject("CrowdFundingContract") {
   case class CrowdFundingContractCtor
-      (override val timeout: Rep[Long], override val minToRaise: Rep[Long], override val backerPubKey: Rep[ProveDlog], override val projectPubKey: Rep[ProveDlog])
-    extends CrowdFundingContract(timeout, minToRaise, backerPubKey, projectPubKey) with Def[CrowdFundingContract] {
+      (override val deadline: Rep[Long], override val minToRaise: Rep[Long], override val backerPubKey: Rep[ProveDlog], override val projectPubKey: Rep[ProveDlog])
+    extends CrowdFundingContract(deadline, minToRaise, backerPubKey, projectPubKey) with Def[CrowdFundingContract] {
     lazy val selfType = element[CrowdFundingContract]
   }
   // elem for concrete class
@@ -30,7 +29,7 @@ object CrowdFundingContract extends EntityObject("CrowdFundingContract") {
     with ConcreteElem[CrowdFundingContractData, CrowdFundingContract] {
     override lazy val parent: Option[Elem[_]] = Some(crowdFundingElement)
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
-    override def convertCrowdFunding(x: Rep[CrowdFunding]) = RCrowdFundingContract(x.timeout, x.minToRaise, x.backerPubKey, x.projectPubKey)
+    override def convertCrowdFunding(x: Rep[CrowdFunding]) = RCrowdFundingContract(x.deadline, x.minToRaise, x.backerPubKey, x.projectPubKey)
     override def getDefaultRep = RCrowdFundingContract(0l, 0l, element[ProveDlog].defaultRepValue, element[ProveDlog].defaultRepValue)
     override lazy val tag = {
       weakTypeTag[CrowdFundingContract]
@@ -43,12 +42,12 @@ object CrowdFundingContract extends EntityObject("CrowdFundingContract") {
   // 3) Iso for concrete class
   class CrowdFundingContractIso
     extends EntityIso[CrowdFundingContractData, CrowdFundingContract] with Def[CrowdFundingContractIso] {
-    private lazy val _safeFrom = fun { p: Rep[CrowdFundingContract] => (p.timeout, p.minToRaise, p.backerPubKey, p.projectPubKey) }
+    private lazy val _safeFrom = fun { p: Rep[CrowdFundingContract] => (p.deadline, p.minToRaise, p.backerPubKey, p.projectPubKey) }
     override def from(p: Rep[CrowdFundingContract]) =
       tryConvert[CrowdFundingContract, (Long, (Long, (ProveDlog, ProveDlog)))](eTo, eFrom, p, _safeFrom)
     override def to(p: Rep[(Long, (Long, (ProveDlog, ProveDlog)))]) = {
-      val Pair(timeout, Pair(minToRaise, Pair(backerPubKey, projectPubKey))) = p
-      RCrowdFundingContract(timeout, minToRaise, backerPubKey, projectPubKey)
+      val Pair(deadline, Pair(minToRaise, Pair(backerPubKey, projectPubKey))) = p
+      RCrowdFundingContract(deadline, minToRaise, backerPubKey, projectPubKey)
     }
     lazy val eFrom = pairElement(element[Long], pairElement(element[Long], pairElement(element[ProveDlog], element[ProveDlog])))
     lazy val eTo = new CrowdFundingContractElem(self)
@@ -73,8 +72,8 @@ object CrowdFundingContract extends EntityObject("CrowdFundingContract") {
     }
 
     @scalan.OverloadId("fromFields")
-    def apply(timeout: Rep[Long], minToRaise: Rep[Long], backerPubKey: Rep[ProveDlog], projectPubKey: Rep[ProveDlog]): Rep[CrowdFundingContract] =
-      mkCrowdFundingContract(timeout, minToRaise, backerPubKey, projectPubKey)
+    def apply(deadline: Rep[Long], minToRaise: Rep[Long], backerPubKey: Rep[ProveDlog], projectPubKey: Rep[ProveDlog]): Rep[CrowdFundingContract] =
+      mkCrowdFundingContract(deadline, minToRaise, backerPubKey, projectPubKey)
 
     def unapply(p: Rep[CrowdFunding]) = unmkCrowdFundingContract(p)
   }
@@ -103,12 +102,12 @@ object CrowdFundingContract extends EntityObject("CrowdFundingContract") {
     reifyObject(new CrowdFundingContractIso())
 
   def mkCrowdFundingContract
-    (timeout: Rep[Long], minToRaise: Rep[Long], backerPubKey: Rep[ProveDlog], projectPubKey: Rep[ProveDlog]): Rep[CrowdFundingContract] = {
-    new CrowdFundingContractCtor(timeout, minToRaise, backerPubKey, projectPubKey)
+    (deadline: Rep[Long], minToRaise: Rep[Long], backerPubKey: Rep[ProveDlog], projectPubKey: Rep[ProveDlog]): Rep[CrowdFundingContract] = {
+    new CrowdFundingContractCtor(deadline, minToRaise, backerPubKey, projectPubKey)
   }
   def unmkCrowdFundingContract(p: Rep[CrowdFunding]) = p.elem.asInstanceOf[Elem[_]] match {
     case _: CrowdFundingContractElem @unchecked =>
-      Some((p.asRep[CrowdFundingContract].timeout, p.asRep[CrowdFundingContract].minToRaise, p.asRep[CrowdFundingContract].backerPubKey, p.asRep[CrowdFundingContract].projectPubKey))
+      Some((p.asRep[CrowdFundingContract].deadline, p.asRep[CrowdFundingContract].minToRaise, p.asRep[CrowdFundingContract].backerPubKey, p.asRep[CrowdFundingContract].projectPubKey))
     case _ =>
       None
   }
