@@ -7,11 +7,13 @@ package special.sigma {
     import DslObject._;
     import Col._;
     import Sigma._;
+    import WECPoint._;
     import AnyValue._;
     import WOption._;
     import Box._;
     import AvlTree._;
     import Context._;
+    import WBigInteger._;
     import SigmaContract._;
     import ColBuilder._;
     import SigmaBuilder._;
@@ -35,7 +37,7 @@ package special.sigma {
     };
     trait SigmaBuilder extends DslBuilder;
     @sigmalang trait ProveDlog extends Sigma {
-      def value: Rep[ECPoint]
+      def value: Rep[WECPoint]
     };
     trait AnyValue extends Def[AnyValue] {
       def dataSize: Rep[Long]
@@ -96,12 +98,12 @@ package special.sigma {
       def sigmaProp(b: Rep[Boolean]): Rep[Sigma] = this.builder.sigmaProp(b);
       def blake2b256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = this.builder.blake2b256(bytes);
       def sha256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = this.builder.sha256(bytes);
-      def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[BigInteger] = this.builder.byteArrayToBigInt(bytes);
+      def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[WBigInteger] = this.builder.byteArrayToBigInt(bytes);
       def longToByteArray(l: Rep[Long]): Rep[Col[Byte]] = this.builder.longToByteArray(l);
-      def proveDlog(g: Rep[ECPoint]): Rep[Sigma] = this.builder.proveDlog(g);
-      def proveDHTuple(g: Rep[ECPoint], h: Rep[ECPoint], u: Rep[ECPoint], v: Rep[ECPoint]): Rep[Sigma] = this.builder.proveDHTuple(g, h, u, v);
+      def proveDlog(g: Rep[WECPoint]): Rep[Sigma] = this.builder.proveDlog(g);
+      def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[Sigma] = this.builder.proveDHTuple(g, h, u, v);
       def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean] = this.builder.isMember(tree, key, proof);
-      def groupGenerator: Rep[ECPoint] = this.builder.groupGenerator;
+      def groupGenerator: Rep[WECPoint] = this.builder.groupGenerator;
       @clause def canOpen(ctx: Rep[Context]): Rep[Boolean];
       def asFunction: Rep[scala.Function1[Context, Boolean]] = fun(((ctx: Rep[Context]) => this.canOpen(ctx)))
     };
@@ -118,12 +120,12 @@ package special.sigma {
       def sigmaProp(b: Rep[Boolean]): Rep[Sigma];
       def blake2b256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]];
       def sha256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]];
-      def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[BigInteger];
+      def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[WBigInteger];
       def longToByteArray(l: Rep[Long]): Rep[Col[Byte]];
-      def proveDlog(g: Rep[ECPoint]): Rep[Sigma];
-      def proveDHTuple(g: Rep[ECPoint], h: Rep[ECPoint], u: Rep[ECPoint], v: Rep[ECPoint]): Rep[Sigma];
+      def proveDlog(g: Rep[WECPoint]): Rep[Sigma];
+      def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[Sigma];
       def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean];
-      def groupGenerator: Rep[ECPoint]
+      def groupGenerator: Rep[WECPoint]
     };
     trait DslBuilderCompanion;
     trait DslObjectCompanion;

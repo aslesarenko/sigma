@@ -22,7 +22,7 @@ class TestBox(
 {
   def builder = new TestSigmaDslBuilder
   @NeverInline
-  def getReg[T:ClassTag](i: Int): Option[T] =
+  def getReg[T](i: Int)(implicit cT:ClassTag[T]): Option[T] =
     SpecialPredef.cast[TestValue[T]](registers(i)).map(x => x.value)
   @NeverInline
   def dataSize = bytes.length
@@ -139,24 +139,24 @@ trait DefaultSigma extends Sigma {
   def builder = new TestSigmaDslBuilder
   @NeverInline
   @OverloadId("and_sigma")
-  def &&(other: Sigma) = new TrivialSigma(isValid && other.isValid)
+  def &&(other: Sigma): Sigma = new TrivialSigma(isValid && other.isValid)
 
   @NeverInline
   @OverloadId("and_bool")
-  def &&(other: Boolean) = new TrivialSigma(isValid && other)
+  def &&(other: Boolean): Sigma = new TrivialSigma(isValid && other)
 
   @NeverInline
   @OverloadId("or_sigma")
-  def ||(other: Sigma) = new TrivialSigma(isValid || other.isValid)
+  def ||(other: Sigma): Sigma = new TrivialSigma(isValid || other.isValid)
 
   @NeverInline
   @OverloadId("or_bool")
-  def ||(other: Boolean) = new TrivialSigma(isValid || other)
+  def ||(other: Boolean): Sigma = new TrivialSigma(isValid || other)
 
   @NeverInline
-  def lazyAnd(other: => Sigma) = new TrivialSigma(isValid && other.isValid)
+  def lazyAnd(other: => Sigma): Sigma = new TrivialSigma(isValid && other.isValid)
   @NeverInline
-  def lazyOr(other: => Sigma) = new TrivialSigma(isValid || other.isValid)
+  def lazyOr(other: => Sigma): Sigma = new TrivialSigma(isValid || other.isValid)
 }
 
 case class TrivialSigma(val isValid: Boolean) extends Sigma with DefaultSigma {
