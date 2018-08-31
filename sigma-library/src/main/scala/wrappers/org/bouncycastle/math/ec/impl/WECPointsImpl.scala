@@ -18,7 +18,7 @@ import WECPoint._
 import WArray._
 
 object WECPoint extends EntityObject("WECPoint") {
-  case class WECPointConst(value: ECPoint) extends WECPoint {
+  case class WECPointConst(wrappedValue: ECPoint) extends WECPoint with WrapperConst[ECPoint] {
     val selfType: Elem[WECPoint] = wECPointElement
     def getEncoded(x$1: Rep[Boolean]): Rep[WArray[Byte]] = delayInvoke
     def add(x$1: Rep[WECPoint]): Rep[WECPoint] = delayInvoke

@@ -14,10 +14,6 @@ class BasicOpsTests extends FunSuite with ContractsTestkit with Matchers {
     SigmaDsl.atLeast(3, props).isValid shouldBe false
   }
 
-  case class NoEnvContract(condition: Context => Boolean) extends DefaultContract {
-    def canOpen(ctx: Context): Boolean = condition(ctx)
-  }
-
   def test(f: Context => Boolean, ctx: Context, expected: Boolean) = {
     val contr = NoEnvContract(f)
     val res = contr.canOpen(ctx)

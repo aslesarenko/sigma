@@ -48,4 +48,8 @@ trait ContractsTestkit {
   }
 
   implicit def boolToSigma(b: Boolean): Sigma = TrivialSigma(b)
+  
+  case class NoEnvContract(condition: Context => Boolean) extends DefaultContract {
+    def canOpen(ctx: Context): Boolean = condition(ctx)
+  }
 }

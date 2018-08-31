@@ -7,7 +7,9 @@ import scala.reflect.runtime.universe._
 import scala.reflect._
 
 package impl {
-// Abs -----------------------------------
+  import java.math.BigInteger
+
+  // Abs -----------------------------------
 trait WBigIntegersDefs extends scalan.Scalan with WBigIntegers {
   self: WrappersModule =>
 import IsoUR._
@@ -16,6 +18,54 @@ import WBigInteger._
 import WArray._
 
 object WBigInteger extends EntityObject("WBigInteger") {
+  case class WBigIntegerConst(wrappedValue: BigInteger) extends WBigInteger with WrapperConst[BigInteger] {
+    val selfType: Elem[WBigInteger] = wBigIntegerElement
+    def longValueExact: Rep[Long] = delayInvoke
+    def intValueExact: Rep[Int] = delayInvoke
+    def shortValueExact: Rep[Short] = delayInvoke
+    def byteValueExact: Rep[Byte] = delayInvoke
+    def longValue: Rep[Long] = delayInvoke
+    def intValue: Rep[Int] = delayInvoke
+    def shortValue: Rep[Short] = delayInvoke
+    def byteValue: Rep[Byte] = delayInvoke
+    def signum: Rep[Int] = delayInvoke
+    def negate: Rep[WBigInteger] = delayInvoke
+    def abs: Rep[WBigInteger] = delayInvoke
+    def shiftRight(x$1: Rep[Int]): Rep[WBigInteger] = delayInvoke
+    def shiftLeft(x$1: Rep[Int]): Rep[WBigInteger] = delayInvoke
+    def isProbablePrime(x$1: Rep[Int]): Rep[Boolean] = delayInvoke
+    def bitLength: Rep[Int] = delayInvoke
+    def bitCount: Rep[Int] = delayInvoke
+    def getLowestSetBit: Rep[Int] = delayInvoke
+    def flipBit(x$1: Rep[Int]): Rep[WBigInteger] = delayInvoke
+    def clearBit(x$1: Rep[Int]): Rep[WBigInteger] = delayInvoke
+    def setBit(x$1: Rep[Int]): Rep[WBigInteger] = delayInvoke
+    def testBit(x$1: Rep[Int]): Rep[Boolean] = delayInvoke
+    def pow(x$1: Rep[Int]): Rep[WBigInteger] = delayInvoke
+    def andNot(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    def not: Rep[WBigInteger] = delayInvoke
+    def xor(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    def or(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    def and(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    def gcd(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    def max(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    def min(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    def compareTo(x$1: Rep[WBigInteger]): Rep[Int] = delayInvoke
+    def divide(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    def remainder(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    def modPow(x$1: Rep[WBigInteger],
+        x$2: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    def modInverse(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    def mod(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    def multiply(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    def subtract(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    def add(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    def toByteArray: Rep[WArray[Byte]] = delayInvoke
+    def toString(x$1: Rep[Int]): Rep[String] = delayInvoke
+  }
+
+  def mkWBigIntegerConst(value: BigInteger): Rep[WBigInteger] = WBigIntegerConst(value)
+
   // entityProxy: single proxy for each type family
   implicit def proxyWBigInteger(p: Rep[WBigInteger]): WBigInteger = {
     proxyOps[WBigInteger](p)(scala.reflect.classTag[WBigInteger])
