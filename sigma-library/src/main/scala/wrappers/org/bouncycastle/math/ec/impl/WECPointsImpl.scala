@@ -18,14 +18,24 @@ import WECPoint._
 import WArray._
 
 object WECPoint extends EntityObject("WECPoint") {
-  case class WECPointConst(wrappedValue: ECPoint) extends WECPoint with WrapperConst[ECPoint] {
+  import Liftables._
+  case class WECPointConst(constValue: ECPoint) extends WECPoint with LiftedConst[ECPoint] {
     val selfType: Elem[WECPoint] = wECPointElement
     def getEncoded(x$1: Rep[Boolean]): Rep[WArray[Byte]] = delayInvoke
     def add(x$1: Rep[WECPoint]): Rep[WECPoint] = delayInvoke
     def multiply(x$1: Rep[WBigInteger]): Rep[WECPoint] = delayInvoke
   }
 
-  def mkWECPointConst(value: ECPoint): Rep[WECPoint] = WECPointConst(value)
+  implicit object LiftableECPoint extends Liftable[ECPoint, WECPoint] {
+    val eW: Elem[WECPoint] = wECPointElement
+    def lift(x: ECPoint): Rep[WECPoint] = WECPointConst(x)
+    def unlift(w: Rep[WECPoint]): ECPoint = w match {
+      case Def(WECPointConst(x: ECPoint)) => x
+      case _ => unliftError(w)
+    }
+  }
+
+  def liftECPoint(x: ECPoint): Rep[WECPoint] = liftConst(x)
 
   // entityProxy: single proxy for each type family
   implicit def proxyWECPoint(p: Rep[WECPoint]): WECPoint = {

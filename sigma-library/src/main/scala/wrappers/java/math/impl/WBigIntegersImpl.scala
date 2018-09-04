@@ -9,6 +9,8 @@ import scala.reflect._
 package impl {
   import java.math.BigInteger
 
+  import org.bouncycastle.math.ec.ECPoint
+
   // Abs -----------------------------------
 trait WBigIntegersDefs extends scalan.Scalan with WBigIntegers {
   self: WrappersModule =>
@@ -18,7 +20,8 @@ import WBigInteger._
 import WArray._
 
 object WBigInteger extends EntityObject("WBigInteger") {
-  case class WBigIntegerConst(wrappedValue: BigInteger) extends WBigInteger with WrapperConst[BigInteger] {
+  import Liftables._
+  case class WBigIntegerConst(constValue: BigInteger) extends WBigInteger with LiftedConst[BigInteger] {
     val selfType: Elem[WBigInteger] = wBigIntegerElement
     def longValueExact: Rep[Long] = delayInvoke
     def intValueExact: Rep[Int] = delayInvoke
@@ -64,7 +67,16 @@ object WBigInteger extends EntityObject("WBigInteger") {
     def toString(x$1: Rep[Int]): Rep[String] = delayInvoke
   }
 
-  def mkWBigIntegerConst(value: BigInteger): Rep[WBigInteger] = WBigIntegerConst(value)
+  implicit object LiftableBigInteger extends Liftable[BigInteger, WBigInteger] {
+    val eW: Elem[WBigInteger] = wBigIntegerElement
+    def lift(x: BigInteger): Rep[WBigInteger] = WBigIntegerConst(x)
+    def unlift(w: Rep[WBigInteger]): BigInteger = w match {
+      case Def(WBigIntegerConst(x: BigInteger)) => x
+      case _ => unliftError(w)
+    }
+  }
+
+  def liftBigInteger(x: BigInteger): Rep[WBigInteger] = liftConst(x)
 
   // entityProxy: single proxy for each type family
   implicit def proxyWBigInteger(p: Rep[WBigInteger]): WBigInteger = {
