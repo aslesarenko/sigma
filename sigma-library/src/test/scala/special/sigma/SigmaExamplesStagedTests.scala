@@ -22,19 +22,20 @@ class SigmaExamplesStagedTests extends BaseCtxTests {
 
   lazy val nameKey = MetaKey[String]("name")
 
-  test("CrowdFunding.asFunction") {
-    import CrowdFundingContract._
-    import ProveDlogEvidence._
-    import WECPoint._
-    val backer = RProveDlogEvidence(fresh[WECPoint].setMetadata(nameKey)("backer"))
-    val project = RProveDlogEvidence(fresh[WECPoint].setMetadata(nameKey)("project"))
-    val timeout = 100L
-    val minToRaise = 1000L
-    val c = RCrowdFundingContract(timeout, minToRaise, backer, project)
-    val f = c.asFunction
-
-    emitWithMD("f", f)
-  }
-  test("DemurrageCurrency.asFunction") {;
-  }
+//  test("CrowdFunding.asFunction") {
+//    import CrowdFundingContract._
+//    import ProveDlogEvidence._
+//    import ProveDlog._
+//    import WECPoint._
+//    val backer: Rep[ProveDlog] = RProveDlogEvidence(fresh[WECPoint].setMetadata(nameKey)("backer"))
+//    val project: Rep[ProveDlog] = RProveDlogEvidence(fresh[WECPoint].setMetadata(nameKey)("project"))
+//    val timeout = 100L
+//    val minToRaise = 1000L
+//    val c = RCrowdFundingContract(timeout, minToRaise, backer, project)
+//    val f = c.asFunction
+//
+//    emitWithMD("f", f)
+//  }
+//  test("DemurrageCurrency.asFunction") {;
+//  }
 }

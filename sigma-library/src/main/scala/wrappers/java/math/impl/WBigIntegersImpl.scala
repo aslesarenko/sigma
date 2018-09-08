@@ -7,9 +7,12 @@ import scala.reflect.runtime.universe._
 import scala.reflect._
 
 package impl {
+  import java.lang.reflect.Method
   import java.math.BigInteger
 
   import org.bouncycastle.math.ec.ECPoint
+  import special.sigma.wrappers.BigIntegerWrapSpec
+  import special.wrappers.ArrayWrapSpec
 
   // Abs -----------------------------------
 trait WBigIntegersDefs extends scalan.Scalan with WBigIntegers {
@@ -21,8 +24,9 @@ import WArray._
 
 object WBigInteger extends EntityObject("WBigInteger") {
   import Liftables._
-  case class WBigIntegerConst(constValue: BigInteger) extends WBigInteger with LiftedConst[BigInteger] {
+  case class WBigIntegerConst(constValue: BigInteger) extends WBigInteger with LiftedConst[BigInteger, WBigInteger] {
     val selfType: Elem[WBigInteger] = wBigIntegerElement
+    def liftable: Liftable[BigInteger, WBigInteger] = LiftableBigInteger
     def longValueExact: Rep[Long] = delayInvoke
     def intValueExact: Rep[Int] = delayInvoke
     def shortValueExact: Rep[Short] = delayInvoke
@@ -69,6 +73,7 @@ object WBigInteger extends EntityObject("WBigInteger") {
 
   implicit object LiftableBigInteger extends Liftable[BigInteger, WBigInteger] {
     val eW: Elem[WBigInteger] = wBigIntegerElement
+    val sourceClassTag = classTag[BigInteger]
     def lift(x: BigInteger): Rep[WBigInteger] = WBigIntegerConst(x)
     def unlift(w: Rep[WBigInteger]): BigInteger = w match {
       case Def(WBigIntegerConst(x: BigInteger)) => x
@@ -86,6 +91,19 @@ object WBigInteger extends EntityObject("WBigInteger") {
   // familyElem
   class WBigIntegerElem[To <: WBigInteger]
     extends EntityElem[To] {
+    override def liftable: Liftable[_, To] = LiftableBigInteger.asLiftable[BigInteger, To]
+
+    override protected def collectMethods: Map[Method, MethodDesc] = {
+      val wrapCls = classOf[BigIntegerWrapSpec]
+      val srcCls = classOf[BigInteger]
+      val cls = classOf[WBigInteger]
+      val spec = new BigIntegerWrapSpec
+      super.collectMethods ++ Seq(
+        cls.getMethod("add", SymClass) -> WMethodDesc(spec, wrapCls.getMethod("add", srcCls, classOf[BigInteger])),
+        cls.getMethod("multiply", SymClass) -> WMethodDesc(spec, wrapCls.getMethod("multiply", srcCls, classOf[BigInteger])),
+      )
+    }
+
     lazy val parent: Option[Elem[_]] = None
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
     override lazy val tag = {

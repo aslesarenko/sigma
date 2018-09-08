@@ -9,9 +9,9 @@ import special.sigma.SigmaPredef
 import scala.reflect.ClassTag
 
 class ECPointWrapSpec extends WrapSpec {
-  def getEncoded[A](g: ECPoint): Array[Byte] = g.getEncoded(true)
-  def exponentiate(l: ECPoint, r: BigInteger) = l.multiply(r)
-  def groupOp(l: ECPoint, r: ECPoint) = l.add(r)
+  def getEncoded[A](g: ECPoint, compressed: Boolean): Array[Byte] = g.getEncoded(compressed)
+  def multiply(l: ECPoint, r: BigInteger) = l.multiply(r)
+  def add(l: ECPoint, r: ECPoint) = l.add(r)
 }
 
 class BigIntegerWrapSpec extends WrapSpec {
