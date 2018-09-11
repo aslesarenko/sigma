@@ -4,7 +4,6 @@ import java.math.BigInteger
 
 import org.bouncycastle.crypto.ec.CustomNamedCurves
 import special.wrappers.WrappersTests
-
 import scala.language.reflectiveCalls
 
 class WECPointTests extends WrappersTests {

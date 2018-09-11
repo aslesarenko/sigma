@@ -47,6 +47,27 @@ trait ContractsTestkit {
     Cols.fromArray(res)
   }
 
+  val AliceId = Array[Byte](1) // 0x0001
+  def newAliceBox(id: Byte, value: Long, registers: Map[Int, Any] = Map()): Box = new TestBox(
+    Cols.fromArray(Array[Byte](0, id)), value,
+    Cols.fromArray(AliceId), noBytes, noBytes,
+    regs(registers.map { case (k, v) => (k.toByte, v) })
+  )
+
+  def newContext(height: Long, self: Box, vars: AnyValue*): TestContext = {
+    new TestContext(noInputs, noOutputs, height, self, emptyAvlTree, vars.toArray)
+  }
+
+  implicit class TestContextOps(ctx: TestContext) {
+    def withInputs(inputs: Box*) =
+      new TestContext(inputs.toArray, ctx.outputs, ctx.height, ctx.selfBox, emptyAvlTree, ctx.vars)
+    def withOutputs(outputs: Box*) =
+      new TestContext(ctx.inputs, outputs.toArray, ctx.height, ctx.selfBox, emptyAvlTree, ctx.vars)
+    def withVariables(vars: Map[Int, Any]) =
+      new TestContext(ctx.inputs, ctx.outputs, ctx.height, ctx.selfBox, emptyAvlTree,
+        contextVars(vars.map { case (k, v) => (k.toByte, v) }).arr)
+  }
+
   implicit def boolToSigma(b: Boolean): SigmaProp = TrivialSigma(b)
   
   case class NoEnvContract(condition: Context => Boolean) extends DefaultContract {
