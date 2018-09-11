@@ -77,10 +77,10 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
   def Cols = new ColOverArrayBuilder
 
   @NeverInline
-  def verifyZK(proof: => Sigma) = proof.isValid
+  def verifyZK(proof: => SigmaProp) = proof.isValid
 
   @NeverInline
-  def atLeast(bound: Int, props: Col[Sigma]): Sigma = {
+  def atLeast(bound: Int, props: Col[SigmaProp]): SigmaProp = {
     if (bound <= 0) return TrivialSigma(true)
     if (bound > props.length) return TrivialSigma(false)
     var nValids = 0
@@ -97,12 +97,12 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
   def anyOf(conditions: Col[Boolean]) = conditions.exists(c => c)
 
   @NeverInline
-  def allZK(proofs: Col[Sigma]) = new TrivialSigma(proofs.forall(p => p.isValid))
+  def allZK(proofs: Col[SigmaProp]) = new TrivialSigma(proofs.forall(p => p.isValid))
   @NeverInline
-  def anyZK(proofs: Col[Sigma]) = new TrivialSigma(proofs.exists(p => p.isValid))
+  def anyZK(proofs: Col[SigmaProp]) = new TrivialSigma(proofs.exists(p => p.isValid))
 
   @NeverInline
-  def sigmaProp(b: Boolean): Sigma = TrivialSigma(b)
+  def sigmaProp(b: Boolean): SigmaProp = TrivialSigma(b)
 
   @NeverInline
   def blake2b256(bytes: Col[Byte]): Col[Byte] = ???
@@ -120,10 +120,10 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
   def longToByteArray(l: Long): Col[Byte] = Cols.fromArray(Longs.toByteArray(l))
 
   @NeverInline
-  def proveDlog(g: ECPoint): Sigma = new ProveDlogEvidence(g)
+  def proveDlog(g: ECPoint): SigmaProp = new ProveDlogEvidence(g)
 
   @NeverInline
-  def proveDHTuple(g: ECPoint, h: ECPoint, u: ECPoint, v: ECPoint): Sigma = ???
+  def proveDHTuple(g: ECPoint, h: ECPoint, u: ECPoint, v: ECPoint): SigmaProp = ???
 
   @NeverInline
   def isMember(tree: AvlTree, key: Col[Byte], proof: Col[Byte]): Boolean = ???
@@ -135,43 +135,43 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
   def groupGenerator: ECPoint = __g__
 }
 
-trait DefaultSigma extends Sigma {
+trait DefaultSigma extends SigmaProp {
   def builder = new TestSigmaDslBuilder
   @NeverInline
   @OverloadId("and_sigma")
-  def &&(other: Sigma): Sigma = new TrivialSigma(isValid && other.isValid)
+  def &&(other: SigmaProp): SigmaProp = new TrivialSigma(isValid && other.isValid)
 
   @NeverInline
   @OverloadId("and_bool")
-  def &&(other: Boolean): Sigma = new TrivialSigma(isValid && other)
+  def &&(other: Boolean): SigmaProp = new TrivialSigma(isValid && other)
 
   @NeverInline
   @OverloadId("or_sigma")
-  def ||(other: Sigma): Sigma = new TrivialSigma(isValid || other.isValid)
+  def ||(other: SigmaProp): SigmaProp = new TrivialSigma(isValid || other.isValid)
 
   @NeverInline
   @OverloadId("or_bool")
-  def ||(other: Boolean): Sigma = new TrivialSigma(isValid || other)
+  def ||(other: Boolean): SigmaProp = new TrivialSigma(isValid || other)
 
   @NeverInline
-  def lazyAnd(other: => Sigma): Sigma = new TrivialSigma(isValid && other.isValid)
+  def lazyAnd(other: => SigmaProp): SigmaProp = new TrivialSigma(isValid && other.isValid)
   @NeverInline
-  def lazyOr(other: => Sigma): Sigma = new TrivialSigma(isValid || other.isValid)
+  def lazyOr(other: => SigmaProp): SigmaProp = new TrivialSigma(isValid || other.isValid)
 }
 
-case class TrivialSigma(val isValid: Boolean) extends Sigma with DefaultSigma {
+case class TrivialSigma(val isValid: Boolean) extends DefaultSigma {
   @NeverInline
   def propBytes = builder.Cols(if(isValid) 1 else 0)
 }
 
-case class ProveDlogEvidence(val value: ECPoint) extends ProveDlog with DefaultSigma {
+case class ProveDlogEvidence(val value: ECPoint) extends DefaultSigma {
   @NeverInline
   def propBytes: Col[Byte] = new ColOverArray(value.getEncoded(true))
   @NeverInline
   def isValid = true
 }
 
-case class ProveDHTEvidence(val value: ECPoint) extends ProveDlog with DefaultSigma {
+case class ProveDHTEvidence(val value: ECPoint) extends DefaultSigma {
   @NeverInline
   def propBytes: Col[Byte] = new ColOverArray(value.getEncoded(true))
   @NeverInline

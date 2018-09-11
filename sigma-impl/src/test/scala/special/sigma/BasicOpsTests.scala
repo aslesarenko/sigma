@@ -4,7 +4,7 @@ import org.scalatest.{Matchers, FunSuite}
 
 class BasicOpsTests extends FunSuite with ContractsTestkit with Matchers {
   test("atLeast") {
-    val props = Cols.fromArray(Array[Sigma](false, true, true, false))
+    val props = Cols.fromArray(Array[SigmaProp](false, true, true, false))
     // border cases
     SigmaDsl.atLeast(0, props).isValid shouldBe true
     SigmaDsl.atLeast(5, props).isValid shouldBe false
@@ -35,16 +35,16 @@ class BasicOpsTests extends FunSuite with ContractsTestkit with Matchers {
 
   case class Contract1(base64_pk1: String) extends DefaultContract {
     def canOpen(ctx: Context): Boolean = {
-      val pk: Sigma = SigmaDsl.PubKey(base64_pk1)
+      val pk: SigmaProp = SigmaDsl.PubKey(base64_pk1)
       pk.isValid
     }
   }
 
   case class Contract2(base64_pkA: String, base64_pkB: String, base64_pkC: String) extends DefaultContract {
     def canOpen(ctx: Context): Boolean = {
-      val pkA: Sigma = SigmaDsl.PubKey(base64_pkA)
-      val pkB: Sigma = SigmaDsl.PubKey(base64_pkB)
-      val pkC: Sigma = SigmaDsl.PubKey(base64_pkC)
+      val pkA: SigmaProp = SigmaDsl.PubKey(base64_pkA)
+      val pkB: SigmaProp = SigmaDsl.PubKey(base64_pkB)
+      val pkC: SigmaProp = SigmaDsl.PubKey(base64_pkC)
       verifyZK(pkA || pkB || pkC)
     }
   }

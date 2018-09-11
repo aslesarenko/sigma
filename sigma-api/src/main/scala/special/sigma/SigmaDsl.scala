@@ -14,28 +14,25 @@ trait DslObject {
   def builder: SigmaDslBuilder
 }
 
-@sigmalang trait Sigma extends DslObject {
+@scalan.Liftable
+trait SigmaProp extends DslObject {
   def isValid: Boolean
   def propBytes: Col[Byte]
-  @OverloadId("and_sigma") def &&(other: Sigma): Sigma
-  @OverloadId("and_bool")  def &&(other: Boolean): Sigma
-  @OverloadId("or_sigma") def ||(other: Sigma): Sigma
-  @OverloadId("or_bool")  def ||(other: Boolean): Sigma
-  def lazyAnd(other: => Sigma): Sigma
-  def lazyOr(other: => Sigma): Sigma
-}
-trait SigmaBuilder extends DslBuilder {
+  @OverloadId("and_sigma") def &&(other: SigmaProp): SigmaProp
+  @OverloadId("and_bool")  def &&(other: Boolean): SigmaProp
+  @OverloadId("or_sigma") def ||(other: SigmaProp): SigmaProp
+  @OverloadId("or_bool")  def ||(other: Boolean): SigmaProp
+  def lazyAnd(other: => SigmaProp): SigmaProp
+  def lazyOr(other: => SigmaProp): SigmaProp
 }
 
-@sigmalang trait ProveDlog extends Sigma {
-  def value: ECPoint
-}
-
+@scalan.Liftable
 trait AnyValue {
   def dataSize: Long
 }
 
-@sigmalang trait Box extends DslObject {
+@scalan.Liftable
+trait Box extends DslObject {
   def id: Col[Byte]
   def value: Long
   def bytes: Col[Byte]
@@ -68,9 +65,8 @@ trait AnyValue {
 
   def tokens: Col[(Col[Byte], Long)] = this.R2[Col[(Col[Byte], Long)]].get
 }
-trait BoxBuilder extends DslBuilder {
-}
 
+@scalan.Liftable
 trait AvlTree extends DslObject {
   def startingDigest: Col[Byte]
   def keyLength: Int
@@ -79,9 +75,8 @@ trait AvlTree extends DslObject {
   def maxDeletes: Option[Int]
   def dataSize: Long
 }
-trait AvlTreeBuilder extends DslBuilder {
-}
 
+@scalan.Liftable
 trait Context {
   def builder: SigmaDslBuilder
   def OUTPUTS: Col[Box]
@@ -93,28 +88,26 @@ trait Context {
   def deserialize[T](id: Byte)(implicit cT:ClassTag[T]): Option[T]
 }
 
-trait ContextBuilder extends DslBuilder {
-}
-
-@sigmalang trait SigmaContract {
+@scalan.Liftable
+trait SigmaContract {
   def builder: SigmaDslBuilder
   @NeverInline
   def Collection[T](items: T*): Col[T] = this.builder.Cols.apply[T](items:_*)
 
   /** !!! all methods should delegate to builder */
 
-  def verifyZK(cond: => Sigma): Boolean = this.builder.verifyZK(cond)
-  def atLeast(bound: Int, props: Col[Sigma]): Sigma = this.builder.atLeast(bound, props)
+  def verifyZK(cond: => SigmaProp): Boolean = this.builder.verifyZK(cond)
+  def atLeast(bound: Int, props: Col[SigmaProp]): SigmaProp = this.builder.atLeast(bound, props)
 
   def allOf(conditions: Col[Boolean]): Boolean = this.builder.allOf(conditions)
-  def allZK(conditions: Col[Sigma]): Sigma = this.builder.allZK(conditions)
+  def allZK(conditions: Col[SigmaProp]): SigmaProp = this.builder.allZK(conditions)
 
   def anyOf(conditions: Col[Boolean]): Boolean = this.builder.anyOf(conditions)
-  def anyZK(conditions: Col[Sigma]): Sigma = this.builder.anyZK(conditions)
+  def anyZK(conditions: Col[SigmaProp]): SigmaProp = this.builder.anyZK(conditions)
 
-  def PubKey(base64String: String): Sigma = this.builder.PubKey(base64String)
+  def PubKey(base64String: String): SigmaProp = this.builder.PubKey(base64String)
 
-  def sigmaProp(b: Boolean): Sigma = this.builder.sigmaProp(b)
+  def sigmaProp(b: Boolean): SigmaProp = this.builder.sigmaProp(b)
 
   def blake2b256(bytes: Col[Byte]): Col[Byte] = this.builder.blake2b256(bytes)
   def sha256(bytes: Col[Byte]): Col[Byte] = this.builder.sha256(bytes)
@@ -122,8 +115,8 @@ trait ContextBuilder extends DslBuilder {
   def byteArrayToBigInt(bytes: Col[Byte]): BigInteger = this.builder.byteArrayToBigInt(bytes)
   def longToByteArray(l: Long): Col[Byte] = this.builder.longToByteArray(l)
 
-  def proveDlog(g: ECPoint): Sigma = this.builder.proveDlog(g)
-  def proveDHTuple(g: ECPoint, h: ECPoint, u: ECPoint, v: ECPoint): Sigma = this.builder.proveDHTuple(g, h, u, v)
+  def proveDlog(g: ECPoint): SigmaProp = this.builder.proveDlog(g)
+  def proveDHTuple(g: ECPoint, h: ECPoint, u: ECPoint, v: ECPoint): SigmaProp = this.builder.proveDHTuple(g, h, u, v)
 
   def isMember(tree: AvlTree, key: Col[Byte], proof: Col[Byte]): Boolean = this.builder.isMember(tree, key, proof)
   def groupGenerator: ECPoint = this.builder.groupGenerator
@@ -133,29 +126,22 @@ trait ContextBuilder extends DslBuilder {
   def asFunction: Context => Boolean = (ctx: Context) => this.canOpen(ctx)
 }
 
-trait SigmaContractBuilder extends DslBuilder {
-}
-
-trait SigmaDslBuilder
-  extends SigmaBuilder
-     with BoxBuilder
-     with AvlTreeBuilder
-     with ContextBuilder
-     with SigmaContractBuilder {
+@scalan.Liftable
+trait SigmaDslBuilder extends DslBuilder {
   def Cols: ColBuilder
-  def verifyZK(cond: => Sigma): Boolean
+  def verifyZK(cond: => SigmaProp): Boolean
 
-  def atLeast(bound: Int, props: Col[Sigma]): Sigma
+  def atLeast(bound: Int, props: Col[SigmaProp]): SigmaProp
 
   def allOf(conditions: Col[Boolean]): Boolean
-  def allZK(conditions: Col[Sigma]): Sigma
+  def allZK(conditions: Col[SigmaProp]): SigmaProp
 
   def anyOf(conditions: Col[Boolean]): Boolean
-  def anyZK(conditions: Col[Sigma]): Sigma
+  def anyZK(conditions: Col[SigmaProp]): SigmaProp
 
-  def PubKey(base64String: String): Sigma
+  def PubKey(base64String: String): SigmaProp
 
-  def sigmaProp(b: Boolean): Sigma
+  def sigmaProp(b: Boolean): SigmaProp
 
   def blake2b256(bytes: Col[Byte]): Col[Byte]
   def sha256(bytes: Col[Byte]): Col[Byte]
@@ -163,8 +149,8 @@ trait SigmaDslBuilder
   def byteArrayToBigInt(bytes: Col[Byte]): BigInteger
   def longToByteArray(l: Long): Col[Byte]
 
-  def proveDlog(g: ECPoint): Sigma
-  def proveDHTuple(g: ECPoint, h: ECPoint, u: ECPoint, v: ECPoint): Sigma
+  def proveDlog(g: ECPoint): SigmaProp
+  def proveDHTuple(g: ECPoint, h: ECPoint, u: ECPoint, v: ECPoint): SigmaProp
 
   def isMember(tree: AvlTree, key: Col[Byte], proof: Col[Byte]): Boolean
   def groupGenerator: ECPoint

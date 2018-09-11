@@ -5,8 +5,8 @@ import special.collection.Col
 trait CrowdFunding extends SigmaContract {
   def deadline: Long
   def minToRaise: Long
-  def backerPubKey: ProveDlog
-  def projectPubKey: ProveDlog
+  def backerPubKey: SigmaProp
+  def projectPubKey: SigmaProp
 
   @clause def canOpen(ctx: Context) = verifyZK {
     val fundraisingFailure = sigmaProp(ctx.HEIGHT >= deadline) && backerPubKey
@@ -25,8 +25,8 @@ trait CrowdFunding extends SigmaContract {
 trait CrossChainAtomicSwap extends SigmaContract {
   def deadlineBob: Long
   def deadlineAlice: Long
-  def pkA: Sigma
-  def pkB: Sigma
+  def pkA: SigmaProp
+  def pkB: SigmaProp
   def hx: Col[Byte]
 
   def templateForBobChain(ctx: Context) = verifyZK {
@@ -51,8 +51,8 @@ trait CrossChainAtomicSwap extends SigmaContract {
 
 trait InChainAtomicSwap extends SigmaContract {
   def deadline: Long
-  def pkA: Sigma
-  def pkB: Sigma
+  def pkA: SigmaProp
+  def pkB: SigmaProp
   def token1: Col[Byte]
 
   def templateForAlice(ctx: Context) = verifyZK {
@@ -104,7 +104,7 @@ trait CoinEmission extends SigmaContract {
 trait DemurrageCurrency extends SigmaContract {
   def demurragePeriod: Long
   def demurrageCost: Long
-  def regScript: ProveDlog
+  def regScript: SigmaProp
 
   @clause def canOpen(ctx: Context) = verifyZK {
     val c2 =

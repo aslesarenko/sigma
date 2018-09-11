@@ -2,15 +2,15 @@ package special.sigma
 
 class CrowdFundingContract(
     val deadline: Long, val minToRaise: Long,
-    val backerPubKey: ProveDlog,
-    val projectPubKey: ProveDlog
+    val backerPubKey: SigmaProp,
+    val projectPubKey: SigmaProp
 ) extends CrowdFunding with DefaultContract {
 }
 
 class DemurrageCurrencyContract(
     val demurragePeriod: Long,
     val demurrageCost: Long,
-    val regScript: ProveDlog
+    val regScript: SigmaProp
 ) extends DemurrageCurrency with DefaultContract {
 }
 
