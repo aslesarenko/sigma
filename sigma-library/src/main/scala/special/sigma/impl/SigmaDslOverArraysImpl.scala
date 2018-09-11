@@ -11,7 +11,7 @@ trait SigmaDslOverArraysDefs extends scalan.Scalan with SigmaDslOverArrays {
 import IsoUR._
 import Converter._
 import TestSigmaDslBuilder._
-import Sigma._
+import SigmaProp._
 import SigmaContract._
 import Col._
 import WArray._
@@ -27,7 +27,6 @@ import WBigInteger._
 import WECPoint._
 import SigmaDslBuilder._
 import DefaultSigma._
-import ProveDlog._
 import DefaultContract._
 import TestBox._
 import TestAvlTree._
@@ -44,8 +43,8 @@ object DefaultSigma extends EntityObject("DefaultSigma") {
 
   // familyElem
   class DefaultSigmaElem[To <: DefaultSigma]
-    extends SigmaElem[To] {
-    override lazy val parent: Option[Elem[_]] = Some(sigmaElement)
+    extends SigmaPropElem[To] {
+    override lazy val parent: Option[Elem[_]] = Some(sigmaPropElement)
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
     override lazy val tag = {
       weakTypeTag[DefaultSigma].asInstanceOf[WeakTypeTag[To]]
@@ -96,12 +95,12 @@ object DefaultSigma extends EntityObject("DefaultSigma") {
     }
 
     object and_sigma_&& {
-      def unapply(d: Def[_]): Option[(Rep[DefaultSigma], Rep[Sigma])] = d match {
+      def unapply(d: Def[_]): Option[(Rep[DefaultSigma], Rep[SigmaProp])] = d match {
         case MethodCall(receiver, method, Seq(other, _*), _) if receiver.elem.isInstanceOf[DefaultSigmaElem[_]] && method.getName == "$amp$amp" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "and_sigma" } =>
-          Some((receiver, other)).asInstanceOf[Option[(Rep[DefaultSigma], Rep[Sigma])]]
+          Some((receiver, other)).asInstanceOf[Option[(Rep[DefaultSigma], Rep[SigmaProp])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[DefaultSigma], Rep[Sigma])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[DefaultSigma], Rep[SigmaProp])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
@@ -120,12 +119,12 @@ object DefaultSigma extends EntityObject("DefaultSigma") {
     }
 
     object or_sigma_|| {
-      def unapply(d: Def[_]): Option[(Rep[DefaultSigma], Rep[Sigma])] = d match {
+      def unapply(d: Def[_]): Option[(Rep[DefaultSigma], Rep[SigmaProp])] = d match {
         case MethodCall(receiver, method, Seq(other, _*), _) if receiver.elem.isInstanceOf[DefaultSigmaElem[_]] && method.getName == "$bar$bar" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "or_sigma" } =>
-          Some((receiver, other)).asInstanceOf[Option[(Rep[DefaultSigma], Rep[Sigma])]]
+          Some((receiver, other)).asInstanceOf[Option[(Rep[DefaultSigma], Rep[SigmaProp])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[DefaultSigma], Rep[Sigma])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[DefaultSigma], Rep[SigmaProp])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
@@ -144,24 +143,24 @@ object DefaultSigma extends EntityObject("DefaultSigma") {
     }
 
     object lazyAnd {
-      def unapply(d: Def[_]): Option[(Rep[DefaultSigma], Rep[Thunk[Sigma]])] = d match {
+      def unapply(d: Def[_]): Option[(Rep[DefaultSigma], Rep[Thunk[SigmaProp]])] = d match {
         case MethodCall(receiver, method, Seq(other, _*), _) if receiver.elem.isInstanceOf[DefaultSigmaElem[_]] && method.getName == "lazyAnd" =>
-          Some((receiver, other)).asInstanceOf[Option[(Rep[DefaultSigma], Rep[Thunk[Sigma]])]]
+          Some((receiver, other)).asInstanceOf[Option[(Rep[DefaultSigma], Rep[Thunk[SigmaProp]])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[DefaultSigma], Rep[Thunk[Sigma]])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[DefaultSigma], Rep[Thunk[SigmaProp]])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object lazyOr {
-      def unapply(d: Def[_]): Option[(Rep[DefaultSigma], Rep[Thunk[Sigma]])] = d match {
+      def unapply(d: Def[_]): Option[(Rep[DefaultSigma], Rep[Thunk[SigmaProp]])] = d match {
         case MethodCall(receiver, method, Seq(other, _*), _) if receiver.elem.isInstanceOf[DefaultSigmaElem[_]] && method.getName == "lazyOr" =>
-          Some((receiver, other)).asInstanceOf[Option[(Rep[DefaultSigma], Rep[Thunk[Sigma]])]]
+          Some((receiver, other)).asInstanceOf[Option[(Rep[DefaultSigma], Rep[Thunk[SigmaProp]])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[DefaultSigma], Rep[Thunk[Sigma]])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[DefaultSigma], Rep[Thunk[SigmaProp]])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
@@ -926,24 +925,24 @@ object TestSigmaDslBuilder extends EntityObject("TestSigmaDslBuilder") {
     }
 
     object verifyZK {
-      def unapply(d: Def[_]): Option[(Rep[TestSigmaDslBuilder], Rep[Thunk[Sigma]])] = d match {
+      def unapply(d: Def[_]): Option[(Rep[TestSigmaDslBuilder], Rep[Thunk[SigmaProp]])] = d match {
         case MethodCall(receiver, method, Seq(proof, _*), _) if receiver.elem.isInstanceOf[TestSigmaDslBuilderElem] && method.getName == "verifyZK" =>
-          Some((receiver, proof)).asInstanceOf[Option[(Rep[TestSigmaDslBuilder], Rep[Thunk[Sigma]])]]
+          Some((receiver, proof)).asInstanceOf[Option[(Rep[TestSigmaDslBuilder], Rep[Thunk[SigmaProp]])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[TestSigmaDslBuilder], Rep[Thunk[Sigma]])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[TestSigmaDslBuilder], Rep[Thunk[SigmaProp]])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object atLeast {
-      def unapply(d: Def[_]): Option[(Rep[TestSigmaDslBuilder], Rep[Int], Rep[Col[Sigma]])] = d match {
+      def unapply(d: Def[_]): Option[(Rep[TestSigmaDslBuilder], Rep[Int], Rep[Col[SigmaProp]])] = d match {
         case MethodCall(receiver, method, Seq(bound, props, _*), _) if receiver.elem.isInstanceOf[TestSigmaDslBuilderElem] && method.getName == "atLeast" =>
-          Some((receiver, bound, props)).asInstanceOf[Option[(Rep[TestSigmaDslBuilder], Rep[Int], Rep[Col[Sigma]])]]
+          Some((receiver, bound, props)).asInstanceOf[Option[(Rep[TestSigmaDslBuilder], Rep[Int], Rep[Col[SigmaProp]])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[TestSigmaDslBuilder], Rep[Int], Rep[Col[Sigma]])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[TestSigmaDslBuilder], Rep[Int], Rep[Col[SigmaProp]])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
@@ -974,24 +973,24 @@ object TestSigmaDslBuilder extends EntityObject("TestSigmaDslBuilder") {
     }
 
     object allZK {
-      def unapply(d: Def[_]): Option[(Rep[TestSigmaDslBuilder], Rep[Col[Sigma]])] = d match {
+      def unapply(d: Def[_]): Option[(Rep[TestSigmaDslBuilder], Rep[Col[SigmaProp]])] = d match {
         case MethodCall(receiver, method, Seq(proofs, _*), _) if receiver.elem.isInstanceOf[TestSigmaDslBuilderElem] && method.getName == "allZK" =>
-          Some((receiver, proofs)).asInstanceOf[Option[(Rep[TestSigmaDslBuilder], Rep[Col[Sigma]])]]
+          Some((receiver, proofs)).asInstanceOf[Option[(Rep[TestSigmaDslBuilder], Rep[Col[SigmaProp]])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[TestSigmaDslBuilder], Rep[Col[Sigma]])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[TestSigmaDslBuilder], Rep[Col[SigmaProp]])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object anyZK {
-      def unapply(d: Def[_]): Option[(Rep[TestSigmaDslBuilder], Rep[Col[Sigma]])] = d match {
+      def unapply(d: Def[_]): Option[(Rep[TestSigmaDslBuilder], Rep[Col[SigmaProp]])] = d match {
         case MethodCall(receiver, method, Seq(proofs, _*), _) if receiver.elem.isInstanceOf[TestSigmaDslBuilderElem] && method.getName == "anyZK" =>
-          Some((receiver, proofs)).asInstanceOf[Option[(Rep[TestSigmaDslBuilder], Rep[Col[Sigma]])]]
+          Some((receiver, proofs)).asInstanceOf[Option[(Rep[TestSigmaDslBuilder], Rep[Col[SigmaProp]])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[TestSigmaDslBuilder], Rep[Col[Sigma]])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[TestSigmaDslBuilder], Rep[Col[SigmaProp]])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
@@ -1131,11 +1130,11 @@ object TrivialSigma extends EntityObject("TrivialSigma") {
   }
   // elem for concrete class
   class TrivialSigmaElem(val iso: Iso[TrivialSigmaData, TrivialSigma])
-    extends SigmaElem[TrivialSigma]
+    extends DefaultSigmaElem[TrivialSigma]
     with ConcreteElem[TrivialSigmaData, TrivialSigma] {
-    override lazy val parent: Option[Elem[_]] = Some(sigmaElement)
+    override lazy val parent: Option[Elem[_]] = Some(defaultSigmaElement)
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
-    override def convertSigma(x: Rep[Sigma]) = RTrivialSigma(x.isValid)
+    override def convertDefaultSigma(x: Rep[DefaultSigma]) = RTrivialSigma(x.isValid)
     override def getDefaultRep = RTrivialSigma(false)
     override lazy val tag = {
       weakTypeTag[TrivialSigma]
@@ -1177,7 +1176,7 @@ object TrivialSigma extends EntityObject("TrivialSigma") {
     def apply(isValid: Rep[Boolean]): Rep[TrivialSigma] =
       mkTrivialSigma(isValid)
 
-    def unapply(p: Rep[Sigma]) = unmkTrivialSigma(p)
+    def unapply(p: Rep[DefaultSigma]) = unmkTrivialSigma(p)
   }
   lazy val TrivialSigmaRep: Rep[TrivialSigmaCompanionCtor] = new TrivialSigmaCompanionCtor
   lazy val RTrivialSigma: TrivialSigmaCompanionCtor = proxyTrivialSigmaCompanion(TrivialSigmaRep)
@@ -1207,7 +1206,7 @@ object TrivialSigma extends EntityObject("TrivialSigma") {
     (isValid: Rep[Boolean]): Rep[TrivialSigma] = {
     new TrivialSigmaCtor(isValid)
   }
-  def unmkTrivialSigma(p: Rep[Sigma]) = p.elem.asInstanceOf[Elem[_]] match {
+  def unmkTrivialSigma(p: Rep[DefaultSigma]) = p.elem.asInstanceOf[Elem[_]] match {
     case _: TrivialSigmaElem @unchecked =>
       Some((p.asRep[TrivialSigma].isValid))
     case _ =>
@@ -1241,11 +1240,12 @@ object ProveDlogEvidence extends EntityObject("ProveDlogEvidence") {
   }
   // elem for concrete class
   class ProveDlogEvidenceElem(val iso: Iso[ProveDlogEvidenceData, ProveDlogEvidence])
-    extends ProveDlogElem[ProveDlogEvidence]
+    extends DefaultSigmaElem[ProveDlogEvidence]
     with ConcreteElem[ProveDlogEvidenceData, ProveDlogEvidence] {
-    override lazy val parent: Option[Elem[_]] = Some(proveDlogElement)
+    override lazy val parent: Option[Elem[_]] = Some(defaultSigmaElement)
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
-    override def convertProveDlog(x: Rep[ProveDlog]) = RProveDlogEvidence(x.value)
+    override def convertDefaultSigma(x: Rep[DefaultSigma]) = // Converter is not generated by meta
+!!!("Cannot convert from DefaultSigma to ProveDlogEvidence: missing fields List(value)")
     override def getDefaultRep = RProveDlogEvidence(element[WECPoint].defaultRepValue)
     override lazy val tag = {
       weakTypeTag[ProveDlogEvidence]
@@ -1287,7 +1287,7 @@ object ProveDlogEvidence extends EntityObject("ProveDlogEvidence") {
     def apply(value: Rep[WECPoint]): Rep[ProveDlogEvidence] =
       mkProveDlogEvidence(value)
 
-    def unapply(p: Rep[ProveDlog]) = unmkProveDlogEvidence(p)
+    def unapply(p: Rep[DefaultSigma]) = unmkProveDlogEvidence(p)
   }
   lazy val ProveDlogEvidenceRep: Rep[ProveDlogEvidenceCompanionCtor] = new ProveDlogEvidenceCompanionCtor
   lazy val RProveDlogEvidence: ProveDlogEvidenceCompanionCtor = proxyProveDlogEvidenceCompanion(ProveDlogEvidenceRep)
@@ -1317,7 +1317,7 @@ object ProveDlogEvidence extends EntityObject("ProveDlogEvidence") {
     (value: Rep[WECPoint]): Rep[ProveDlogEvidence] = {
     new ProveDlogEvidenceCtor(value)
   }
-  def unmkProveDlogEvidence(p: Rep[ProveDlog]) = p.elem.asInstanceOf[Elem[_]] match {
+  def unmkProveDlogEvidence(p: Rep[DefaultSigma]) = p.elem.asInstanceOf[Elem[_]] match {
     case _: ProveDlogEvidenceElem @unchecked =>
       Some((p.asRep[ProveDlogEvidence].value))
     case _ =>
@@ -1363,11 +1363,12 @@ object ProveDHTEvidence extends EntityObject("ProveDHTEvidence") {
   }
   // elem for concrete class
   class ProveDHTEvidenceElem(val iso: Iso[ProveDHTEvidenceData, ProveDHTEvidence])
-    extends ProveDlogElem[ProveDHTEvidence]
+    extends DefaultSigmaElem[ProveDHTEvidence]
     with ConcreteElem[ProveDHTEvidenceData, ProveDHTEvidence] {
-    override lazy val parent: Option[Elem[_]] = Some(proveDlogElement)
+    override lazy val parent: Option[Elem[_]] = Some(defaultSigmaElement)
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
-    override def convertProveDlog(x: Rep[ProveDlog]) = RProveDHTEvidence(x.value)
+    override def convertDefaultSigma(x: Rep[DefaultSigma]) = // Converter is not generated by meta
+!!!("Cannot convert from DefaultSigma to ProveDHTEvidence: missing fields List(value)")
     override def getDefaultRep = RProveDHTEvidence(element[WECPoint].defaultRepValue)
     override lazy val tag = {
       weakTypeTag[ProveDHTEvidence]
@@ -1409,7 +1410,7 @@ object ProveDHTEvidence extends EntityObject("ProveDHTEvidence") {
     def apply(value: Rep[WECPoint]): Rep[ProveDHTEvidence] =
       mkProveDHTEvidence(value)
 
-    def unapply(p: Rep[ProveDlog]) = unmkProveDHTEvidence(p)
+    def unapply(p: Rep[DefaultSigma]) = unmkProveDHTEvidence(p)
   }
   lazy val ProveDHTEvidenceRep: Rep[ProveDHTEvidenceCompanionCtor] = new ProveDHTEvidenceCompanionCtor
   lazy val RProveDHTEvidence: ProveDHTEvidenceCompanionCtor = proxyProveDHTEvidenceCompanion(ProveDHTEvidenceRep)
@@ -1439,7 +1440,7 @@ object ProveDHTEvidence extends EntityObject("ProveDHTEvidence") {
     (value: Rep[WECPoint]): Rep[ProveDHTEvidence] = {
     new ProveDHTEvidenceCtor(value)
   }
-  def unmkProveDHTEvidence(p: Rep[ProveDlog]) = p.elem.asInstanceOf[Elem[_]] match {
+  def unmkProveDHTEvidence(p: Rep[DefaultSigma]) = p.elem.asInstanceOf[Elem[_]] match {
     case _: ProveDHTEvidenceElem @unchecked =>
       Some((p.asRep[ProveDHTEvidence].value))
     case _ =>

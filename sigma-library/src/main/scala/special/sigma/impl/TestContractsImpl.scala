@@ -15,11 +15,11 @@ import DefaultContract._
 import DemurrageCurrency._
 import CrowdFundingContract._
 import DemurrageCurrencyContract._
-import ProveDlog._
+import SigmaProp._
 
 object CrowdFundingContract extends EntityObject("CrowdFundingContract") {
   case class CrowdFundingContractCtor
-      (override val deadline: Rep[Long], override val minToRaise: Rep[Long], override val backerPubKey: Rep[ProveDlog], override val projectPubKey: Rep[ProveDlog])
+      (override val deadline: Rep[Long], override val minToRaise: Rep[Long], override val backerPubKey: Rep[SigmaProp], override val projectPubKey: Rep[SigmaProp])
     extends CrowdFundingContract(deadline, minToRaise, backerPubKey, projectPubKey) with Def[CrowdFundingContract] {
     lazy val selfType = element[CrowdFundingContract]
   }
@@ -30,26 +30,26 @@ object CrowdFundingContract extends EntityObject("CrowdFundingContract") {
     override lazy val parent: Option[Elem[_]] = Some(crowdFundingElement)
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
     override def convertCrowdFunding(x: Rep[CrowdFunding]) = RCrowdFundingContract(x.deadline, x.minToRaise, x.backerPubKey, x.projectPubKey)
-    override def getDefaultRep = RCrowdFundingContract(0l, 0l, element[ProveDlog].defaultRepValue, element[ProveDlog].defaultRepValue)
+    override def getDefaultRep = RCrowdFundingContract(0l, 0l, element[SigmaProp].defaultRepValue, element[SigmaProp].defaultRepValue)
     override lazy val tag = {
       weakTypeTag[CrowdFundingContract]
     }
   }
 
   // state representation type
-  type CrowdFundingContractData = (Long, (Long, (ProveDlog, ProveDlog)))
+  type CrowdFundingContractData = (Long, (Long, (SigmaProp, SigmaProp)))
 
   // 3) Iso for concrete class
   class CrowdFundingContractIso
     extends EntityIso[CrowdFundingContractData, CrowdFundingContract] with Def[CrowdFundingContractIso] {
     private lazy val _safeFrom = fun { p: Rep[CrowdFundingContract] => (p.deadline, p.minToRaise, p.backerPubKey, p.projectPubKey) }
     override def from(p: Rep[CrowdFundingContract]) =
-      tryConvert[CrowdFundingContract, (Long, (Long, (ProveDlog, ProveDlog)))](eTo, eFrom, p, _safeFrom)
-    override def to(p: Rep[(Long, (Long, (ProveDlog, ProveDlog)))]) = {
+      tryConvert[CrowdFundingContract, (Long, (Long, (SigmaProp, SigmaProp)))](eTo, eFrom, p, _safeFrom)
+    override def to(p: Rep[(Long, (Long, (SigmaProp, SigmaProp)))]) = {
       val Pair(deadline, Pair(minToRaise, Pair(backerPubKey, projectPubKey))) = p
       RCrowdFundingContract(deadline, minToRaise, backerPubKey, projectPubKey)
     }
-    lazy val eFrom = pairElement(element[Long], pairElement(element[Long], pairElement(element[ProveDlog], element[ProveDlog])))
+    lazy val eFrom = pairElement(element[Long], pairElement(element[Long], pairElement(element[SigmaProp], element[SigmaProp])))
     lazy val eTo = new CrowdFundingContractElem(self)
     lazy val selfType = new CrowdFundingContractIsoElem
     def productArity = 0
@@ -72,7 +72,7 @@ object CrowdFundingContract extends EntityObject("CrowdFundingContract") {
     }
 
     @scalan.OverloadId("fromFields")
-    def apply(deadline: Rep[Long], minToRaise: Rep[Long], backerPubKey: Rep[ProveDlog], projectPubKey: Rep[ProveDlog]): Rep[CrowdFundingContract] =
+    def apply(deadline: Rep[Long], minToRaise: Rep[Long], backerPubKey: Rep[SigmaProp], projectPubKey: Rep[SigmaProp]): Rep[CrowdFundingContract] =
       mkCrowdFundingContract(deadline, minToRaise, backerPubKey, projectPubKey)
 
     def unapply(p: Rep[CrowdFunding]) = unmkCrowdFundingContract(p)
@@ -102,7 +102,7 @@ object CrowdFundingContract extends EntityObject("CrowdFundingContract") {
     reifyObject(new CrowdFundingContractIso())
 
   def mkCrowdFundingContract
-    (deadline: Rep[Long], minToRaise: Rep[Long], backerPubKey: Rep[ProveDlog], projectPubKey: Rep[ProveDlog]): Rep[CrowdFundingContract] = {
+    (deadline: Rep[Long], minToRaise: Rep[Long], backerPubKey: Rep[SigmaProp], projectPubKey: Rep[SigmaProp]): Rep[CrowdFundingContract] = {
     new CrowdFundingContractCtor(deadline, minToRaise, backerPubKey, projectPubKey)
   }
   def unmkCrowdFundingContract(p: Rep[CrowdFunding]) = p.elem.asInstanceOf[Elem[_]] match {
@@ -122,7 +122,7 @@ object CrowdFundingContract extends EntityObject("CrowdFundingContract") {
 
 object DemurrageCurrencyContract extends EntityObject("DemurrageCurrencyContract") {
   case class DemurrageCurrencyContractCtor
-      (override val demurragePeriod: Rep[Long], override val demurrageCost: Rep[Long], override val regScript: Rep[ProveDlog])
+      (override val demurragePeriod: Rep[Long], override val demurrageCost: Rep[Long], override val regScript: Rep[SigmaProp])
     extends DemurrageCurrencyContract(demurragePeriod, demurrageCost, regScript) with Def[DemurrageCurrencyContract] {
     lazy val selfType = element[DemurrageCurrencyContract]
   }
@@ -133,26 +133,26 @@ object DemurrageCurrencyContract extends EntityObject("DemurrageCurrencyContract
     override lazy val parent: Option[Elem[_]] = Some(demurrageCurrencyElement)
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
     override def convertDemurrageCurrency(x: Rep[DemurrageCurrency]) = RDemurrageCurrencyContract(x.demurragePeriod, x.demurrageCost, x.regScript)
-    override def getDefaultRep = RDemurrageCurrencyContract(0l, 0l, element[ProveDlog].defaultRepValue)
+    override def getDefaultRep = RDemurrageCurrencyContract(0l, 0l, element[SigmaProp].defaultRepValue)
     override lazy val tag = {
       weakTypeTag[DemurrageCurrencyContract]
     }
   }
 
   // state representation type
-  type DemurrageCurrencyContractData = (Long, (Long, ProveDlog))
+  type DemurrageCurrencyContractData = (Long, (Long, SigmaProp))
 
   // 3) Iso for concrete class
   class DemurrageCurrencyContractIso
     extends EntityIso[DemurrageCurrencyContractData, DemurrageCurrencyContract] with Def[DemurrageCurrencyContractIso] {
     private lazy val _safeFrom = fun { p: Rep[DemurrageCurrencyContract] => (p.demurragePeriod, p.demurrageCost, p.regScript) }
     override def from(p: Rep[DemurrageCurrencyContract]) =
-      tryConvert[DemurrageCurrencyContract, (Long, (Long, ProveDlog))](eTo, eFrom, p, _safeFrom)
-    override def to(p: Rep[(Long, (Long, ProveDlog))]) = {
+      tryConvert[DemurrageCurrencyContract, (Long, (Long, SigmaProp))](eTo, eFrom, p, _safeFrom)
+    override def to(p: Rep[(Long, (Long, SigmaProp))]) = {
       val Pair(demurragePeriod, Pair(demurrageCost, regScript)) = p
       RDemurrageCurrencyContract(demurragePeriod, demurrageCost, regScript)
     }
-    lazy val eFrom = pairElement(element[Long], pairElement(element[Long], element[ProveDlog]))
+    lazy val eFrom = pairElement(element[Long], pairElement(element[Long], element[SigmaProp]))
     lazy val eTo = new DemurrageCurrencyContractElem(self)
     lazy val selfType = new DemurrageCurrencyContractIsoElem
     def productArity = 0
@@ -175,7 +175,7 @@ object DemurrageCurrencyContract extends EntityObject("DemurrageCurrencyContract
     }
 
     @scalan.OverloadId("fromFields")
-    def apply(demurragePeriod: Rep[Long], demurrageCost: Rep[Long], regScript: Rep[ProveDlog]): Rep[DemurrageCurrencyContract] =
+    def apply(demurragePeriod: Rep[Long], demurrageCost: Rep[Long], regScript: Rep[SigmaProp]): Rep[DemurrageCurrencyContract] =
       mkDemurrageCurrencyContract(demurragePeriod, demurrageCost, regScript)
 
     def unapply(p: Rep[DemurrageCurrency]) = unmkDemurrageCurrencyContract(p)
@@ -205,7 +205,7 @@ object DemurrageCurrencyContract extends EntityObject("DemurrageCurrencyContract
     reifyObject(new DemurrageCurrencyContractIso())
 
   def mkDemurrageCurrencyContract
-    (demurragePeriod: Rep[Long], demurrageCost: Rep[Long], regScript: Rep[ProveDlog]): Rep[DemurrageCurrencyContract] = {
+    (demurragePeriod: Rep[Long], demurrageCost: Rep[Long], regScript: Rep[SigmaProp]): Rep[DemurrageCurrencyContract] = {
     new DemurrageCurrencyContractCtor(demurragePeriod, demurrageCost, regScript)
   }
   def unmkDemurrageCurrencyContract(p: Rep[DemurrageCurrency]) = p.elem.asInstanceOf[Elem[_]] match {

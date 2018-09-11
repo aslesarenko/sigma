@@ -115,20 +115,20 @@ object ECPointWrapSpec extends EntityObject("ECPointWrapSpec") {
 
     object ECPointWrapSpecMethods {
     object getEncoded {
-      def unapply(d: Def[_]): Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Elem[A]) forSome {type A}] = d match {
-        case MethodCall(receiver, method, Seq(g, emA, _*), _) if receiver.elem.isInstanceOf[ECPointWrapSpecElem] && method.getName == "getEncoded" =>
-          Some((receiver, g, emA)).asInstanceOf[Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Elem[A]) forSome {type A}]]
+      def unapply(d: Def[_]): Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[Boolean], Elem[A]) forSome {type A}] = d match {
+        case MethodCall(receiver, method, Seq(g, compressed, emA, _*), _) if receiver.elem.isInstanceOf[ECPointWrapSpecElem] && method.getName == "getEncoded" =>
+          Some((receiver, g, compressed, emA)).asInstanceOf[Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[Boolean], Elem[A]) forSome {type A}]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Elem[A]) forSome {type A}] = exp match {
+      def unapply(exp: Sym): Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[Boolean], Elem[A]) forSome {type A}] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
-    object exponentiate {
+    object multiply {
       def unapply(d: Def[_]): Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[ECPointWrapSpecElem] && method.getName == "exponentiate" =>
+        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[ECPointWrapSpecElem] && method.getName == "multiply" =>
           Some((receiver, l, r)).asInstanceOf[Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[WBigInteger])]]
         case _ => None
       }
@@ -138,9 +138,9 @@ object ECPointWrapSpec extends EntityObject("ECPointWrapSpec") {
       }
     }
 
-    object groupOp {
+    object add {
       def unapply(d: Def[_]): Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[WECPoint])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[ECPointWrapSpecElem] && method.getName == "groupOp" =>
+        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[ECPointWrapSpecElem] && method.getName == "add" =>
           Some((receiver, l, r)).asInstanceOf[Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[WECPoint])]]
         case _ => None
       }
@@ -314,7 +314,7 @@ object BigIntegerWrapSpec extends EntityObject("BigIntegerWrapSpec") {
 
     object toStringWithRadix {
       def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
-        case MethodCall(receiver, method, Seq(l, radix, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "toString" =>
+        case MethodCall(receiver, method, Seq(l, radix, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "toStringWithRadix" =>
           Some((receiver, l, radix)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])]]
         case _ => None
       }

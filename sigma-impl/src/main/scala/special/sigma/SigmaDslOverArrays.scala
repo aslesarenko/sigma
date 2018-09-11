@@ -159,19 +159,21 @@ trait DefaultSigma extends SigmaProp {
   def lazyOr(other: => SigmaProp): SigmaProp = new TrivialSigma(isValid || other.isValid)
 }
 
-case class TrivialSigma(val isValid: Boolean) extends DefaultSigma {
+/**NOTE: this should extend SigmaProp because semantically it subclass of SigmaProp
+  * and DefaultSigma is used just to mixin implementations. */
+case class TrivialSigma(val isValid: Boolean) extends SigmaProp with DefaultSigma {
   @NeverInline
   def propBytes = builder.Cols(if(isValid) 1 else 0)
 }
 
-case class ProveDlogEvidence(val value: ECPoint) extends DefaultSigma {
+case class ProveDlogEvidence(val value: ECPoint) extends SigmaProp with DefaultSigma {
   @NeverInline
   def propBytes: Col[Byte] = new ColOverArray(value.getEncoded(true))
   @NeverInline
   def isValid = true
 }
 
-case class ProveDHTEvidence(val value: ECPoint) extends DefaultSigma {
+case class ProveDHTEvidence(val value: ECPoint) extends SigmaProp with DefaultSigma {
   @NeverInline
   def propBytes: Col[Byte] = new ColOverArray(value.getEncoded(true))
   @NeverInline

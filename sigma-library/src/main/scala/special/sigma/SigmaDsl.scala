@@ -7,7 +7,7 @@ package special.sigma {
     import SigmaDslBuilder._;
     import DslObject._;
     import Col._;
-    import Sigma._;
+    import SigmaProp._;
     import WECPoint._;
     import AnyValue._;
     import WOption._;
@@ -17,33 +17,24 @@ package special.sigma {
     import WBigInteger._;
     import SigmaContract._;
     import ColBuilder._;
-    import SigmaBuilder._;
-    import BoxBuilder._;
-    import AvlTreeBuilder._;
-    import ContextBuilder._;
-    import SigmaContractBuilder._;
     trait DslBuilder extends Def[DslBuilder];
-    trait DslObject extends Def[DslObject] {
+    trait DslObject {
       def builder: Rep[SigmaDslBuilder]
     };
-    @sigmalang trait Sigma extends DslObject {
+    @Liftable trait SigmaProp extends Def[SigmaProp] with DslObject {
       def isValid: Rep[Boolean];
       def propBytes: Rep[Col[Byte]];
-      @OverloadId(value = "and_sigma") def &&(other: Rep[Sigma]): Rep[Sigma];
-      @OverloadId(value = "and_bool") def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[Sigma];
-      @OverloadId(value = "or_sigma") def ||(other: Rep[Sigma]): Rep[Sigma];
-      @OverloadId(value = "or_bool") def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[Sigma];
-      def lazyAnd(other: Rep[Thunk[Sigma]]): Rep[Sigma];
-      def lazyOr(other: Rep[Thunk[Sigma]]): Rep[Sigma]
+      @OverloadId(value = "and_sigma") def &&(other: Rep[SigmaProp]): Rep[SigmaProp];
+      @OverloadId(value = "and_bool") def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp];
+      @OverloadId(value = "or_sigma") def ||(other: Rep[SigmaProp]): Rep[SigmaProp];
+      @OverloadId(value = "or_bool") def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp];
+      def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp];
+      def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp]
     };
-    trait SigmaBuilder extends DslBuilder;
-    @sigmalang trait ProveDlog extends Sigma {
-      def value: Rep[WECPoint]
-    };
-    trait AnyValue extends Def[AnyValue] {
+    @Liftable trait AnyValue extends Def[AnyValue] {
       def dataSize: Rep[Long]
     };
-    @sigmalang trait Box extends DslObject {
+    @Liftable trait Box extends Def[Box] with DslObject {
       def id: Rep[Col[Byte]];
       def value: Rep[Long];
       def bytes: Rep[Col[Byte]];
@@ -65,8 +56,7 @@ package special.sigma {
       def R9[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(9.asInstanceOf[Int]));
       def tokens: Rep[Col[scala.Tuple2[Col[Byte], Long]]] = this.R2[Col[scala.Tuple2[Col[Byte], Long]]].get
     };
-    trait BoxBuilder extends DslBuilder;
-    trait AvlTree extends DslObject {
+    @Liftable trait AvlTree extends Def[AvlTree] with DslObject {
       def startingDigest: Rep[Col[Byte]];
       def keyLength: Rep[Int];
       def valueLengthOpt: Rep[WOption[Int]];
@@ -74,8 +64,7 @@ package special.sigma {
       def maxDeletes: Rep[WOption[Int]];
       def dataSize: Rep[Long]
     };
-    trait AvlTreeBuilder extends DslBuilder;
-    trait Context extends Def[Context] {
+    @Liftable trait Context extends Def[Context] {
       def builder: Rep[SigmaDslBuilder];
       def OUTPUTS: Rep[Col[Box]];
       def INPUTS: Rep[Col[Box]];
@@ -85,63 +74,55 @@ package special.sigma {
       def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]];
       def deserialize[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]]
     };
-    trait ContextBuilder extends DslBuilder;
-    @sigmalang trait SigmaContract extends Def[SigmaContract] {
+    @Liftable trait SigmaContract extends Def[SigmaContract] {
       def builder: Rep[SigmaDslBuilder];
       @NeverInline def Collection[T](items: Rep[T]*): Rep[Col[T]] = delayInvoke;
-      def verifyZK(cond: Rep[Thunk[Sigma]]): Rep[Boolean] = this.builder.verifyZK(cond);
-      def atLeast(bound: Rep[Int], props: Rep[Col[Sigma]]): Rep[Sigma] = this.builder.atLeast(bound, props);
+      def verifyZK(cond: Rep[Thunk[SigmaProp]]): Rep[Boolean] = this.builder.verifyZK(cond);
+      def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp] = this.builder.atLeast(bound, props);
       def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = this.builder.allOf(conditions);
-      def allZK(conditions: Rep[Col[Sigma]]): Rep[Sigma] = this.builder.allZK(conditions);
+      def allZK(conditions: Rep[Col[SigmaProp]]): Rep[SigmaProp] = this.builder.allZK(conditions);
       def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = this.builder.anyOf(conditions);
-      def anyZK(conditions: Rep[Col[Sigma]]): Rep[Sigma] = this.builder.anyZK(conditions);
-      def PubKey(base64String: Rep[String]): Rep[Sigma] = this.builder.PubKey(base64String);
-      def sigmaProp(b: Rep[Boolean]): Rep[Sigma] = this.builder.sigmaProp(b);
+      def anyZK(conditions: Rep[Col[SigmaProp]]): Rep[SigmaProp] = this.builder.anyZK(conditions);
+      def PubKey(base64String: Rep[String]): Rep[SigmaProp] = this.builder.PubKey(base64String);
+      def sigmaProp(b: Rep[Boolean]): Rep[SigmaProp] = this.builder.sigmaProp(b);
       def blake2b256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = this.builder.blake2b256(bytes);
       def sha256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = this.builder.sha256(bytes);
       def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[WBigInteger] = this.builder.byteArrayToBigInt(bytes);
       def longToByteArray(l: Rep[Long]): Rep[Col[Byte]] = this.builder.longToByteArray(l);
-      def proveDlog(g: Rep[WECPoint]): Rep[Sigma] = this.builder.proveDlog(g);
-      def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[Sigma] = this.builder.proveDHTuple(g, h, u, v);
+      def proveDlog(g: Rep[WECPoint]): Rep[SigmaProp] = this.builder.proveDlog(g);
+      def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[SigmaProp] = this.builder.proveDHTuple(g, h, u, v);
       def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean] = this.builder.isMember(tree, key, proof);
       def groupGenerator: Rep[WECPoint] = this.builder.groupGenerator;
       @clause def canOpen(ctx: Rep[Context]): Rep[Boolean];
       def asFunction: Rep[scala.Function1[Context, Boolean]] = fun(((ctx: Rep[Context]) => this.canOpen(ctx)))
     };
-    trait SigmaContractBuilder extends DslBuilder;
-    trait SigmaDslBuilder extends SigmaBuilder with BoxBuilder with AvlTreeBuilder with ContextBuilder with SigmaContractBuilder {
+    @Liftable trait SigmaDslBuilder extends Def[SigmaDslBuilder] with DslBuilder {
       def Cols: Rep[ColBuilder];
-      def verifyZK(cond: Rep[Thunk[Sigma]]): Rep[Boolean];
-      def atLeast(bound: Rep[Int], props: Rep[Col[Sigma]]): Rep[Sigma];
+      def verifyZK(cond: Rep[Thunk[SigmaProp]]): Rep[Boolean];
+      def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp];
       def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean];
-      def allZK(conditions: Rep[Col[Sigma]]): Rep[Sigma];
+      def allZK(conditions: Rep[Col[SigmaProp]]): Rep[SigmaProp];
       def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean];
-      def anyZK(conditions: Rep[Col[Sigma]]): Rep[Sigma];
-      def PubKey(base64String: Rep[String]): Rep[Sigma];
-      def sigmaProp(b: Rep[Boolean]): Rep[Sigma];
+      def anyZK(conditions: Rep[Col[SigmaProp]]): Rep[SigmaProp];
+      def PubKey(base64String: Rep[String]): Rep[SigmaProp];
+      def sigmaProp(b: Rep[Boolean]): Rep[SigmaProp];
       def blake2b256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]];
       def sha256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]];
       def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[WBigInteger];
       def longToByteArray(l: Rep[Long]): Rep[Col[Byte]];
-      def proveDlog(g: Rep[WECPoint]): Rep[Sigma];
-      def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[Sigma];
+      def proveDlog(g: Rep[WECPoint]): Rep[SigmaProp];
+      def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[SigmaProp];
       def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean];
       def groupGenerator: Rep[WECPoint]
     };
     trait DslBuilderCompanion;
     trait DslObjectCompanion;
-    trait SigmaCompanion;
-    trait SigmaBuilderCompanion;
-    trait ProveDlogCompanion;
+    trait SigmaPropCompanion;
     trait AnyValueCompanion;
     trait BoxCompanion;
-    trait BoxBuilderCompanion;
     trait AvlTreeCompanion;
-    trait AvlTreeBuilderCompanion;
     trait ContextCompanion;
-    trait ContextBuilderCompanion;
     trait SigmaContractCompanion;
-    trait SigmaContractBuilderCompanion;
     trait SigmaDslBuilderCompanion
   }
 }

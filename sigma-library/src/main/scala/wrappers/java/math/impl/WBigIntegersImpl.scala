@@ -81,8 +81,6 @@ object WBigInteger extends EntityObject("WBigInteger") {
     }
   }
 
-  def liftBigInteger(x: BigInteger): Rep[WBigInteger] = liftConst(x)
-
   // entityProxy: single proxy for each type family
   implicit def proxyWBigInteger(p: Rep[WBigInteger]): WBigInteger = {
     proxyOps[WBigInteger](p)(scala.reflect.classTag[WBigInteger])

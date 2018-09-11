@@ -5,7 +5,9 @@ import scala.reflect.runtime.universe._
 import scala.reflect._
 
 package impl {
-// Abs -----------------------------------
+  import scalan.OverloadHack.Overloaded1
+
+  // Abs -----------------------------------
 trait SigmaDslDefs extends scalan.Scalan with SigmaDsl {
   self: SigmaLibrary =>
 import IsoUR._
@@ -14,22 +16,14 @@ import DslBuilder._
 import SigmaDslBuilder._
 import DslObject._
 import Col._
-import Sigma._
-import WECPoint._
+import SigmaProp._
 import AnyValue._
 import WOption._
 import Box._
 import AvlTree._
 import Context._
-import WBigInteger._
 import SigmaContract._
 import ColBuilder._
-import SigmaBuilder._
-import BoxBuilder._
-import AvlTreeBuilder._
-import ContextBuilder._
-import SigmaContractBuilder._
-import ProveDlog._
 
 object DslBuilder extends EntityObject("DslBuilder") {
   // entityProxy: single proxy for each type family
@@ -150,275 +144,224 @@ object DslObject extends EntityObject("DslObject") {
 } // of object DslObject
   registerEntityObject("DslObject", DslObject)
 
-object Sigma extends EntityObject("Sigma") {
+object SigmaProp extends EntityObject("SigmaProp") {
+  // entityConst: single const for each entity
+  import Liftables._
+  import scala.reflect.{ClassTag, classTag}
+  type SSigmaProp = special.sigma.SigmaProp
+  case class SigmaPropConst(
+        constValue: SSigmaProp
+      ) extends SigmaProp with LiftedConst[SSigmaProp, SigmaProp] {
+    val liftable: Liftable[SSigmaProp, SigmaProp] = LiftableSigmaProp
+    val selfType: Elem[SigmaProp] = liftable.eW
+    def builder: Rep[SigmaDslBuilder] = delayInvoke
+    def isValid: Rep[Boolean] = delayInvoke
+    def propBytes: Rep[Col[Byte]] = delayInvoke
+    @OverloadId(value = "and_sigma") def &&(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke
+    @OverloadId(value = "and_bool") def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = delayInvoke
+    @OverloadId(value = "or_sigma") def ||(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke
+    @OverloadId(value = "or_bool") def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = delayInvoke
+    def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke
+    def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke
+  }
+
+  implicit object LiftableSigmaProp
+    extends Liftable[SSigmaProp, SigmaProp] {
+    lazy val eW: Elem[SigmaProp] = sigmaPropElement
+    lazy val sourceClassTag: ClassTag[SSigmaProp] = {
+      classTag[SSigmaProp]
+    }
+    def lift(x: SSigmaProp): Rep[SigmaProp] = SigmaPropConst(x)
+    def unlift(w: Rep[SigmaProp]): SSigmaProp = w match {
+      case Def(SigmaPropConst(x: SSigmaProp))
+            => x.asInstanceOf[SSigmaProp]
+      case _ => unliftError(w)
+    }
+  }
+
   // entityProxy: single proxy for each type family
-  implicit def proxySigma(p: Rep[Sigma]): Sigma = {
-    proxyOps[Sigma](p)(scala.reflect.classTag[Sigma])
+  implicit def proxySigmaProp(p: Rep[SigmaProp]): SigmaProp = {
+    proxyOps[SigmaProp](p)(scala.reflect.classTag[SigmaProp])
   }
 
   // familyElem
-  class SigmaElem[To <: Sigma]
+  class SigmaPropElem[To <: SigmaProp]
     extends DslObjectElem[To] {
+    override val liftable = LiftableSigmaProp.asLiftable[SSigmaProp, To]
+
+    override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
+      super.collectMethods ++ Elem.declaredMethods(classOf[SigmaProp], classOf[SSigmaProp], Set(
+        "isValid", "propBytes", "$amp$amp", "$amp$amp", "$bar$bar", "$bar$bar", "lazyAnd", "lazyOr"
+      ))
+    }
+
     override lazy val parent: Option[Elem[_]] = Some(dslObjectElement)
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
     override lazy val tag = {
-      weakTypeTag[Sigma].asInstanceOf[WeakTypeTag[To]]
+      weakTypeTag[SigmaProp].asInstanceOf[WeakTypeTag[To]]
     }
     override def convert(x: Rep[Def[_]]) = {
-      val conv = fun {x: Rep[Sigma] => convertSigma(x) }
-      tryConvert(element[Sigma], this, x, conv)
+      val conv = fun {x: Rep[SigmaProp] => convertSigmaProp(x) }
+      tryConvert(element[SigmaProp], this, x, conv)
     }
 
-    def convertSigma(x: Rep[Sigma]): Rep[To] = {
+    def convertSigmaProp(x: Rep[SigmaProp]): Rep[To] = {
       x.elem match {
-        case _: SigmaElem[_] => x.asRep[To]
-        case e => !!!(s"Expected $x to have SigmaElem[_], but got $e", x)
+        case _: SigmaPropElem[_] => x.asRep[To]
+        case e => !!!(s"Expected $x to have SigmaPropElem[_], but got $e", x)
       }
     }
     override def getDefaultRep: Rep[To] = ???
   }
 
-  implicit def sigmaElement: Elem[Sigma] =
-    cachedElem[SigmaElem[Sigma]]()
+  implicit def sigmaPropElement: Elem[SigmaProp] =
+    cachedElem[SigmaPropElem[SigmaProp]]()
 
-  implicit case object SigmaCompanionElem extends CompanionElem[SigmaCompanionCtor] {
-    lazy val tag = weakTypeTag[SigmaCompanionCtor]
-    protected def getDefaultRep = RSigma
+  implicit case object SigmaPropCompanionElem extends CompanionElem[SigmaPropCompanionCtor] {
+    lazy val tag = weakTypeTag[SigmaPropCompanionCtor]
+    protected def getDefaultRep = RSigmaProp
   }
 
-  abstract class SigmaCompanionCtor extends CompanionDef[SigmaCompanionCtor] with SigmaCompanion {
-    def selfType = SigmaCompanionElem
-    override def toString = "Sigma"
+  abstract class SigmaPropCompanionCtor extends CompanionDef[SigmaPropCompanionCtor] with SigmaPropCompanion {
+    def selfType = SigmaPropCompanionElem
+    override def toString = "SigmaProp"
   }
-  implicit def proxySigmaCompanionCtor(p: Rep[SigmaCompanionCtor]): SigmaCompanionCtor =
-    proxyOps[SigmaCompanionCtor](p)
+  implicit def proxySigmaPropCompanionCtor(p: Rep[SigmaPropCompanionCtor]): SigmaPropCompanionCtor =
+    proxyOps[SigmaPropCompanionCtor](p)
 
-  lazy val RSigma: Rep[SigmaCompanionCtor] = new SigmaCompanionCtor {
+  lazy val RSigmaProp: Rep[SigmaPropCompanionCtor] = new SigmaPropCompanionCtor {
   }
 
-  object SigmaMethods {
+  object SigmaPropMethods {
     object isValid {
-      def unapply(d: Def[_]): Option[Rep[Sigma]] = d match {
-        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[SigmaElem[_]] && method.getName == "isValid" =>
-          Some(receiver).asInstanceOf[Option[Rep[Sigma]]]
+      def unapply(d: Def[_]): Option[Rep[SigmaProp]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[SigmaPropElem[_]] && method.getName == "isValid" =>
+          Some(receiver).asInstanceOf[Option[Rep[SigmaProp]]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[Rep[Sigma]] = exp match {
+      def unapply(exp: Sym): Option[Rep[SigmaProp]] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object propBytes {
-      def unapply(d: Def[_]): Option[Rep[Sigma]] = d match {
-        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[SigmaElem[_]] && method.getName == "propBytes" =>
-          Some(receiver).asInstanceOf[Option[Rep[Sigma]]]
+      def unapply(d: Def[_]): Option[Rep[SigmaProp]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[SigmaPropElem[_]] && method.getName == "propBytes" =>
+          Some(receiver).asInstanceOf[Option[Rep[SigmaProp]]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[Rep[Sigma]] = exp match {
+      def unapply(exp: Sym): Option[Rep[SigmaProp]] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object and_sigma_&& {
-      def unapply(d: Def[_]): Option[(Rep[Sigma], Rep[Sigma])] = d match {
-        case MethodCall(receiver, method, Seq(other, _*), _) if receiver.elem.isInstanceOf[SigmaElem[_]] && method.getName == "$amp$amp" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "and_sigma" } =>
-          Some((receiver, other)).asInstanceOf[Option[(Rep[Sigma], Rep[Sigma])]]
+      def unapply(d: Def[_]): Option[(Rep[SigmaProp], Rep[SigmaProp])] = d match {
+        case MethodCall(receiver, method, Seq(other, _*), _) if receiver.elem.isInstanceOf[SigmaPropElem[_]] && method.getName == "$amp$amp" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "and_sigma" } =>
+          Some((receiver, other)).asInstanceOf[Option[(Rep[SigmaProp], Rep[SigmaProp])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Sigma], Rep[Sigma])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[SigmaProp], Rep[SigmaProp])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object and_bool_&& {
-      def unapply(d: Def[_]): Option[(Rep[Sigma], Rep[Boolean])] = d match {
-        case MethodCall(receiver, method, Seq(other, _*), _) if receiver.elem.isInstanceOf[SigmaElem[_]] && method.getName == "$amp$amp" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "and_bool" } =>
-          Some((receiver, other)).asInstanceOf[Option[(Rep[Sigma], Rep[Boolean])]]
+      def unapply(d: Def[_]): Option[(Rep[SigmaProp], Rep[Boolean])] = d match {
+        case MethodCall(receiver, method, Seq(other, _*), _) if receiver.elem.isInstanceOf[SigmaPropElem[_]] && method.getName == "$amp$amp" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "and_bool" } =>
+          Some((receiver, other)).asInstanceOf[Option[(Rep[SigmaProp], Rep[Boolean])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Sigma], Rep[Boolean])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[SigmaProp], Rep[Boolean])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object or_sigma_|| {
-      def unapply(d: Def[_]): Option[(Rep[Sigma], Rep[Sigma])] = d match {
-        case MethodCall(receiver, method, Seq(other, _*), _) if receiver.elem.isInstanceOf[SigmaElem[_]] && method.getName == "$bar$bar" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "or_sigma" } =>
-          Some((receiver, other)).asInstanceOf[Option[(Rep[Sigma], Rep[Sigma])]]
+      def unapply(d: Def[_]): Option[(Rep[SigmaProp], Rep[SigmaProp])] = d match {
+        case MethodCall(receiver, method, Seq(other, _*), _) if receiver.elem.isInstanceOf[SigmaPropElem[_]] && method.getName == "$bar$bar" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "or_sigma" } =>
+          Some((receiver, other)).asInstanceOf[Option[(Rep[SigmaProp], Rep[SigmaProp])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Sigma], Rep[Sigma])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[SigmaProp], Rep[SigmaProp])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object or_bool_|| {
-      def unapply(d: Def[_]): Option[(Rep[Sigma], Rep[Boolean])] = d match {
-        case MethodCall(receiver, method, Seq(other, _*), _) if receiver.elem.isInstanceOf[SigmaElem[_]] && method.getName == "$bar$bar" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "or_bool" } =>
-          Some((receiver, other)).asInstanceOf[Option[(Rep[Sigma], Rep[Boolean])]]
+      def unapply(d: Def[_]): Option[(Rep[SigmaProp], Rep[Boolean])] = d match {
+        case MethodCall(receiver, method, Seq(other, _*), _) if receiver.elem.isInstanceOf[SigmaPropElem[_]] && method.getName == "$bar$bar" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "or_bool" } =>
+          Some((receiver, other)).asInstanceOf[Option[(Rep[SigmaProp], Rep[Boolean])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Sigma], Rep[Boolean])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[SigmaProp], Rep[Boolean])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object lazyAnd {
-      def unapply(d: Def[_]): Option[(Rep[Sigma], Rep[Thunk[Sigma]])] = d match {
-        case MethodCall(receiver, method, Seq(other, _*), _) if receiver.elem.isInstanceOf[SigmaElem[_]] && method.getName == "lazyAnd" =>
-          Some((receiver, other)).asInstanceOf[Option[(Rep[Sigma], Rep[Thunk[Sigma]])]]
+      def unapply(d: Def[_]): Option[(Rep[SigmaProp], Rep[Thunk[SigmaProp]])] = d match {
+        case MethodCall(receiver, method, Seq(other, _*), _) if receiver.elem.isInstanceOf[SigmaPropElem[_]] && method.getName == "lazyAnd" =>
+          Some((receiver, other)).asInstanceOf[Option[(Rep[SigmaProp], Rep[Thunk[SigmaProp]])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Sigma], Rep[Thunk[Sigma]])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[SigmaProp], Rep[Thunk[SigmaProp]])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object lazyOr {
-      def unapply(d: Def[_]): Option[(Rep[Sigma], Rep[Thunk[Sigma]])] = d match {
-        case MethodCall(receiver, method, Seq(other, _*), _) if receiver.elem.isInstanceOf[SigmaElem[_]] && method.getName == "lazyOr" =>
-          Some((receiver, other)).asInstanceOf[Option[(Rep[Sigma], Rep[Thunk[Sigma]])]]
+      def unapply(d: Def[_]): Option[(Rep[SigmaProp], Rep[Thunk[SigmaProp]])] = d match {
+        case MethodCall(receiver, method, Seq(other, _*), _) if receiver.elem.isInstanceOf[SigmaPropElem[_]] && method.getName == "lazyOr" =>
+          Some((receiver, other)).asInstanceOf[Option[(Rep[SigmaProp], Rep[Thunk[SigmaProp]])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Sigma], Rep[Thunk[Sigma]])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[SigmaProp], Rep[Thunk[SigmaProp]])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
   }
 
-  object SigmaCompanionMethods {
+  object SigmaPropCompanionMethods {
   }
-} // of object Sigma
-  registerEntityObject("Sigma", Sigma)
-
-object SigmaBuilder extends EntityObject("SigmaBuilder") {
-  // entityProxy: single proxy for each type family
-  implicit def proxySigmaBuilder(p: Rep[SigmaBuilder]): SigmaBuilder = {
-    proxyOps[SigmaBuilder](p)(scala.reflect.classTag[SigmaBuilder])
-  }
-
-  // familyElem
-  class SigmaBuilderElem[To <: SigmaBuilder]
-    extends DslBuilderElem[To] {
-    override lazy val parent: Option[Elem[_]] = Some(dslBuilderElement)
-    override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
-    override lazy val tag = {
-      weakTypeTag[SigmaBuilder].asInstanceOf[WeakTypeTag[To]]
-    }
-    override def convert(x: Rep[Def[_]]) = {
-      val conv = fun {x: Rep[SigmaBuilder] => convertSigmaBuilder(x) }
-      tryConvert(element[SigmaBuilder], this, x, conv)
-    }
-
-    def convertSigmaBuilder(x: Rep[SigmaBuilder]): Rep[To] = {
-      x.elem match {
-        case _: SigmaBuilderElem[_] => x.asRep[To]
-        case e => !!!(s"Expected $x to have SigmaBuilderElem[_], but got $e", x)
-      }
-    }
-    override def getDefaultRep: Rep[To] = ???
-  }
-
-  implicit def sigmaBuilderElement: Elem[SigmaBuilder] =
-    cachedElem[SigmaBuilderElem[SigmaBuilder]]()
-
-  implicit case object SigmaBuilderCompanionElem extends CompanionElem[SigmaBuilderCompanionCtor] {
-    lazy val tag = weakTypeTag[SigmaBuilderCompanionCtor]
-    protected def getDefaultRep = RSigmaBuilder
-  }
-
-  abstract class SigmaBuilderCompanionCtor extends CompanionDef[SigmaBuilderCompanionCtor] with SigmaBuilderCompanion {
-    def selfType = SigmaBuilderCompanionElem
-    override def toString = "SigmaBuilder"
-  }
-  implicit def proxySigmaBuilderCompanionCtor(p: Rep[SigmaBuilderCompanionCtor]): SigmaBuilderCompanionCtor =
-    proxyOps[SigmaBuilderCompanionCtor](p)
-
-  lazy val RSigmaBuilder: Rep[SigmaBuilderCompanionCtor] = new SigmaBuilderCompanionCtor {
-  }
-
-  object SigmaBuilderMethods {
-  }
-
-  object SigmaBuilderCompanionMethods {
-  }
-} // of object SigmaBuilder
-  registerEntityObject("SigmaBuilder", SigmaBuilder)
-
-object ProveDlog extends EntityObject("ProveDlog") {
-  // entityProxy: single proxy for each type family
-  implicit def proxyProveDlog(p: Rep[ProveDlog]): ProveDlog = {
-    proxyOps[ProveDlog](p)(scala.reflect.classTag[ProveDlog])
-  }
-
-  // familyElem
-  class ProveDlogElem[To <: ProveDlog]
-    extends SigmaElem[To] {
-    override lazy val parent: Option[Elem[_]] = Some(sigmaElement)
-    override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
-    override lazy val tag = {
-      weakTypeTag[ProveDlog].asInstanceOf[WeakTypeTag[To]]
-    }
-    override def convert(x: Rep[Def[_]]) = {
-      val conv = fun {x: Rep[ProveDlog] => convertProveDlog(x) }
-      tryConvert(element[ProveDlog], this, x, conv)
-    }
-
-    def convertProveDlog(x: Rep[ProveDlog]): Rep[To] = {
-      x.elem match {
-        case _: ProveDlogElem[_] => x.asRep[To]
-        case e => !!!(s"Expected $x to have ProveDlogElem[_], but got $e", x)
-      }
-    }
-    override def getDefaultRep: Rep[To] = ???
-  }
-
-  implicit def proveDlogElement: Elem[ProveDlog] =
-    cachedElem[ProveDlogElem[ProveDlog]]()
-
-  implicit case object ProveDlogCompanionElem extends CompanionElem[ProveDlogCompanionCtor] {
-    lazy val tag = weakTypeTag[ProveDlogCompanionCtor]
-    protected def getDefaultRep = RProveDlog
-  }
-
-  abstract class ProveDlogCompanionCtor extends CompanionDef[ProveDlogCompanionCtor] with ProveDlogCompanion {
-    def selfType = ProveDlogCompanionElem
-    override def toString = "ProveDlog"
-  }
-  implicit def proxyProveDlogCompanionCtor(p: Rep[ProveDlogCompanionCtor]): ProveDlogCompanionCtor =
-    proxyOps[ProveDlogCompanionCtor](p)
-
-  lazy val RProveDlog: Rep[ProveDlogCompanionCtor] = new ProveDlogCompanionCtor {
-  }
-
-  object ProveDlogMethods {
-    object value {
-      def unapply(d: Def[_]): Option[Rep[ProveDlog]] = d match {
-        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[ProveDlogElem[_]] && method.getName == "value" =>
-          Some(receiver).asInstanceOf[Option[Rep[ProveDlog]]]
-        case _ => None
-      }
-      def unapply(exp: Sym): Option[Rep[ProveDlog]] = exp match {
-        case Def(d) => unapply(d)
-        case _ => None
-      }
-    }
-  }
-
-  object ProveDlogCompanionMethods {
-  }
-} // of object ProveDlog
-  registerEntityObject("ProveDlog", ProveDlog)
+} // of object SigmaProp
+  registerEntityObject("SigmaProp", SigmaProp)
 
 object AnyValue extends EntityObject("AnyValue") {
+  // entityConst: single const for each entity
+  import Liftables._
+  import scala.reflect.{ClassTag, classTag}
+  type SAnyValue = special.sigma.AnyValue
+  case class AnyValueConst(
+        constValue: SAnyValue
+      ) extends AnyValue with LiftedConst[SAnyValue, AnyValue] {
+    val liftable: Liftable[SAnyValue, AnyValue] = LiftableAnyValue
+    val selfType: Elem[AnyValue] = liftable.eW
+    def dataSize: Rep[Long] = delayInvoke
+  }
+
+  implicit object LiftableAnyValue
+    extends Liftable[SAnyValue, AnyValue] {
+    lazy val eW: Elem[AnyValue] = anyValueElement
+    lazy val sourceClassTag: ClassTag[SAnyValue] = {
+      classTag[SAnyValue]
+    }
+    def lift(x: SAnyValue): Rep[AnyValue] = AnyValueConst(x)
+    def unlift(w: Rep[AnyValue]): SAnyValue = w match {
+      case Def(AnyValueConst(x: SAnyValue))
+            => x.asInstanceOf[SAnyValue]
+      case _ => unliftError(w)
+    }
+  }
+
   // entityProxy: single proxy for each type family
   implicit def proxyAnyValue(p: Rep[AnyValue]): AnyValue = {
     proxyOps[AnyValue](p)(scala.reflect.classTag[AnyValue])
@@ -427,6 +370,14 @@ object AnyValue extends EntityObject("AnyValue") {
   // familyElem
   class AnyValueElem[To <: AnyValue]
     extends EntityElem[To] {
+    override val liftable = LiftableAnyValue.asLiftable[SAnyValue, To]
+
+    override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
+      super.collectMethods ++ Elem.declaredMethods(classOf[AnyValue], classOf[SAnyValue], Set(
+        "dataSize"
+      ))
+    }
+
     lazy val parent: Option[Elem[_]] = None
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
     override lazy val tag = {
@@ -484,6 +435,41 @@ object AnyValue extends EntityObject("AnyValue") {
   registerEntityObject("AnyValue", AnyValue)
 
 object Box extends EntityObject("Box") {
+  // entityConst: single const for each entity
+  import Liftables._
+  import scala.reflect.{ClassTag, classTag}
+  type SBox = special.sigma.Box
+  case class BoxConst(
+        constValue: SBox
+      ) extends Box with LiftedConst[SBox, Box] {
+    val liftable: Liftable[SBox, Box] = LiftableBox
+    val selfType: Elem[Box] = liftable.eW
+    def builder: Rep[SigmaDslBuilder] = delayInvoke
+    def id: Rep[Col[Byte]] = delayInvoke
+    def value: Rep[Long] = delayInvoke
+    def bytes: Rep[Col[Byte]] = delayInvoke
+    def bytesWithoutRef: Rep[Col[Byte]] = delayInvoke
+    def propositionBytes: Rep[Col[Byte]] = delayInvoke
+    def dataSize: Rep[Long] = delayInvoke
+    def registers: Rep[Col[AnyValue]] = delayInvoke
+    def deserialize[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke
+    def getReg[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke
+  }
+
+  implicit object LiftableBox
+    extends Liftable[SBox, Box] {
+    lazy val eW: Elem[Box] = boxElement
+    lazy val sourceClassTag: ClassTag[SBox] = {
+      classTag[SBox]
+    }
+    def lift(x: SBox): Rep[Box] = BoxConst(x)
+    def unlift(w: Rep[Box]): SBox = w match {
+      case Def(BoxConst(x: SBox))
+            => x.asInstanceOf[SBox]
+      case _ => unliftError(w)
+    }
+  }
+
   // entityProxy: single proxy for each type family
   implicit def proxyBox(p: Rep[Box]): Box = {
     proxyOps[Box](p)(scala.reflect.classTag[Box])
@@ -492,6 +478,14 @@ object Box extends EntityObject("Box") {
   // familyElem
   class BoxElem[To <: Box]
     extends DslObjectElem[To] {
+    override val liftable = LiftableBox.asLiftable[SBox, To]
+
+    override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
+      super.collectMethods ++ Elem.declaredMethods(classOf[Box], classOf[SBox], Set(
+        "id", "value", "bytes", "bytesWithoutRef", "propositionBytes", "dataSize", "registers", "deserialize", "getReg", "R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "tokens"
+      ))
+    }
+
     override lazy val parent: Option[Elem[_]] = Some(dslObjectElement)
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
     override lazy val tag = {
@@ -776,61 +770,39 @@ object Box extends EntityObject("Box") {
 } // of object Box
   registerEntityObject("Box", Box)
 
-object BoxBuilder extends EntityObject("BoxBuilder") {
-  // entityProxy: single proxy for each type family
-  implicit def proxyBoxBuilder(p: Rep[BoxBuilder]): BoxBuilder = {
-    proxyOps[BoxBuilder](p)(scala.reflect.classTag[BoxBuilder])
-  }
-
-  // familyElem
-  class BoxBuilderElem[To <: BoxBuilder]
-    extends DslBuilderElem[To] {
-    override lazy val parent: Option[Elem[_]] = Some(dslBuilderElement)
-    override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
-    override lazy val tag = {
-      weakTypeTag[BoxBuilder].asInstanceOf[WeakTypeTag[To]]
-    }
-    override def convert(x: Rep[Def[_]]) = {
-      val conv = fun {x: Rep[BoxBuilder] => convertBoxBuilder(x) }
-      tryConvert(element[BoxBuilder], this, x, conv)
-    }
-
-    def convertBoxBuilder(x: Rep[BoxBuilder]): Rep[To] = {
-      x.elem match {
-        case _: BoxBuilderElem[_] => x.asRep[To]
-        case e => !!!(s"Expected $x to have BoxBuilderElem[_], but got $e", x)
-      }
-    }
-    override def getDefaultRep: Rep[To] = ???
-  }
-
-  implicit def boxBuilderElement: Elem[BoxBuilder] =
-    cachedElem[BoxBuilderElem[BoxBuilder]]()
-
-  implicit case object BoxBuilderCompanionElem extends CompanionElem[BoxBuilderCompanionCtor] {
-    lazy val tag = weakTypeTag[BoxBuilderCompanionCtor]
-    protected def getDefaultRep = RBoxBuilder
-  }
-
-  abstract class BoxBuilderCompanionCtor extends CompanionDef[BoxBuilderCompanionCtor] with BoxBuilderCompanion {
-    def selfType = BoxBuilderCompanionElem
-    override def toString = "BoxBuilder"
-  }
-  implicit def proxyBoxBuilderCompanionCtor(p: Rep[BoxBuilderCompanionCtor]): BoxBuilderCompanionCtor =
-    proxyOps[BoxBuilderCompanionCtor](p)
-
-  lazy val RBoxBuilder: Rep[BoxBuilderCompanionCtor] = new BoxBuilderCompanionCtor {
-  }
-
-  object BoxBuilderMethods {
-  }
-
-  object BoxBuilderCompanionMethods {
-  }
-} // of object BoxBuilder
-  registerEntityObject("BoxBuilder", BoxBuilder)
-
 object AvlTree extends EntityObject("AvlTree") {
+  // entityConst: single const for each entity
+  import Liftables._
+  import scala.reflect.{ClassTag, classTag}
+  type SAvlTree = special.sigma.AvlTree
+  case class AvlTreeConst(
+        constValue: SAvlTree
+      ) extends AvlTree with LiftedConst[SAvlTree, AvlTree] {
+    val liftable: Liftable[SAvlTree, AvlTree] = LiftableAvlTree
+    val selfType: Elem[AvlTree] = liftable.eW
+    def builder: Rep[SigmaDslBuilder] = delayInvoke
+    def startingDigest: Rep[Col[Byte]] = delayInvoke
+    def keyLength: Rep[Int] = delayInvoke
+    def valueLengthOpt: Rep[WOption[Int]] = delayInvoke
+    def maxNumOperations: Rep[WOption[Int]] = delayInvoke
+    def maxDeletes: Rep[WOption[Int]] = delayInvoke
+    def dataSize: Rep[Long] = delayInvoke
+  }
+
+  implicit object LiftableAvlTree
+    extends Liftable[SAvlTree, AvlTree] {
+    lazy val eW: Elem[AvlTree] = avlTreeElement
+    lazy val sourceClassTag: ClassTag[SAvlTree] = {
+      classTag[SAvlTree]
+    }
+    def lift(x: SAvlTree): Rep[AvlTree] = AvlTreeConst(x)
+    def unlift(w: Rep[AvlTree]): SAvlTree = w match {
+      case Def(AvlTreeConst(x: SAvlTree))
+            => x.asInstanceOf[SAvlTree]
+      case _ => unliftError(w)
+    }
+  }
+
   // entityProxy: single proxy for each type family
   implicit def proxyAvlTree(p: Rep[AvlTree]): AvlTree = {
     proxyOps[AvlTree](p)(scala.reflect.classTag[AvlTree])
@@ -839,6 +811,14 @@ object AvlTree extends EntityObject("AvlTree") {
   // familyElem
   class AvlTreeElem[To <: AvlTree]
     extends DslObjectElem[To] {
+    override val liftable = LiftableAvlTree.asLiftable[SAvlTree, To]
+
+    override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
+      super.collectMethods ++ Elem.declaredMethods(classOf[AvlTree], classOf[SAvlTree], Set(
+        "startingDigest", "keyLength", "valueLengthOpt", "maxNumOperations", "maxDeletes", "dataSize"
+      ))
+    }
+
     override lazy val parent: Option[Elem[_]] = Some(dslObjectElement)
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
     override lazy val tag = {
@@ -955,61 +935,40 @@ object AvlTree extends EntityObject("AvlTree") {
 } // of object AvlTree
   registerEntityObject("AvlTree", AvlTree)
 
-object AvlTreeBuilder extends EntityObject("AvlTreeBuilder") {
-  // entityProxy: single proxy for each type family
-  implicit def proxyAvlTreeBuilder(p: Rep[AvlTreeBuilder]): AvlTreeBuilder = {
-    proxyOps[AvlTreeBuilder](p)(scala.reflect.classTag[AvlTreeBuilder])
-  }
-
-  // familyElem
-  class AvlTreeBuilderElem[To <: AvlTreeBuilder]
-    extends DslBuilderElem[To] {
-    override lazy val parent: Option[Elem[_]] = Some(dslBuilderElement)
-    override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
-    override lazy val tag = {
-      weakTypeTag[AvlTreeBuilder].asInstanceOf[WeakTypeTag[To]]
-    }
-    override def convert(x: Rep[Def[_]]) = {
-      val conv = fun {x: Rep[AvlTreeBuilder] => convertAvlTreeBuilder(x) }
-      tryConvert(element[AvlTreeBuilder], this, x, conv)
-    }
-
-    def convertAvlTreeBuilder(x: Rep[AvlTreeBuilder]): Rep[To] = {
-      x.elem match {
-        case _: AvlTreeBuilderElem[_] => x.asRep[To]
-        case e => !!!(s"Expected $x to have AvlTreeBuilderElem[_], but got $e", x)
-      }
-    }
-    override def getDefaultRep: Rep[To] = ???
-  }
-
-  implicit def avlTreeBuilderElement: Elem[AvlTreeBuilder] =
-    cachedElem[AvlTreeBuilderElem[AvlTreeBuilder]]()
-
-  implicit case object AvlTreeBuilderCompanionElem extends CompanionElem[AvlTreeBuilderCompanionCtor] {
-    lazy val tag = weakTypeTag[AvlTreeBuilderCompanionCtor]
-    protected def getDefaultRep = RAvlTreeBuilder
-  }
-
-  abstract class AvlTreeBuilderCompanionCtor extends CompanionDef[AvlTreeBuilderCompanionCtor] with AvlTreeBuilderCompanion {
-    def selfType = AvlTreeBuilderCompanionElem
-    override def toString = "AvlTreeBuilder"
-  }
-  implicit def proxyAvlTreeBuilderCompanionCtor(p: Rep[AvlTreeBuilderCompanionCtor]): AvlTreeBuilderCompanionCtor =
-    proxyOps[AvlTreeBuilderCompanionCtor](p)
-
-  lazy val RAvlTreeBuilder: Rep[AvlTreeBuilderCompanionCtor] = new AvlTreeBuilderCompanionCtor {
-  }
-
-  object AvlTreeBuilderMethods {
-  }
-
-  object AvlTreeBuilderCompanionMethods {
-  }
-} // of object AvlTreeBuilder
-  registerEntityObject("AvlTreeBuilder", AvlTreeBuilder)
-
 object Context extends EntityObject("Context") {
+  // entityConst: single const for each entity
+  import Liftables._
+  import scala.reflect.{ClassTag, classTag}
+  type SContext = special.sigma.Context
+  case class ContextConst(
+        constValue: SContext
+      ) extends Context with LiftedConst[SContext, Context] {
+    val liftable: Liftable[SContext, Context] = LiftableContext
+    val selfType: Elem[Context] = liftable.eW
+    def builder: Rep[SigmaDslBuilder] = delayInvoke
+    def OUTPUTS: Rep[Col[Box]] = delayInvoke
+    def INPUTS: Rep[Col[Box]] = delayInvoke
+    def HEIGHT: Rep[Long] = delayInvoke
+    def SELF: Rep[Box] = delayInvoke
+    def LastBlockUtxoRootHash: Rep[AvlTree] = delayInvoke
+    def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke
+    def deserialize[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke
+  }
+
+  implicit object LiftableContext
+    extends Liftable[SContext, Context] {
+    lazy val eW: Elem[Context] = contextElement
+    lazy val sourceClassTag: ClassTag[SContext] = {
+      classTag[SContext]
+    }
+    def lift(x: SContext): Rep[Context] = ContextConst(x)
+    def unlift(w: Rep[Context]): SContext = w match {
+      case Def(ContextConst(x: SContext))
+            => x.asInstanceOf[SContext]
+      case _ => unliftError(w)
+    }
+  }
+
   // entityProxy: single proxy for each type family
   implicit def proxyContext(p: Rep[Context]): Context = {
     proxyOps[Context](p)(scala.reflect.classTag[Context])
@@ -1018,6 +977,14 @@ object Context extends EntityObject("Context") {
   // familyElem
   class ContextElem[To <: Context]
     extends EntityElem[To] {
+    override val liftable = LiftableContext.asLiftable[SContext, To]
+
+    override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
+      super.collectMethods ++ Elem.declaredMethods(classOf[Context], classOf[SContext], Set(
+        "builder", "OUTPUTS", "INPUTS", "HEIGHT", "SELF", "LastBlockUtxoRootHash", "getVar", "deserialize"
+      ))
+    }
+
     lazy val parent: Option[Elem[_]] = None
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
     override lazy val tag = {
@@ -1129,12 +1096,12 @@ object Context extends EntityObject("Context") {
     }
 
     object getVar {
-      def unapply(d: Def[_]): Option[(Rep[Context], Rep[Byte], Elem[T]) forSome {type T}] = d match {
-        case MethodCall(receiver, method, Seq(id, cT, _*), _) if receiver.elem.isInstanceOf[ContextElem[_]] && method.getName == "getVar" =>
-          Some((receiver, id, cT)).asInstanceOf[Option[(Rep[Context], Rep[Byte], Elem[T]) forSome {type T}]]
+      def unapply(d: Def[_]): Option[(Rep[Context], Rep[Byte], Elem[T], Elem[T]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, Seq(id, cT, emT, _*), _) if receiver.elem.isInstanceOf[ContextElem[_]] && method.getName == "getVar" =>
+          Some((receiver, id, cT, emT)).asInstanceOf[Option[(Rep[Context], Rep[Byte], Elem[T], Elem[T]) forSome {type T}]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Context], Rep[Byte], Elem[T]) forSome {type T}] = exp match {
+      def unapply(exp: Sym): Option[(Rep[Context], Rep[Byte], Elem[T], Elem[T]) forSome {type T}] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
@@ -1158,61 +1125,34 @@ object Context extends EntityObject("Context") {
 } // of object Context
   registerEntityObject("Context", Context)
 
-object ContextBuilder extends EntityObject("ContextBuilder") {
-  // entityProxy: single proxy for each type family
-  implicit def proxyContextBuilder(p: Rep[ContextBuilder]): ContextBuilder = {
-    proxyOps[ContextBuilder](p)(scala.reflect.classTag[ContextBuilder])
-  }
-
-  // familyElem
-  class ContextBuilderElem[To <: ContextBuilder]
-    extends DslBuilderElem[To] {
-    override lazy val parent: Option[Elem[_]] = Some(dslBuilderElement)
-    override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
-    override lazy val tag = {
-      weakTypeTag[ContextBuilder].asInstanceOf[WeakTypeTag[To]]
-    }
-    override def convert(x: Rep[Def[_]]) = {
-      val conv = fun {x: Rep[ContextBuilder] => convertContextBuilder(x) }
-      tryConvert(element[ContextBuilder], this, x, conv)
-    }
-
-    def convertContextBuilder(x: Rep[ContextBuilder]): Rep[To] = {
-      x.elem match {
-        case _: ContextBuilderElem[_] => x.asRep[To]
-        case e => !!!(s"Expected $x to have ContextBuilderElem[_], but got $e", x)
-      }
-    }
-    override def getDefaultRep: Rep[To] = ???
-  }
-
-  implicit def contextBuilderElement: Elem[ContextBuilder] =
-    cachedElem[ContextBuilderElem[ContextBuilder]]()
-
-  implicit case object ContextBuilderCompanionElem extends CompanionElem[ContextBuilderCompanionCtor] {
-    lazy val tag = weakTypeTag[ContextBuilderCompanionCtor]
-    protected def getDefaultRep = RContextBuilder
-  }
-
-  abstract class ContextBuilderCompanionCtor extends CompanionDef[ContextBuilderCompanionCtor] with ContextBuilderCompanion {
-    def selfType = ContextBuilderCompanionElem
-    override def toString = "ContextBuilder"
-  }
-  implicit def proxyContextBuilderCompanionCtor(p: Rep[ContextBuilderCompanionCtor]): ContextBuilderCompanionCtor =
-    proxyOps[ContextBuilderCompanionCtor](p)
-
-  lazy val RContextBuilder: Rep[ContextBuilderCompanionCtor] = new ContextBuilderCompanionCtor {
-  }
-
-  object ContextBuilderMethods {
-  }
-
-  object ContextBuilderCompanionMethods {
-  }
-} // of object ContextBuilder
-  registerEntityObject("ContextBuilder", ContextBuilder)
-
 object SigmaContract extends EntityObject("SigmaContract") {
+  // entityConst: single const for each entity
+  import Liftables._
+  import scala.reflect.{ClassTag, classTag}
+  type SSigmaContract = special.sigma.SigmaContract
+  case class SigmaContractConst(
+        constValue: SSigmaContract
+      ) extends SigmaContract with LiftedConst[SSigmaContract, SigmaContract] {
+    val liftable: Liftable[SSigmaContract, SigmaContract] = LiftableSigmaContract
+    val selfType: Elem[SigmaContract] = liftable.eW
+    def builder: Rep[SigmaDslBuilder] = delayInvoke
+    @clause def canOpen(ctx: Rep[Context]): Rep[Boolean] = delayInvoke
+  }
+
+  implicit object LiftableSigmaContract
+    extends Liftable[SSigmaContract, SigmaContract] {
+    lazy val eW: Elem[SigmaContract] = sigmaContractElement
+    lazy val sourceClassTag: ClassTag[SSigmaContract] = {
+      classTag[SSigmaContract]
+    }
+    def lift(x: SSigmaContract): Rep[SigmaContract] = SigmaContractConst(x)
+    def unlift(w: Rep[SigmaContract]): SSigmaContract = w match {
+      case Def(SigmaContractConst(x: SSigmaContract))
+            => x.asInstanceOf[SSigmaContract]
+      case _ => unliftError(w)
+    }
+  }
+
   // entityProxy: single proxy for each type family
   implicit def proxySigmaContract(p: Rep[SigmaContract]): SigmaContract = {
     proxyOps[SigmaContract](p)(scala.reflect.classTag[SigmaContract])
@@ -1221,6 +1161,14 @@ object SigmaContract extends EntityObject("SigmaContract") {
   // familyElem
   class SigmaContractElem[To <: SigmaContract]
     extends EntityElem[To] {
+    override val liftable = LiftableSigmaContract.asLiftable[SSigmaContract, To]
+
+    override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
+      super.collectMethods ++ Elem.declaredMethods(classOf[SigmaContract], classOf[SSigmaContract], Set(
+        "builder", "Collection", "verifyZK", "atLeast", "allOf", "allZK", "anyOf", "anyZK", "PubKey", "sigmaProp", "blake2b256", "sha256", "byteArrayToBigInt", "longToByteArray", "proveDlog", "proveDHTuple", "isMember", "groupGenerator", "canOpen", "asFunction"
+      ))
+    }
+
     lazy val parent: Option[Elem[_]] = None
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
     override lazy val tag = {
@@ -1284,24 +1232,24 @@ object SigmaContract extends EntityObject("SigmaContract") {
     }
 
     object verifyZK {
-      def unapply(d: Def[_]): Option[(Rep[SigmaContract], Rep[Thunk[Sigma]])] = d match {
+      def unapply(d: Def[_]): Option[(Rep[SigmaContract], Rep[Thunk[SigmaProp]])] = d match {
         case MethodCall(receiver, method, Seq(cond, _*), _) if receiver.elem.isInstanceOf[SigmaContractElem[_]] && method.getName == "verifyZK" =>
-          Some((receiver, cond)).asInstanceOf[Option[(Rep[SigmaContract], Rep[Thunk[Sigma]])]]
+          Some((receiver, cond)).asInstanceOf[Option[(Rep[SigmaContract], Rep[Thunk[SigmaProp]])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[SigmaContract], Rep[Thunk[Sigma]])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[SigmaContract], Rep[Thunk[SigmaProp]])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object atLeast {
-      def unapply(d: Def[_]): Option[(Rep[SigmaContract], Rep[Int], Rep[Col[Sigma]])] = d match {
+      def unapply(d: Def[_]): Option[(Rep[SigmaContract], Rep[Int], Rep[Col[SigmaProp]])] = d match {
         case MethodCall(receiver, method, Seq(bound, props, _*), _) if receiver.elem.isInstanceOf[SigmaContractElem[_]] && method.getName == "atLeast" =>
-          Some((receiver, bound, props)).asInstanceOf[Option[(Rep[SigmaContract], Rep[Int], Rep[Col[Sigma]])]]
+          Some((receiver, bound, props)).asInstanceOf[Option[(Rep[SigmaContract], Rep[Int], Rep[Col[SigmaProp]])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[SigmaContract], Rep[Int], Rep[Col[Sigma]])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[SigmaContract], Rep[Int], Rep[Col[SigmaProp]])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
@@ -1320,12 +1268,12 @@ object SigmaContract extends EntityObject("SigmaContract") {
     }
 
     object allZK {
-      def unapply(d: Def[_]): Option[(Rep[SigmaContract], Rep[Col[Sigma]])] = d match {
+      def unapply(d: Def[_]): Option[(Rep[SigmaContract], Rep[Col[SigmaProp]])] = d match {
         case MethodCall(receiver, method, Seq(conditions, _*), _) if receiver.elem.isInstanceOf[SigmaContractElem[_]] && method.getName == "allZK" =>
-          Some((receiver, conditions)).asInstanceOf[Option[(Rep[SigmaContract], Rep[Col[Sigma]])]]
+          Some((receiver, conditions)).asInstanceOf[Option[(Rep[SigmaContract], Rep[Col[SigmaProp]])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[SigmaContract], Rep[Col[Sigma]])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[SigmaContract], Rep[Col[SigmaProp]])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
@@ -1344,12 +1292,12 @@ object SigmaContract extends EntityObject("SigmaContract") {
     }
 
     object anyZK {
-      def unapply(d: Def[_]): Option[(Rep[SigmaContract], Rep[Col[Sigma]])] = d match {
+      def unapply(d: Def[_]): Option[(Rep[SigmaContract], Rep[Col[SigmaProp]])] = d match {
         case MethodCall(receiver, method, Seq(conditions, _*), _) if receiver.elem.isInstanceOf[SigmaContractElem[_]] && method.getName == "anyZK" =>
-          Some((receiver, conditions)).asInstanceOf[Option[(Rep[SigmaContract], Rep[Col[Sigma]])]]
+          Some((receiver, conditions)).asInstanceOf[Option[(Rep[SigmaContract], Rep[Col[SigmaProp]])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[SigmaContract], Rep[Col[Sigma]])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[SigmaContract], Rep[Col[SigmaProp]])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
@@ -1505,61 +1453,49 @@ object SigmaContract extends EntityObject("SigmaContract") {
 } // of object SigmaContract
   registerEntityObject("SigmaContract", SigmaContract)
 
-object SigmaContractBuilder extends EntityObject("SigmaContractBuilder") {
-  // entityProxy: single proxy for each type family
-  implicit def proxySigmaContractBuilder(p: Rep[SigmaContractBuilder]): SigmaContractBuilder = {
-    proxyOps[SigmaContractBuilder](p)(scala.reflect.classTag[SigmaContractBuilder])
-  }
-
-  // familyElem
-  class SigmaContractBuilderElem[To <: SigmaContractBuilder]
-    extends DslBuilderElem[To] {
-    override lazy val parent: Option[Elem[_]] = Some(dslBuilderElement)
-    override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
-    override lazy val tag = {
-      weakTypeTag[SigmaContractBuilder].asInstanceOf[WeakTypeTag[To]]
-    }
-    override def convert(x: Rep[Def[_]]) = {
-      val conv = fun {x: Rep[SigmaContractBuilder] => convertSigmaContractBuilder(x) }
-      tryConvert(element[SigmaContractBuilder], this, x, conv)
-    }
-
-    def convertSigmaContractBuilder(x: Rep[SigmaContractBuilder]): Rep[To] = {
-      x.elem match {
-        case _: SigmaContractBuilderElem[_] => x.asRep[To]
-        case e => !!!(s"Expected $x to have SigmaContractBuilderElem[_], but got $e", x)
-      }
-    }
-    override def getDefaultRep: Rep[To] = ???
-  }
-
-  implicit def sigmaContractBuilderElement: Elem[SigmaContractBuilder] =
-    cachedElem[SigmaContractBuilderElem[SigmaContractBuilder]]()
-
-  implicit case object SigmaContractBuilderCompanionElem extends CompanionElem[SigmaContractBuilderCompanionCtor] {
-    lazy val tag = weakTypeTag[SigmaContractBuilderCompanionCtor]
-    protected def getDefaultRep = RSigmaContractBuilder
-  }
-
-  abstract class SigmaContractBuilderCompanionCtor extends CompanionDef[SigmaContractBuilderCompanionCtor] with SigmaContractBuilderCompanion {
-    def selfType = SigmaContractBuilderCompanionElem
-    override def toString = "SigmaContractBuilder"
-  }
-  implicit def proxySigmaContractBuilderCompanionCtor(p: Rep[SigmaContractBuilderCompanionCtor]): SigmaContractBuilderCompanionCtor =
-    proxyOps[SigmaContractBuilderCompanionCtor](p)
-
-  lazy val RSigmaContractBuilder: Rep[SigmaContractBuilderCompanionCtor] = new SigmaContractBuilderCompanionCtor {
-  }
-
-  object SigmaContractBuilderMethods {
-  }
-
-  object SigmaContractBuilderCompanionMethods {
-  }
-} // of object SigmaContractBuilder
-  registerEntityObject("SigmaContractBuilder", SigmaContractBuilder)
-
 object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
+  // entityConst: single const for each entity
+  import Liftables._
+  import scala.reflect.{ClassTag, classTag}
+  type SSigmaDslBuilder = special.sigma.SigmaDslBuilder
+  case class SigmaDslBuilderConst(
+        constValue: SSigmaDslBuilder
+      ) extends SigmaDslBuilder with LiftedConst[SSigmaDslBuilder, SigmaDslBuilder] {
+    val liftable: Liftable[SSigmaDslBuilder, SigmaDslBuilder] = LiftableSigmaDslBuilder
+    val selfType: Elem[SigmaDslBuilder] = liftable.eW
+    def Cols: Rep[ColBuilder] = delayInvoke
+    def verifyZK(cond: Rep[Thunk[SigmaProp]]): Rep[Boolean] = delayInvoke
+    def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp] = delayInvoke
+    def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = delayInvoke
+    def allZK(conditions: Rep[Col[SigmaProp]]): Rep[SigmaProp] = delayInvoke
+    def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = delayInvoke
+    def anyZK(conditions: Rep[Col[SigmaProp]]): Rep[SigmaProp] = delayInvoke
+    def PubKey(base64String: Rep[String]): Rep[SigmaProp] = delayInvoke
+    def sigmaProp(b: Rep[Boolean]): Rep[SigmaProp] = delayInvoke
+    def blake2b256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = delayInvoke
+    def sha256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = delayInvoke
+    def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[WBigInteger] = delayInvoke
+    def longToByteArray(l: Rep[Long]): Rep[Col[Byte]] = delayInvoke
+    def proveDlog(g: Rep[WECPoint]): Rep[SigmaProp] = delayInvoke
+    def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[SigmaProp] = delayInvoke
+    def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean] = delayInvoke
+    def groupGenerator: Rep[WECPoint] = delayInvoke
+  }
+
+  implicit object LiftableSigmaDslBuilder
+    extends Liftable[SSigmaDslBuilder, SigmaDslBuilder] {
+    lazy val eW: Elem[SigmaDslBuilder] = sigmaDslBuilderElement
+    lazy val sourceClassTag: ClassTag[SSigmaDslBuilder] = {
+      classTag[SSigmaDslBuilder]
+    }
+    def lift(x: SSigmaDslBuilder): Rep[SigmaDslBuilder] = SigmaDslBuilderConst(x)
+    def unlift(w: Rep[SigmaDslBuilder]): SSigmaDslBuilder = w match {
+      case Def(SigmaDslBuilderConst(x: SSigmaDslBuilder))
+            => x.asInstanceOf[SSigmaDslBuilder]
+      case _ => unliftError(w)
+    }
+  }
+
   // entityProxy: single proxy for each type family
   implicit def proxySigmaDslBuilder(p: Rep[SigmaDslBuilder]): SigmaDslBuilder = {
     proxyOps[SigmaDslBuilder](p)(scala.reflect.classTag[SigmaDslBuilder])
@@ -1567,8 +1503,16 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
 
   // familyElem
   class SigmaDslBuilderElem[To <: SigmaDslBuilder]
-    extends SigmaBuilderElem[To] {
-    override lazy val parent: Option[Elem[_]] = Some(sigmaBuilderElement)
+    extends DslBuilderElem[To] {
+    override val liftable = LiftableSigmaDslBuilder.asLiftable[SSigmaDslBuilder, To]
+
+    override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
+      super.collectMethods ++ Elem.declaredMethods(classOf[SigmaDslBuilder], classOf[SSigmaDslBuilder], Set(
+        "Cols", "verifyZK", "atLeast", "allOf", "allZK", "anyOf", "anyZK", "PubKey", "sigmaProp", "blake2b256", "sha256", "byteArrayToBigInt", "longToByteArray", "proveDlog", "proveDHTuple", "isMember", "groupGenerator"
+      ))
+    }
+
+    override lazy val parent: Option[Elem[_]] = Some(dslBuilderElement)
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
     override lazy val tag = {
       weakTypeTag[SigmaDslBuilder].asInstanceOf[WeakTypeTag[To]]
@@ -1619,24 +1563,24 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
     }
 
     object verifyZK {
-      def unapply(d: Def[_]): Option[(Rep[SigmaDslBuilder], Rep[Thunk[Sigma]])] = d match {
+      def unapply(d: Def[_]): Option[(Rep[SigmaDslBuilder], Rep[Thunk[SigmaProp]])] = d match {
         case MethodCall(receiver, method, Seq(cond, _*), _) if receiver.elem.isInstanceOf[SigmaDslBuilderElem[_]] && method.getName == "verifyZK" =>
-          Some((receiver, cond)).asInstanceOf[Option[(Rep[SigmaDslBuilder], Rep[Thunk[Sigma]])]]
+          Some((receiver, cond)).asInstanceOf[Option[(Rep[SigmaDslBuilder], Rep[Thunk[SigmaProp]])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[SigmaDslBuilder], Rep[Thunk[Sigma]])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[SigmaDslBuilder], Rep[Thunk[SigmaProp]])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object atLeast {
-      def unapply(d: Def[_]): Option[(Rep[SigmaDslBuilder], Rep[Int], Rep[Col[Sigma]])] = d match {
+      def unapply(d: Def[_]): Option[(Rep[SigmaDslBuilder], Rep[Int], Rep[Col[SigmaProp]])] = d match {
         case MethodCall(receiver, method, Seq(bound, props, _*), _) if receiver.elem.isInstanceOf[SigmaDslBuilderElem[_]] && method.getName == "atLeast" =>
-          Some((receiver, bound, props)).asInstanceOf[Option[(Rep[SigmaDslBuilder], Rep[Int], Rep[Col[Sigma]])]]
+          Some((receiver, bound, props)).asInstanceOf[Option[(Rep[SigmaDslBuilder], Rep[Int], Rep[Col[SigmaProp]])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[SigmaDslBuilder], Rep[Int], Rep[Col[Sigma]])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[SigmaDslBuilder], Rep[Int], Rep[Col[SigmaProp]])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
@@ -1655,12 +1599,12 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
     }
 
     object allZK {
-      def unapply(d: Def[_]): Option[(Rep[SigmaDslBuilder], Rep[Col[Sigma]])] = d match {
+      def unapply(d: Def[_]): Option[(Rep[SigmaDslBuilder], Rep[Col[SigmaProp]])] = d match {
         case MethodCall(receiver, method, Seq(conditions, _*), _) if receiver.elem.isInstanceOf[SigmaDslBuilderElem[_]] && method.getName == "allZK" =>
-          Some((receiver, conditions)).asInstanceOf[Option[(Rep[SigmaDslBuilder], Rep[Col[Sigma]])]]
+          Some((receiver, conditions)).asInstanceOf[Option[(Rep[SigmaDslBuilder], Rep[Col[SigmaProp]])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[SigmaDslBuilder], Rep[Col[Sigma]])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[SigmaDslBuilder], Rep[Col[SigmaProp]])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
@@ -1679,12 +1623,12 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
     }
 
     object anyZK {
-      def unapply(d: Def[_]): Option[(Rep[SigmaDslBuilder], Rep[Col[Sigma]])] = d match {
+      def unapply(d: Def[_]): Option[(Rep[SigmaDslBuilder], Rep[Col[SigmaProp]])] = d match {
         case MethodCall(receiver, method, Seq(conditions, _*), _) if receiver.elem.isInstanceOf[SigmaDslBuilderElem[_]] && method.getName == "anyZK" =>
-          Some((receiver, conditions)).asInstanceOf[Option[(Rep[SigmaDslBuilder], Rep[Col[Sigma]])]]
+          Some((receiver, conditions)).asInstanceOf[Option[(Rep[SigmaDslBuilder], Rep[Col[SigmaProp]])]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[SigmaDslBuilder], Rep[Col[Sigma]])] = exp match {
+      def unapply(exp: Sym): Option[(Rep[SigmaDslBuilder], Rep[Col[SigmaProp]])] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }

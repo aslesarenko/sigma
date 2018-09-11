@@ -2,10 +2,10 @@ package special.sigma {
   import scalan._
 
   trait SigmaExamples extends Base { self: SigmaLibrary =>
-    import ProveDlog._;
+    import SigmaProp._;
     import CrowdFunding._;
     import SigmaContract._;
-    import Sigma._;
+    import SigmaProp._;
     import Context._
     import Col._; import Box._
     import WOption._
@@ -16,10 +16,10 @@ package special.sigma {
     trait CrowdFunding extends Def[CrowdFunding] with SigmaContract {
       def deadline: Rep[Long];
       def minToRaise: Rep[Long];
-      def backerPubKey: Rep[ProveDlog];
-      def projectPubKey: Rep[ProveDlog];
+      def backerPubKey: Rep[SigmaProp];
+      def projectPubKey: Rep[SigmaProp];
       @clause def canOpen(ctx: Rep[Context]): Rep[Boolean] = CrowdFunding.this.verifyZK(Thunk{
-        val fundraisingFailure: Rep[Sigma] = CrowdFunding.this.sigmaProp(ctx.HEIGHT.>=(CrowdFunding.this.deadline)).&&(CrowdFunding.this.backerPubKey);
+        val fundraisingFailure: Rep[SigmaProp] = CrowdFunding.this.sigmaProp(ctx.HEIGHT.>=(CrowdFunding.this.deadline)).&&(CrowdFunding.this.backerPubKey);
         val enoughRaised: Rep[scala.Function1[Box, Boolean]] = fun(((outBox: Rep[Box]) => outBox.value.>=(CrowdFunding.this.minToRaise).&&(outBox.propositionBytes.==(CrowdFunding.this.projectPubKey.propBytes))));
         val fundraisingSuccess: Rep[Boolean] = ctx.HEIGHT.<(CrowdFunding.this.deadline).&&(CrowdFunding.this.projectPubKey.isValid).&&(ctx.OUTPUTS.exists(enoughRaised));
         fundraisingFailure.||(fundraisingSuccess)
@@ -28,19 +28,19 @@ package special.sigma {
     trait CrossChainAtomicSwap extends Def[CrossChainAtomicSwap] with SigmaContract {
       def deadlineBob: Rep[Long];
       def deadlineAlice: Rep[Long];
-      def pkA: Rep[Sigma];
-      def pkB: Rep[Sigma];
+      def pkA: Rep[SigmaProp];
+      def pkB: Rep[SigmaProp];
       def hx: Rep[Col[Byte]];
-      def templateForBobChain(ctx: Rep[Context]): Rep[Boolean] = CrossChainAtomicSwap.this.verifyZK(Thunk { CrossChainAtomicSwap.this.anyZK(CrossChainAtomicSwap.this.Collection[Sigma](CrossChainAtomicSwap.this.sigmaProp(ctx.HEIGHT.>(CrossChainAtomicSwap.this.deadlineBob)).&&(CrossChainAtomicSwap.this.pkA), CrossChainAtomicSwap.this.pkB.&&(CrossChainAtomicSwap.this.blake2b256(ctx.getVar[Col[Byte]](toRep(1.asInstanceOf[Byte])).get).==(CrossChainAtomicSwap.this.hx))))});
+      def templateForBobChain(ctx: Rep[Context]): Rep[Boolean] = CrossChainAtomicSwap.this.verifyZK(Thunk { CrossChainAtomicSwap.this.anyZK(CrossChainAtomicSwap.this.Collection[SigmaProp](CrossChainAtomicSwap.this.sigmaProp(ctx.HEIGHT.>(CrossChainAtomicSwap.this.deadlineBob)).&&(CrossChainAtomicSwap.this.pkA), CrossChainAtomicSwap.this.pkB.&&(CrossChainAtomicSwap.this.blake2b256(ctx.getVar[Col[Byte]](toRep(1.asInstanceOf[Byte])).get).==(CrossChainAtomicSwap.this.hx))))});
       def templateForAliceChain(ctx: Rep[Context]): Rep[Boolean] = CrossChainAtomicSwap.this.verifyZK(Thunk {
         val x: Rep[Col[Byte]] = ctx.getVar[Col[Byte]](toRep(1.asInstanceOf[Byte])).get;
-        CrossChainAtomicSwap.this.anyZK(CrossChainAtomicSwap.this.Collection[Sigma](CrossChainAtomicSwap.this.sigmaProp(ctx.HEIGHT.>(CrossChainAtomicSwap.this.deadlineAlice)).&&(CrossChainAtomicSwap.this.pkB), CrossChainAtomicSwap.this.allZK(CrossChainAtomicSwap.this.Collection[Sigma](CrossChainAtomicSwap.this.pkA, CrossChainAtomicSwap.this.sigmaProp(x.length.<(toRep(33.asInstanceOf[Int]))), CrossChainAtomicSwap.this.sigmaProp(CrossChainAtomicSwap.this.blake2b256(x).==(CrossChainAtomicSwap.this.hx))))))
+        CrossChainAtomicSwap.this.anyZK(CrossChainAtomicSwap.this.Collection[SigmaProp](CrossChainAtomicSwap.this.sigmaProp(ctx.HEIGHT.>(CrossChainAtomicSwap.this.deadlineAlice)).&&(CrossChainAtomicSwap.this.pkB), CrossChainAtomicSwap.this.allZK(CrossChainAtomicSwap.this.Collection[SigmaProp](CrossChainAtomicSwap.this.pkA, CrossChainAtomicSwap.this.sigmaProp(x.length.<(toRep(33.asInstanceOf[Int]))), CrossChainAtomicSwap.this.sigmaProp(CrossChainAtomicSwap.this.blake2b256(x).==(CrossChainAtomicSwap.this.hx))))))
       })
     };
     trait InChainAtomicSwap extends Def[InChainAtomicSwap] with SigmaContract {
       def deadline: Rep[Long];
-      def pkA: Rep[Sigma];
-      def pkB: Rep[Sigma];
+      def pkA: Rep[SigmaProp];
+      def pkB: Rep[SigmaProp];
       def token1: Rep[Col[Byte]];
       def templateForAlice(ctx: Rep[Context]): Rep[Boolean] = InChainAtomicSwap.this.verifyZK(Thunk { InChainAtomicSwap.this.pkA.&&(ctx.HEIGHT.>(InChainAtomicSwap.this.deadline)).||({
         val tokenData: Rep[scala.Tuple2[Col[Byte], Long]] = ctx.OUTPUTS.apply(toRep(0.asInstanceOf[Int])).tokens.apply(toRep(0.asInstanceOf[Int]));
@@ -68,7 +68,7 @@ package special.sigma {
     trait DemurrageCurrency extends Def[DemurrageCurrency] with SigmaContract {
       def demurragePeriod: Rep[Long];
       def demurrageCost: Rep[Long];
-      def regScript: Rep[ProveDlog];
+      def regScript: Rep[SigmaProp];
       @clause def canOpen(ctx: Rep[Context]): Rep[Boolean] = DemurrageCurrency.this.verifyZK(Thunk{
         val c2: Rep[Boolean] = ctx.HEIGHT.>=(ctx.SELF.R4[Long].get.+(DemurrageCurrency.this.demurragePeriod)).&&(ctx.OUTPUTS.exists(fun(((out: Rep[Box]) => out.value.>=(ctx.SELF.value.-(DemurrageCurrency.this.demurrageCost)).&&(out.propositionBytes.==(ctx.SELF.propositionBytes))))));
         DemurrageCurrency.this.regScript.||(c2)

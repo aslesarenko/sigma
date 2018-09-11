@@ -9,9 +9,9 @@ package special.sigma.wrappers {
     import WrapSpec._;
     import WBigInteger._;
     abstract class ECPointWrapSpec extends WrapSpec {
-      def getEncoded[A](g: Rep[WECPoint]): Rep[WArray[Byte]] = g.getEncoded(toRep(true.asInstanceOf[Boolean]));
-      def exponentiate(l: Rep[WECPoint], r: Rep[WBigInteger]): Rep[WECPoint] = l.multiply(r);
-      def groupOp(l: Rep[WECPoint], r: Rep[WECPoint]): Rep[WECPoint] = l.add(r)
+      def getEncoded[A](g: Rep[WECPoint], compressed: Rep[Boolean]): Rep[WArray[Byte]] = g.getEncoded(compressed);
+      def multiply(l: Rep[WECPoint], r: Rep[WBigInteger]): Rep[WECPoint] = l.multiply(r);
+      def add(l: Rep[WECPoint], r: Rep[WECPoint]): Rep[WECPoint] = l.add(r)
     };
     abstract class BigIntegerWrapSpec extends WrapSpec {
       def fromString(s: Rep[String]): Rep[WBigInteger] = RWBigInteger(s);
@@ -19,7 +19,7 @@ package special.sigma.wrappers {
       def ZERO: Rep[WBigInteger] = RWBigInteger.ZERO;
       def ONE: Rep[WBigInteger] = RWBigInteger.ONE;
       def valueOf(l: Rep[Long]): Rep[WBigInteger] = RWBigInteger.valueOf(l);
-      def toString(l: Rep[WBigInteger], radix: Rep[Int]): Rep[String] = l.toString(radix);
+      def toStringWithRadix(l: Rep[WBigInteger], radix: Rep[Int]): Rep[String] = l.toString(radix);
       def toByteArray(l: Rep[WBigInteger]): Rep[WArray[Byte]] = l.toByteArray;
       def add(l: Rep[WBigInteger], r: Rep[WBigInteger]): Rep[WBigInteger] = l.add(r);
       def subtract(l: Rep[WBigInteger], r: Rep[WBigInteger]): Rep[WBigInteger] = l.subtract(r);

@@ -17,7 +17,7 @@ trait SigmaLibrary extends Library
   import WArray._
   import Col._
   import ColBuilder._
-  import Sigma._
+  import SigmaProp._
   import TrivialSigma._
   import SigmaContract._
   import WECPoint._
@@ -28,7 +28,7 @@ trait SigmaLibrary extends Library
   private val WA = WArrayMethods
   private val CM = ColMethods
   private val CBM = ColBuilderMethods
-  private val SM = SigmaMethods
+  private val SM = SigmaPropMethods
   private val SCM = SigmaContractMethods
   private val SDBM = SigmaDslBuilderMethods
 
@@ -49,23 +49,23 @@ trait SigmaLibrary extends Library
     }
   }
   object AnyZk {
-    def unapply(d: Def[_]): Option[(Rep[ColBuilder], Seq[Rep[Sigma]])] = d match {
+    def unapply(d: Def[_]): Option[(Rep[ColBuilder], Seq[Rep[SigmaProp]])] = d match {
       case SDBM.anyZK(_, CBM.apply_apply_items(b, items)) =>
-        Some((b, items.asInstanceOf[Seq[Rep[Sigma]]]))
+        Some((b, items.asInstanceOf[Seq[Rep[SigmaProp]]]))
       case _ => None
     }
   }
   object AllZk {
-    def unapply(d: Def[_]): Option[(Rep[ColBuilder], Seq[Rep[Sigma]])] = d match {
+    def unapply(d: Def[_]): Option[(Rep[ColBuilder], Seq[Rep[SigmaProp]])] = d match {
       case SDBM.allZK(_, CBM.apply_apply_items(b, items)) =>
-        Some((b, items.asInstanceOf[Seq[Rep[Sigma]]]))
+        Some((b, items.asInstanceOf[Seq[Rep[SigmaProp]]]))
       case _ => None
     }
   }
   object HasSigmas {
-    def unapply(items: Seq[Sym]): Option[(Seq[Rep[Boolean]], Seq[Rep[Sigma]])] = {
+    def unapply(items: Seq[Sym]): Option[(Seq[Rep[Boolean]], Seq[Rep[SigmaProp]])] = {
       val bs = ArrayBuffer.empty[BoolRep]
-      val ss = ArrayBuffer.empty[Rep[Sigma]]
+      val ss = ArrayBuffer.empty[Rep[SigmaProp]]
       for (i <- items) {
         i match {
           case SM.isValid(s) => ss += s

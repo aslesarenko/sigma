@@ -10,10 +10,9 @@ trait SigmaExamplesDefs extends scalan.Scalan with SigmaExamples {
   self: SigmaLibrary =>
 import IsoUR._
 import Converter._
-import ProveDlog._
+import SigmaProp._
 import CrowdFunding._
 import SigmaContract._
-import Sigma._
 import Col._
 import CrossChainAtomicSwap._
 import InChainAtomicSwap._

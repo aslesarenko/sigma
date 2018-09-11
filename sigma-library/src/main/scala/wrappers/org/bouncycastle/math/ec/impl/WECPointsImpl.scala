@@ -42,8 +42,6 @@ object WECPoint extends EntityObject("WECPoint") {
     }
   }
 
-  def liftECPoint(x: ECPoint): Rep[WECPoint] = liftConst(x)
-
   // entityProxy: single proxy for each type family
   implicit def proxyWECPoint(p: Rep[WECPoint]): WECPoint = {
     proxyOps[WECPoint](p)(scala.reflect.classTag[WECPoint])
