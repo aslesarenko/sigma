@@ -609,144 +609,144 @@ object Box extends EntityObject("Box") {
     }
 
     object deserialize {
-      def unapply(d: Def[_]): Option[(Rep[Box], Rep[Int], Elem[T], Elem[T]) forSome {type T}] = d match {
-        case MethodCall(receiver, method, Seq(i, cT, emT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "deserialize" =>
-          Some((receiver, i, cT, emT)).asInstanceOf[Option[(Rep[Box], Rep[Int], Elem[T], Elem[T]) forSome {type T}]]
+      def unapply(d: Def[_]): Option[(Rep[Box], Rep[Int], Elem[T]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, Seq(i, cT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "deserialize" =>
+          Some((receiver, i, cT)).asInstanceOf[Option[(Rep[Box], Rep[Int], Elem[T]) forSome {type T}]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Box], Rep[Int], Elem[T], Elem[T]) forSome {type T}] = exp match {
+      def unapply(exp: Sym): Option[(Rep[Box], Rep[Int], Elem[T]) forSome {type T}] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object getReg {
-      def unapply(d: Def[_]): Option[(Rep[Box], Rep[Int], Elem[T], Elem[T]) forSome {type T}] = d match {
-        case MethodCall(receiver, method, Seq(i, cT, emT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "getReg" =>
-          Some((receiver, i, cT, emT)).asInstanceOf[Option[(Rep[Box], Rep[Int], Elem[T], Elem[T]) forSome {type T}]]
+      def unapply(d: Def[_]): Option[(Rep[Box], Rep[Int], Elem[T]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, Seq(i, cT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "getReg" =>
+          Some((receiver, i, cT)).asInstanceOf[Option[(Rep[Box], Rep[Int], Elem[T]) forSome {type T}]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Box], Rep[Int], Elem[T], Elem[T]) forSome {type T}] = exp match {
+      def unapply(exp: Sym): Option[(Rep[Box], Rep[Int], Elem[T]) forSome {type T}] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object R0 {
-      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = d match {
-        case MethodCall(receiver, method, Seq(cT, emT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R0" =>
-          Some((receiver, cT, emT)).asInstanceOf[Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}]]
+      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, Seq(cT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R0" =>
+          Some((receiver, cT)).asInstanceOf[Option[(Rep[Box], Elem[T]) forSome {type T}]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = exp match {
+      def unapply(exp: Sym): Option[(Rep[Box], Elem[T]) forSome {type T}] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object R1 {
-      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = d match {
-        case MethodCall(receiver, method, Seq(cT, emT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R1" =>
-          Some((receiver, cT, emT)).asInstanceOf[Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}]]
+      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, Seq(cT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R1" =>
+          Some((receiver, cT)).asInstanceOf[Option[(Rep[Box], Elem[T]) forSome {type T}]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = exp match {
+      def unapply(exp: Sym): Option[(Rep[Box], Elem[T]) forSome {type T}] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object R2 {
-      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = d match {
-        case MethodCall(receiver, method, Seq(cT, emT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R2" =>
-          Some((receiver, cT, emT)).asInstanceOf[Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}]]
+      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, Seq(cT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R2" =>
+          Some((receiver, cT)).asInstanceOf[Option[(Rep[Box], Elem[T]) forSome {type T}]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = exp match {
+      def unapply(exp: Sym): Option[(Rep[Box], Elem[T]) forSome {type T}] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object R3 {
-      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = d match {
-        case MethodCall(receiver, method, Seq(cT, emT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R3" =>
-          Some((receiver, cT, emT)).asInstanceOf[Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}]]
+      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, Seq(cT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R3" =>
+          Some((receiver, cT)).asInstanceOf[Option[(Rep[Box], Elem[T]) forSome {type T}]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = exp match {
+      def unapply(exp: Sym): Option[(Rep[Box], Elem[T]) forSome {type T}] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object R4 {
-      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = d match {
-        case MethodCall(receiver, method, Seq(cT, emT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R4" =>
-          Some((receiver, cT, emT)).asInstanceOf[Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}]]
+      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, Seq(cT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R4" =>
+          Some((receiver, cT)).asInstanceOf[Option[(Rep[Box], Elem[T]) forSome {type T}]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = exp match {
+      def unapply(exp: Sym): Option[(Rep[Box], Elem[T]) forSome {type T}] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object R5 {
-      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = d match {
-        case MethodCall(receiver, method, Seq(cT, emT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R5" =>
-          Some((receiver, cT, emT)).asInstanceOf[Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}]]
+      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, Seq(cT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R5" =>
+          Some((receiver, cT)).asInstanceOf[Option[(Rep[Box], Elem[T]) forSome {type T}]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = exp match {
+      def unapply(exp: Sym): Option[(Rep[Box], Elem[T]) forSome {type T}] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object R6 {
-      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = d match {
-        case MethodCall(receiver, method, Seq(cT, emT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R6" =>
-          Some((receiver, cT, emT)).asInstanceOf[Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}]]
+      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, Seq(cT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R6" =>
+          Some((receiver, cT)).asInstanceOf[Option[(Rep[Box], Elem[T]) forSome {type T}]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = exp match {
+      def unapply(exp: Sym): Option[(Rep[Box], Elem[T]) forSome {type T}] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object R7 {
-      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = d match {
-        case MethodCall(receiver, method, Seq(cT, emT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R7" =>
-          Some((receiver, cT, emT)).asInstanceOf[Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}]]
+      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, Seq(cT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R7" =>
+          Some((receiver, cT)).asInstanceOf[Option[(Rep[Box], Elem[T]) forSome {type T}]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = exp match {
+      def unapply(exp: Sym): Option[(Rep[Box], Elem[T]) forSome {type T}] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object R8 {
-      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = d match {
-        case MethodCall(receiver, method, Seq(cT, emT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R8" =>
-          Some((receiver, cT, emT)).asInstanceOf[Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}]]
+      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, Seq(cT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R8" =>
+          Some((receiver, cT)).asInstanceOf[Option[(Rep[Box], Elem[T]) forSome {type T}]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = exp match {
+      def unapply(exp: Sym): Option[(Rep[Box], Elem[T]) forSome {type T}] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object R9 {
-      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = d match {
-        case MethodCall(receiver, method, Seq(cT, emT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R9" =>
-          Some((receiver, cT, emT)).asInstanceOf[Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}]]
+      def unapply(d: Def[_]): Option[(Rep[Box], Elem[T]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, Seq(cT, _*), _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R9" =>
+          Some((receiver, cT)).asInstanceOf[Option[(Rep[Box], Elem[T]) forSome {type T}]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Box], Elem[T], Elem[T]) forSome {type T}] = exp match {
+      def unapply(exp: Sym): Option[(Rep[Box], Elem[T]) forSome {type T}] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
@@ -1096,24 +1096,24 @@ object Context extends EntityObject("Context") {
     }
 
     object getVar {
-      def unapply(d: Def[_]): Option[(Rep[Context], Rep[Byte], Elem[T], Elem[T]) forSome {type T}] = d match {
-        case MethodCall(receiver, method, Seq(id, cT, emT, _*), _) if receiver.elem.isInstanceOf[ContextElem[_]] && method.getName == "getVar" =>
-          Some((receiver, id, cT, emT)).asInstanceOf[Option[(Rep[Context], Rep[Byte], Elem[T], Elem[T]) forSome {type T}]]
+      def unapply(d: Def[_]): Option[(Rep[Context], Rep[Byte], Elem[T]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, Seq(id, cT, _*), _) if receiver.elem.isInstanceOf[ContextElem[_]] && method.getName == "getVar" =>
+          Some((receiver, id, cT)).asInstanceOf[Option[(Rep[Context], Rep[Byte], Elem[T]) forSome {type T}]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Context], Rep[Byte], Elem[T], Elem[T]) forSome {type T}] = exp match {
+      def unapply(exp: Sym): Option[(Rep[Context], Rep[Byte], Elem[T]) forSome {type T}] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
     }
 
     object deserialize {
-      def unapply(d: Def[_]): Option[(Rep[Context], Rep[Byte], Elem[T], Elem[T]) forSome {type T}] = d match {
-        case MethodCall(receiver, method, Seq(id, cT, emT, _*), _) if receiver.elem.isInstanceOf[ContextElem[_]] && method.getName == "deserialize" =>
-          Some((receiver, id, cT, emT)).asInstanceOf[Option[(Rep[Context], Rep[Byte], Elem[T], Elem[T]) forSome {type T}]]
+      def unapply(d: Def[_]): Option[(Rep[Context], Rep[Byte], Elem[T]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, Seq(id, cT, _*), _) if receiver.elem.isInstanceOf[ContextElem[_]] && method.getName == "deserialize" =>
+          Some((receiver, id, cT)).asInstanceOf[Option[(Rep[Context], Rep[Byte], Elem[T]) forSome {type T}]]
         case _ => None
       }
-      def unapply(exp: Sym): Option[(Rep[Context], Rep[Byte], Elem[T], Elem[T]) forSome {type T}] = exp match {
+      def unapply(exp: Sym): Option[(Rep[Context], Rep[Byte], Elem[T]) forSome {type T}] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }

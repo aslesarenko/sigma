@@ -102,7 +102,7 @@ lazy val sigmaimpl = Project("sigma-impl", file("sigma-impl"))
       ))
 
 lazy val sigmalibrary = Project("sigma-library", file("sigma-library"))
-    .dependsOn(sigmaimpl)
+    .dependsOn(sigmaimpl % allConfigDependency)
     .settings(//commonSettings,
       libraryDefSettings,
       libraryDependencies ++= Seq(
