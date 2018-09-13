@@ -51,7 +51,7 @@ class TestContext(
     val outputs: Array[Box],
     val height: Long,
     val selfBox: Box,
-    val LastBlockUtxoRootHash: AvlTree,
+    val lastBlockUtxoRootHash: AvlTree,
     val vars: Array[AnyValue]
 ) extends Context {
   def builder = new TestSigmaDslBuilder
@@ -65,6 +65,9 @@ class TestContext(
 
   @NeverInline
   def OUTPUTS = builder.Cols.fromArray(outputs)
+
+  @NeverInline
+  def LastBlockUtxoRootHash = lastBlockUtxoRootHash
 
   @NeverInline
   def getVar[T](id: Byte)(implicit cT: ClassTag[T]): Option[T] = SpecialPredef.cast[TestValue[T]](vars(id - 1)).map(_.value)
