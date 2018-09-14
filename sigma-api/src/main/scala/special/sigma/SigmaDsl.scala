@@ -9,6 +9,21 @@ import special.collection.{ColBuilder, Col}
 
 import scalan.{NeverInline, Reified, OverloadId}
 
+trait CostModel {
+  def AccessBox: Int //= "AccessBox: Context => Box"
+
+  def GetVar: Int // = "ContextVar: (Context, Byte) => Option[T]"
+  def DeserializeVar: Int // = "DeserializeVar: (Context, Byte) => Option[T]"
+
+  def GetRegister: Int // = "AccessRegister: (Box,Byte) => Option[T]"
+  def DeserializeRegister: Int // = "DeserializeRegister: (Box,Byte) => Option[T]"
+
+  def SelectField: Int // = "SelectField"
+  def CollectionConst: Int // = "Const: () => Array[IV]"
+  def AccessKiloByteOfData: Int // = "AccessKiloByteOfData"
+  def dataSize[T](x: T)(implicit cT: ClassTag[T]): Long
+}
+
 trait DslBuilder {}
 trait DslObject {
   def builder: SigmaDslBuilder
@@ -38,6 +53,7 @@ trait Box extends DslObject {
   def bytes: Col[Byte]
   def bytesWithoutRef: Col[Byte]
   def propositionBytes: Col[Byte]
+  def cost: Int
   def dataSize: Long
   def registers: Col[AnyValue]
   def deserialize[@Reified T](i: Int)(implicit cT:ClassTag[T]): Option[T]
@@ -73,6 +89,7 @@ trait AvlTree extends DslObject {
   def valueLengthOpt: Option[Int]
   def maxNumOperations: Option[Int]
   def maxDeletes: Option[Int]
+  def cost: Int
   def dataSize: Long
 }
 
@@ -86,6 +103,8 @@ trait Context {
   def LastBlockUtxoRootHash: AvlTree
   def getVar[T](id: Byte)(implicit cT:ClassTag[T]): Option[T]
   def deserialize[T](id: Byte)(implicit cT:ClassTag[T]): Option[T]
+  def cost: Int
+  def dataSize: Long
 }
 
 @scalan.Liftable
@@ -129,6 +148,7 @@ trait SigmaContract {
 @scalan.Liftable
 trait SigmaDslBuilder extends DslBuilder {
   def Cols: ColBuilder
+  def CostModel: CostModel
   def verifyZK(cond: => SigmaProp): Boolean
 
   def atLeast(bound: Int, props: Col[SigmaProp]): SigmaProp

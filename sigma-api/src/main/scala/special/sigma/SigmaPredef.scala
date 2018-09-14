@@ -15,10 +15,6 @@ object SigmaPredef {
     case p: ECPoint => p.getEncoded(true).length
   }
   
-  def costOf(operationId: String): Int = operationId match {
-    case _ => sys.error(s"Unknown operationId for costOf($operationId)")
-  }
-
   //TODO chack how it can be implemented
 //  def sizeOf[T](implicit cT: ClassTag[T]): Long = cT match {
 //    case _: ClassTag[Boolean] => 1

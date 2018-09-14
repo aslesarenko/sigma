@@ -8,9 +8,9 @@ import org.bouncycastle.math.ec.ECPoint
 
 import scala.reflect.ClassTag
 import special.SpecialPredef
-import special.collection.{Col, ColOverArrayBuilder, ColOverArray}
+import special.collection.{Col, ColOverArrayBuilder, ColOverArray, MonoidBuilderInst}
 
-import scalan.{NeverInline, OverloadId, Internal}
+import scalan.{NeverInline, Internal, OverloadId}
 
 class TestBox(
   val id: Col[Byte],
@@ -24,6 +24,8 @@ class TestBox(
   @NeverInline
   def getReg[T](i: Int)(implicit cT:ClassTag[T]): Option[T] =
     SpecialPredef.cast[TestValue[T]](registers(i)).map(x => x.value)
+  @NeverInline
+  def cost = (dataSize / builder.CostModel.AccessKiloByteOfData.toLong).toInt
   @NeverInline
   def dataSize = bytes.length
   @NeverInline
@@ -39,6 +41,8 @@ case class TestAvlTree(
   def builder = new TestSigmaDslBuilder
   @NeverInline
   def dataSize = startingDigest.length + 4 + valueLengthOpt.fold(0L)(_ => 4)
+  @NeverInline
+  def cost = (dataSize / builder.CostModel.AccessKiloByteOfData.toLong).toInt
 }
 
 class TestValue[T](val value: T) extends AnyValue {
@@ -74,10 +78,41 @@ class TestContext(
 
   @NeverInline
   def deserialize[T](id: Byte)(implicit cT: ClassTag[T]): Option[T] = ???
+
+  @NeverInline
+  def cost = (dataSize / builder.CostModel.AccessKiloByteOfData.toLong).toInt
+
+  @NeverInline
+  def dataSize = {
+    val inputsSize = INPUTS.map(_.dataSize).sum(builder.Monoids.longPlusMonoid)
+    val outputsSize = OUTPUTS.map(_.dataSize).sum(builder.Monoids.longPlusMonoid)
+    8L + SELF.dataSize + inputsSize + outputsSize + LastBlockUtxoRootHash.dataSize
+  }
+}
+
+@Internal
+class TestCostModel extends CostModel {
+  def AccessBox: Int = CostTable.DefaultCosts("AccessBox: Context => Box")
+
+  def GetVar: Int = CostTable.DefaultCosts("ContextVar: (Context, Byte) => Option[T]")
+  def DeserializeVar: Int = CostTable.DefaultCosts("DeserializeVar: (Context, Byte) => Option[T]")
+
+  def GetRegister: Int = CostTable.DefaultCosts("AccessRegister: (Box,Byte) => Option[T]")
+  def DeserializeRegister: Int  = CostTable.DefaultCosts("DeserializeRegister: (Box,Byte) => Option[T]")
+
+  def SelectField: Int      = CostTable.DefaultCosts("SelectField")
+  def CollectionConst: Int  = CostTable.DefaultCosts("Const: () => Array[IV]")
+  def AccessKiloByteOfData: Int  = CostTable.DefaultCosts("AccessKiloByteOfData")
+  def dataSize[T](x: T)(implicit cT: ClassTag[T]): Long = SigmaPredef.dataSize(x)
 }
 
 class TestSigmaDslBuilder extends SigmaDslBuilder {
+  @NeverInline
   def Cols = new ColOverArrayBuilder
+  @NeverInline
+  def Monoids = new MonoidBuilderInst
+  @NeverInline
+  def CostModel = new TestCostModel
 
   @NeverInline
   def verifyZK(proof: => SigmaProp) = proof.isValid
