@@ -13,6 +13,7 @@ trait SigmaLibrary extends Library
   with SigmaDslModule
   with SigmaExamplesModule
   with SigmaDslOverArraysModule
+  with SigmaDslCostedModule
   with TestContractsModule {
   import WArray._
   import Col._

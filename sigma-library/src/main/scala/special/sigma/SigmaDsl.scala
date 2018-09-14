@@ -3,6 +3,7 @@ package special.sigma {
   import scalan._
 
   trait SigmaDsl extends Base { self: SigmaLibrary =>
+//    import CostModel._;
     import DslBuilder._;
     import SigmaDslBuilder._;
     import DslObject._;
@@ -15,8 +16,20 @@ package special.sigma {
     import AvlTree._;
     import Context._;
     import WBigInteger._;
+    import WECPoint._;
     import SigmaContract._;
     import ColBuilder._;
+    trait CostModel extends Def[CostModel] {
+      def AccessBox: Rep[Int];
+      def GetVar: Rep[Int];
+      def DeserializeVar: Rep[Int];
+      def GetRegister: Rep[Int];
+      def DeserializeRegister: Rep[Int];
+      def SelectField: Rep[Int];
+      def CollectionConst: Rep[Int];
+      def AccessKiloByteOfData: Rep[Int];
+      @Reified(value = "T") def dataSize[T](x: Rep[T])(implicit cT: Elem[T]): Rep[Long]
+    };
     trait DslBuilder extends Def[DslBuilder];
     trait DslObject {
       def builder: Rep[SigmaDslBuilder]
@@ -40,6 +53,7 @@ package special.sigma {
       def bytes: Rep[Col[Byte]];
       def bytesWithoutRef: Rep[Col[Byte]];
       def propositionBytes: Rep[Col[Byte]];
+      def cost: Rep[Int];
       def dataSize: Rep[Long];
       def registers: Rep[Col[AnyValue]];
       def deserialize[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]];
@@ -62,6 +76,7 @@ package special.sigma {
       def valueLengthOpt: Rep[WOption[Int]];
       def maxNumOperations: Rep[WOption[Int]];
       def maxDeletes: Rep[WOption[Int]];
+      def cost: Rep[Int];
       def dataSize: Rep[Long]
     };
     @Liftable trait Context extends Def[Context] {
@@ -72,7 +87,9 @@ package special.sigma {
       def SELF: Rep[Box];
       def LastBlockUtxoRootHash: Rep[AvlTree];
       def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]];
-      def deserialize[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]]
+      def deserialize[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]];
+      def cost: Rep[Int];
+      def dataSize: Rep[Long]
     };
     @Liftable trait SigmaContract extends Def[SigmaContract] {
       def builder: Rep[SigmaDslBuilder];
@@ -98,6 +115,7 @@ package special.sigma {
     };
     @Liftable trait SigmaDslBuilder extends Def[SigmaDslBuilder] with DslBuilder {
       def Cols: Rep[ColBuilder];
+      def CostModel: Rep[CostModel];
       def verifyZK(cond: Rep[Thunk[SigmaProp]]): Rep[Boolean];
       def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp];
       def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean];
@@ -115,6 +133,7 @@ package special.sigma {
       def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean];
       def groupGenerator: Rep[WECPoint]
     };
+    trait CostModelCompanion;
     trait DslBuilderCompanion;
     trait DslObjectCompanion;
     trait SigmaPropCompanion;

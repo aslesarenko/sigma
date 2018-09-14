@@ -13,6 +13,7 @@ package special.sigma {
     import Col._;
     import Context._;
     import ColOverArrayBuilder._;
+    import MonoidBuilderInst._;
     import TrivialSigma._;
     import WBigInteger._;
     import WECPoint._;
@@ -33,27 +34,34 @@ package special.sigma {
     abstract class TestBox(val id: Rep[Col[Byte]], val value: Rep[Long], val bytes: Rep[Col[Byte]], val bytesWithoutRef: Rep[Col[Byte]], val propositionBytes: Rep[Col[Byte]], val registers: Rep[Col[AnyValue]]) extends Box {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
       @NeverInline def getReg[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke;
+      @NeverInline def cost: Rep[Int] = delayInvoke;
       @NeverInline def dataSize: Rep[Long] = delayInvoke;
       @NeverInline def deserialize[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke
     };
     abstract class TestAvlTree(val startingDigest: Rep[Col[Byte]], val keyLength: Rep[Int], val valueLengthOpt: Rep[WOption[Int]], val maxNumOperations: Rep[WOption[Int]], val maxDeletes: Rep[WOption[Int]]) extends AvlTree with Product with Serializable {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
-      @NeverInline def dataSize: Rep[Long] = delayInvoke
+      @NeverInline def dataSize: Rep[Long] = delayInvoke;
+      @NeverInline def cost: Rep[Int] = delayInvoke
     };
     abstract class TestValue[T](val value: Rep[T]) extends AnyValue {
       @NeverInline def dataSize: Rep[Long] = delayInvoke
     };
-    abstract class TestContext(val inputs: Rep[WArray[Box]], val outputs: Rep[WArray[Box]], val height: Rep[Long], val selfBox: Rep[Box], val LastBlockUtxoRootHash: Rep[AvlTree], val vars: Rep[WArray[AnyValue]]) extends Context {
+    abstract class TestContext(val inputs: Rep[WArray[Box]], val outputs: Rep[WArray[Box]], val height: Rep[Long], val selfBox: Rep[Box], val lastBlockUtxoRootHash: Rep[AvlTree], val vars: Rep[WArray[AnyValue]]) extends Context {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
       @NeverInline def HEIGHT: Rep[Long] = delayInvoke;
       @NeverInline def SELF: Rep[Box] = delayInvoke;
       @NeverInline def INPUTS: Rep[Col[Box]] = delayInvoke;
       @NeverInline def OUTPUTS: Rep[Col[Box]] = delayInvoke;
+      @NeverInline def LastBlockUtxoRootHash: Rep[AvlTree] = delayInvoke;
       @NeverInline def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke;
-      @NeverInline def deserialize[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke
+      @NeverInline def deserialize[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke;
+      @NeverInline def cost: Rep[Int] = delayInvoke;
+      @NeverInline def dataSize: Rep[Long] = delayInvoke
     };
     abstract class TestSigmaDslBuilder extends SigmaDslBuilder {
       def Cols: Rep[ColOverArrayBuilder] = RColOverArrayBuilder();
+      def Monoids: Rep[MonoidBuilderInst] = RMonoidBuilderInst();
+      @NeverInline def CostModel: Rep[CostModel] = delayInvoke;
       @NeverInline def verifyZK(proof: Rep[Thunk[SigmaProp]]): Rep[Boolean] = delayInvoke;
       @NeverInline def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp] = delayInvoke;
       @NeverInline def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = delayInvoke;
@@ -71,14 +79,14 @@ package special.sigma {
       @NeverInline def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean] = delayInvoke;
       @NeverInline def groupGenerator: Rep[WECPoint] = delayInvoke
     };
-    abstract class TrivialSigma(val isValid: Rep[Boolean]) extends DefaultSigma with Product with Serializable {
+    abstract class TrivialSigma(val isValid: Rep[Boolean]) extends SigmaProp with DefaultSigma with Product with Serializable {
       @NeverInline def propBytes: Rep[Col[Byte]] = delayInvoke
     };
-    abstract class ProveDlogEvidence(val value: Rep[WECPoint]) extends DefaultSigma with Product with Serializable {
+    abstract class ProveDlogEvidence(val value: Rep[WECPoint]) extends SigmaProp with DefaultSigma with Product with Serializable {
       @NeverInline def propBytes: Rep[Col[Byte]] = delayInvoke;
       @NeverInline def isValid: Rep[Boolean] = delayInvoke
     };
-    abstract class ProveDHTEvidence(val value: Rep[WECPoint]) extends DefaultSigma with Product with Serializable {
+    abstract class ProveDHTEvidence(val value: Rep[WECPoint]) extends SigmaProp with DefaultSigma with Product with Serializable {
       @NeverInline def propBytes: Rep[Col[Byte]] = delayInvoke;
       @NeverInline def isValid: Rep[Boolean] = delayInvoke
     };

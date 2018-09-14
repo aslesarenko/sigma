@@ -12,6 +12,7 @@ trait SigmaDslDefs extends scalan.Scalan with SigmaDsl {
   self: SigmaLibrary =>
 import IsoUR._
 import Converter._
+import CostModel._
 import DslBuilder._
 import SigmaDslBuilder._
 import DslObject._
@@ -22,8 +23,213 @@ import WOption._
 import Box._
 import AvlTree._
 import Context._
+import WBigInteger._
+import WECPoint._
 import SigmaContract._
 import ColBuilder._
+
+object CostModel extends EntityObject("CostModel") {
+  // entityConst: single const for each entity
+  import Liftables._
+  import scala.reflect.{ClassTag, classTag}
+  type SCostModel = special.sigma.CostModel
+  case class CostModelConst(
+        constValue: SCostModel
+      ) extends CostModel with LiftedConst[SCostModel, CostModel] {
+    val liftable: Liftable[SCostModel, CostModel] = LiftableCostModel
+    val selfType: Elem[CostModel] = liftable.eW
+    def AccessBox: Rep[Int] = delayInvoke
+    def GetVar: Rep[Int] = delayInvoke
+    def DeserializeVar: Rep[Int] = delayInvoke
+    def GetRegister: Rep[Int] = delayInvoke
+    def DeserializeRegister: Rep[Int] = delayInvoke
+    def SelectField: Rep[Int] = delayInvoke
+    def CollectionConst: Rep[Int] = delayInvoke
+    def AccessKiloByteOfData: Rep[Int] = delayInvoke
+    @Reified(value = "T") def dataSize[T](x: Rep[T])(implicit cT: Elem[T]): Rep[Long] = delayInvoke
+  }
+
+  implicit object LiftableCostModel
+    extends Liftable[SCostModel, CostModel] {
+    lazy val eW: Elem[CostModel] = costModelElement
+    lazy val sourceClassTag: ClassTag[SCostModel] = {
+      classTag[SCostModel]
+    }
+    def lift(x: SCostModel): Rep[CostModel] = CostModelConst(x)
+    def unlift(w: Rep[CostModel]): SCostModel = w match {
+      case Def(CostModelConst(x: SCostModel))
+            => x.asInstanceOf[SCostModel]
+      case _ => unliftError(w)
+    }
+  }
+
+  // entityProxy: single proxy for each type family
+  implicit def proxyCostModel(p: Rep[CostModel]): CostModel = {
+    proxyOps[CostModel](p)(scala.reflect.classTag[CostModel])
+  }
+
+  // familyElem
+  class CostModelElem[To <: CostModel]
+    extends EntityElem[To] {
+    override val liftable = LiftableCostModel.asLiftable[SCostModel, To]
+
+    override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
+      super.collectMethods ++ Elem.declaredMethods(classOf[CostModel], classOf[SCostModel], Set(
+        "AccessBox", "GetVar", "DeserializeVar", "GetRegister", "DeserializeRegister", "SelectField", "CollectionConst", "AccessKiloByteOfData", "dataSize"
+      ))
+    }
+
+    lazy val parent: Option[Elem[_]] = None
+    override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
+    override lazy val tag = {
+      weakTypeTag[CostModel].asInstanceOf[WeakTypeTag[To]]
+    }
+    override def convert(x: Rep[Def[_]]) = {
+      val conv = fun {x: Rep[CostModel] => convertCostModel(x) }
+      tryConvert(element[CostModel], this, x, conv)
+    }
+
+    def convertCostModel(x: Rep[CostModel]): Rep[To] = {
+      x.elem match {
+        case _: CostModelElem[_] => x.asRep[To]
+        case e => !!!(s"Expected $x to have CostModelElem[_], but got $e", x)
+      }
+    }
+    override def getDefaultRep: Rep[To] = ???
+  }
+
+  implicit def costModelElement: Elem[CostModel] =
+    cachedElem[CostModelElem[CostModel]]()
+
+  implicit case object CostModelCompanionElem extends CompanionElem[CostModelCompanionCtor] {
+    lazy val tag = weakTypeTag[CostModelCompanionCtor]
+    protected def getDefaultRep = RCostModel
+  }
+
+  abstract class CostModelCompanionCtor extends CompanionDef[CostModelCompanionCtor] with CostModelCompanion {
+    def selfType = CostModelCompanionElem
+    override def toString = "CostModel"
+  }
+  implicit def proxyCostModelCompanionCtor(p: Rep[CostModelCompanionCtor]): CostModelCompanionCtor =
+    proxyOps[CostModelCompanionCtor](p)
+
+  lazy val RCostModel: Rep[CostModelCompanionCtor] = new CostModelCompanionCtor {
+  }
+
+  object CostModelMethods {
+    object AccessBox {
+      def unapply(d: Def[_]): Option[Rep[CostModel]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CostModelElem[_]] && method.getName == "AccessBox" =>
+          Some(receiver).asInstanceOf[Option[Rep[CostModel]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[CostModel]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object GetVar {
+      def unapply(d: Def[_]): Option[Rep[CostModel]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CostModelElem[_]] && method.getName == "GetVar" =>
+          Some(receiver).asInstanceOf[Option[Rep[CostModel]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[CostModel]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object DeserializeVar {
+      def unapply(d: Def[_]): Option[Rep[CostModel]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CostModelElem[_]] && method.getName == "DeserializeVar" =>
+          Some(receiver).asInstanceOf[Option[Rep[CostModel]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[CostModel]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object GetRegister {
+      def unapply(d: Def[_]): Option[Rep[CostModel]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CostModelElem[_]] && method.getName == "GetRegister" =>
+          Some(receiver).asInstanceOf[Option[Rep[CostModel]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[CostModel]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object DeserializeRegister {
+      def unapply(d: Def[_]): Option[Rep[CostModel]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CostModelElem[_]] && method.getName == "DeserializeRegister" =>
+          Some(receiver).asInstanceOf[Option[Rep[CostModel]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[CostModel]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object SelectField {
+      def unapply(d: Def[_]): Option[Rep[CostModel]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CostModelElem[_]] && method.getName == "SelectField" =>
+          Some(receiver).asInstanceOf[Option[Rep[CostModel]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[CostModel]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object CollectionConst {
+      def unapply(d: Def[_]): Option[Rep[CostModel]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CostModelElem[_]] && method.getName == "CollectionConst" =>
+          Some(receiver).asInstanceOf[Option[Rep[CostModel]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[CostModel]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object AccessKiloByteOfData {
+      def unapply(d: Def[_]): Option[Rep[CostModel]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CostModelElem[_]] && method.getName == "AccessKiloByteOfData" =>
+          Some(receiver).asInstanceOf[Option[Rep[CostModel]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[CostModel]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object dataSize {
+      def unapply(d: Def[_]): Option[(Rep[CostModel], Rep[T], Elem[T], Elem[T]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, Seq(x, cT, emT, _*), _) if receiver.elem.isInstanceOf[CostModelElem[_]] && method.getName == "dataSize" =>
+          Some((receiver, x, cT, emT)).asInstanceOf[Option[(Rep[CostModel], Rep[T], Elem[T], Elem[T]) forSome {type T}]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[(Rep[CostModel], Rep[T], Elem[T], Elem[T]) forSome {type T}] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+  }
+
+  object CostModelCompanionMethods {
+  }
+} // of object CostModel
+  registerEntityObject("CostModel", CostModel)
 
 object DslBuilder extends EntityObject("DslBuilder") {
   // entityProxy: single proxy for each type family
@@ -450,6 +656,7 @@ object Box extends EntityObject("Box") {
     def bytes: Rep[Col[Byte]] = delayInvoke
     def bytesWithoutRef: Rep[Col[Byte]] = delayInvoke
     def propositionBytes: Rep[Col[Byte]] = delayInvoke
+    def cost: Rep[Int] = delayInvoke
     def dataSize: Rep[Long] = delayInvoke
     def registers: Rep[Col[AnyValue]] = delayInvoke
     def deserialize[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke
@@ -482,7 +689,7 @@ object Box extends EntityObject("Box") {
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++ Elem.declaredMethods(classOf[Box], classOf[SBox], Set(
-        "id", "value", "bytes", "bytesWithoutRef", "propositionBytes", "dataSize", "registers", "deserialize", "getReg", "R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "tokens"
+        "id", "value", "bytes", "bytesWithoutRef", "propositionBytes", "cost", "dataSize", "registers", "deserialize", "getReg", "R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "tokens"
       ))
     }
 
@@ -575,6 +782,18 @@ object Box extends EntityObject("Box") {
     object propositionBytes {
       def unapply(d: Def[_]): Option[Rep[Box]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "propositionBytes" =>
+          Some(receiver).asInstanceOf[Option[Rep[Box]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[Box]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object cost {
+      def unapply(d: Def[_]): Option[Rep[Box]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "cost" =>
           Some(receiver).asInstanceOf[Option[Rep[Box]]]
         case _ => None
       }
@@ -786,6 +1005,7 @@ object AvlTree extends EntityObject("AvlTree") {
     def valueLengthOpt: Rep[WOption[Int]] = delayInvoke
     def maxNumOperations: Rep[WOption[Int]] = delayInvoke
     def maxDeletes: Rep[WOption[Int]] = delayInvoke
+    def cost: Rep[Int] = delayInvoke
     def dataSize: Rep[Long] = delayInvoke
   }
 
@@ -815,7 +1035,7 @@ object AvlTree extends EntityObject("AvlTree") {
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++ Elem.declaredMethods(classOf[AvlTree], classOf[SAvlTree], Set(
-        "startingDigest", "keyLength", "valueLengthOpt", "maxNumOperations", "maxDeletes", "dataSize"
+        "startingDigest", "keyLength", "valueLengthOpt", "maxNumOperations", "maxDeletes", "cost", "dataSize"
       ))
     }
 
@@ -917,6 +1137,18 @@ object AvlTree extends EntityObject("AvlTree") {
       }
     }
 
+    object cost {
+      def unapply(d: Def[_]): Option[Rep[AvlTree]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[AvlTreeElem[_]] && method.getName == "cost" =>
+          Some(receiver).asInstanceOf[Option[Rep[AvlTree]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[AvlTree]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
     object dataSize {
       def unapply(d: Def[_]): Option[Rep[AvlTree]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[AvlTreeElem[_]] && method.getName == "dataSize" =>
@@ -953,6 +1185,8 @@ object Context extends EntityObject("Context") {
     def LastBlockUtxoRootHash: Rep[AvlTree] = delayInvoke
     def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke
     def deserialize[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke
+    def cost: Rep[Int] = delayInvoke
+    def dataSize: Rep[Long] = delayInvoke
   }
 
   implicit object LiftableContext
@@ -981,7 +1215,7 @@ object Context extends EntityObject("Context") {
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++ Elem.declaredMethods(classOf[Context], classOf[SContext], Set(
-        "builder", "OUTPUTS", "INPUTS", "HEIGHT", "SELF", "LastBlockUtxoRootHash", "getVar", "deserialize"
+        "builder", "OUTPUTS", "INPUTS", "HEIGHT", "SELF", "LastBlockUtxoRootHash", "getVar", "deserialize", "cost", "dataSize"
       ))
     }
 
@@ -1114,6 +1348,30 @@ object Context extends EntityObject("Context") {
         case _ => None
       }
       def unapply(exp: Sym): Option[(Rep[Context], Rep[Byte], Elem[T]) forSome {type T}] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object cost {
+      def unapply(d: Def[_]): Option[Rep[Context]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[ContextElem[_]] && method.getName == "cost" =>
+          Some(receiver).asInstanceOf[Option[Rep[Context]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[Context]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object dataSize {
+      def unapply(d: Def[_]): Option[Rep[Context]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[ContextElem[_]] && method.getName == "dataSize" =>
+          Some(receiver).asInstanceOf[Option[Rep[Context]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[Context]] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
@@ -1464,6 +1722,7 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
     val liftable: Liftable[SSigmaDslBuilder, SigmaDslBuilder] = LiftableSigmaDslBuilder
     val selfType: Elem[SigmaDslBuilder] = liftable.eW
     def Cols: Rep[ColBuilder] = delayInvoke
+    def CostModel: Rep[CostModel] = delayInvoke
     def verifyZK(cond: Rep[Thunk[SigmaProp]]): Rep[Boolean] = delayInvoke
     def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp] = delayInvoke
     def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = delayInvoke
@@ -1508,7 +1767,7 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++ Elem.declaredMethods(classOf[SigmaDslBuilder], classOf[SSigmaDslBuilder], Set(
-        "Cols", "verifyZK", "atLeast", "allOf", "allZK", "anyOf", "anyZK", "PubKey", "sigmaProp", "blake2b256", "sha256", "byteArrayToBigInt", "longToByteArray", "proveDlog", "proveDHTuple", "isMember", "groupGenerator"
+        "Cols", "CostModel", "verifyZK", "atLeast", "allOf", "allZK", "anyOf", "anyZK", "PubKey", "sigmaProp", "blake2b256", "sha256", "byteArrayToBigInt", "longToByteArray", "proveDlog", "proveDHTuple", "isMember", "groupGenerator"
       ))
     }
 
@@ -1553,6 +1812,18 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
     object Cols {
       def unapply(d: Def[_]): Option[Rep[SigmaDslBuilder]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[SigmaDslBuilderElem[_]] && method.getName == "Cols" =>
+          Some(receiver).asInstanceOf[Option[Rep[SigmaDslBuilder]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[SigmaDslBuilder]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object CostModel {
+      def unapply(d: Def[_]): Option[Rep[SigmaDslBuilder]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[SigmaDslBuilderElem[_]] && method.getName == "CostModel" =>
           Some(receiver).asInstanceOf[Option[Rep[SigmaDslBuilder]]]
         case _ => None
       }

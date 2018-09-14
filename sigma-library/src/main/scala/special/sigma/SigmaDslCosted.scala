@@ -1,12 +1,15 @@
 package special.sigma {
   import scalan._
 
-  trait SigmaDslCosted extends Base { self: SigmaDslCostedModule =>
+  trait SigmaDslCosted extends Base { self: SigmaLibrary =>
     import SigmaDslBuilder._;
     import TestSigmaDslBuilder._;
     import CostModel._;
     import CostedCol._;
     import Box._;
+    import Col._;
+    import ColBuilder._;
+    import Costed._;
     import CostedOption._;
     import CostedPrim._;
     import ConcreteCosted._;
@@ -32,13 +35,14 @@ package special.sigma {
       };
       def costColWithConstSizedItem[T](xs: Rep[Col[T]], itemSize: Rep[Long]): Rep[CostedCol[T]] = {
         val len: Rep[Int] = xs.length;
-        val perItemCost: Rep[Int] = len.*(itemSize.toInt)./(CostedSigmaObject.this.Operations.AccessKiloByteOfData);
+        val perItemCost: Rep[Int] = len.*(itemSize.toInt).div(CostedSigmaObject.this.Operations.AccessKiloByteOfData);
         val costs: Rep[Col[Int]] = CostedSigmaObject.this.dsl.Cols.replicate[Int](len, perItemCost);
         val sizes: Rep[Col[Long]] = CostedSigmaObject.this.dsl.Cols.replicate[Long](len, itemSize);
         val valueCost: Rep[Int] = CostedSigmaObject.this.Operations.CollectionConst;
         RCostedCol(xs, costs, sizes, valueCost)
       };
       def costOption[T](opt: Rep[WOption[T]], opCost: Rep[Int]): Rep[CostedOption[T]] = {
+        implicit val eT = opt.elem.eItem
         val left: Rep[CostedPrim[Unit]] = RCostedPrim(toRep(().asInstanceOf[Unit]), opCost, toRep(0L.asInstanceOf[Long]));
         val right: Rep[CostedPrim[Unit]] = RCostedPrim(toRep(().asInstanceOf[Unit]), opCost, CostedSigmaObject.this.Operations.dataSize[WOption[T]](opt));
         RCostedOption(opt, left, right)

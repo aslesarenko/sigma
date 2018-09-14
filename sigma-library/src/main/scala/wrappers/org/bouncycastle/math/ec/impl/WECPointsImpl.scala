@@ -22,6 +22,7 @@ import WECPoint._
 import WArray._
 
 object WECPoint extends EntityObject("WECPoint") {
+  // entityConst: single const for each entity
   import Liftables._
   case class WECPointConst(constValue: ECPoint) extends WECPoint with LiftedConst[ECPoint, WECPoint] {
     val selfType: Elem[WECPoint] = wECPointElement

@@ -18,12 +18,12 @@ class CostedOption[T](
 
 
 trait CostedSigmaObject[TObj] extends ConcreteCosted[TObj] {
-  override def builder = new SigmaDslCostedBuilder
-  def Operations: CostModel = builder.dsl.CostModel
+  def dsl: SigmaDslBuilder = new TestSigmaDslBuilder
+  def Operations: CostModel = dsl.CostModel
   def costBoxes(bs: Col[Box]): CostedCol[Box] = {
     val len = bs.length
     val perItemCost = Operations.AccessBox
-    val costs = builder.dsl.Cols.replicate(len, perItemCost)
+    val costs = dsl.Cols.replicate(len, perItemCost)
     val sizes = bs.map(b => b.dataSize)
     val valuesCost = Operations.CollectionConst
     new CostedCol(bs, costs, sizes, valuesCost)
@@ -32,8 +32,8 @@ trait CostedSigmaObject[TObj] extends ConcreteCosted[TObj] {
   def costColWithConstSizedItem[T](xs: Col[T], itemSize: Long): CostedCol[T] = {
     val len = xs.length
     val perItemCost = len * itemSize.toInt / Operations.AccessKiloByteOfData
-    val costs = builder.dsl.Cols.replicate(len, perItemCost)
-    val sizes = builder.dsl.Cols.replicate(len, itemSize)
+    val costs = dsl.Cols.replicate(len, perItemCost)
+    val sizes = dsl.Cols.replicate(len, itemSize)
     val valueCost = Operations.CollectionConst
     new CostedCol(xs, costs, sizes, valueCost)
   }
@@ -79,7 +79,7 @@ class CostedBox(box: Box) extends ConcreteCosted[Box] with CostedSigmaObject[Box
   def propositionBytes: CostedCol[Byte] = costColWithConstSizedItem(box.propositionBytes, 1)
   def registers: CostedCol[AnyValue] = {
     val len = box.registers.length
-    val costs = builder.dsl.Cols.replicate(len, Operations.AccessBox)
+    val costs = dsl.Cols.replicate(len, Operations.AccessBox)
     val sizes = box.registers.map(o => o.dataSize)
     new CostedCol(box.registers, costs, sizes, Operations.CollectionConst)
   }
@@ -109,6 +109,3 @@ class CostedAvlTree(tree: AvlTree) extends ConcreteCosted[AvlTree] with CostedSi
   def dataSize = tree.dataSize
 }
 
-class SigmaDslCostedBuilder extends ConcreteCostedBuilder {
-  def dsl: SigmaDslBuilder = new TestSigmaDslBuilder
-}

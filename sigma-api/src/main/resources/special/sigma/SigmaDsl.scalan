@@ -17,7 +17,7 @@ package special.sigma {
     import WECPoint._;
     import SigmaContract._;
     import ColBuilder._;
-    trait CostModel extends Def[CostModel] {
+    @Liftable trait CostModel extends Def[CostModel] {
       def AccessBox: Rep[Int];
       def GetVar: Rep[Int];
       def DeserializeVar: Rep[Int];

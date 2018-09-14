@@ -7,8 +7,9 @@ import org.bouncycastle.math.ec.ECPoint
 import scala.reflect.ClassTag
 import special.collection.{ColBuilder, Col}
 
-import scalan.{NeverInline, Reified, OverloadId}
+import scalan.{NeverInline, Reified, OverloadId, Liftable}
 
+@scalan.Liftable
 trait CostModel {
   def AccessBox: Int //= "AccessBox: Context => Box"
 
