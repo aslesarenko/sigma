@@ -90,22 +90,6 @@ class TestContext(
   }
 }
 
-@Internal
-class TestCostModel extends CostModel {
-  def AccessBox: Int = CostTable.DefaultCosts("AccessBox: Context => Box")
-
-  def GetVar: Int = CostTable.DefaultCosts("ContextVar: (Context, Byte) => Option[T]")
-  def DeserializeVar: Int = CostTable.DefaultCosts("DeserializeVar: (Context, Byte) => Option[T]")
-
-  def GetRegister: Int = CostTable.DefaultCosts("AccessRegister: (Box,Byte) => Option[T]")
-  def DeserializeRegister: Int  = CostTable.DefaultCosts("DeserializeRegister: (Box,Byte) => Option[T]")
-
-  def SelectField: Int      = CostTable.DefaultCosts("SelectField")
-  def CollectionConst: Int  = CostTable.DefaultCosts("Const: () => Array[IV]")
-  def AccessKiloByteOfData: Int  = CostTable.DefaultCosts("AccessKiloByteOfData")
-  def dataSize[T](x: T)(implicit cT: ClassTag[T]): Long = SigmaPredef.dataSize(x)
-}
-
 class TestSigmaDslBuilder extends SigmaDslBuilder {
   @NeverInline
   def Cols = new ColOverArrayBuilder
