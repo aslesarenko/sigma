@@ -91,9 +91,7 @@ class TestContext(
 }
 
 class TestSigmaDslBuilder extends SigmaDslBuilder {
-  @NeverInline
   def Cols = new ColOverArrayBuilder
-  @NeverInline
   def Monoids = new MonoidBuilderInst
   @NeverInline
   def CostModel = new TestCostModel
