@@ -36,6 +36,7 @@ class SigmaLibraryConfig extends LibraryConfig {
       .moduleDependencies(specialLibrary.ApiModule, specialLibrary.ImplModule)
       .addUnit("special/sigma/SigmaDslOverArrays.scala")
       .addUnit("special/sigma/TestContracts.scala")
+      .addUnit("special/sigma/SigmaDslCosted.scala")
       .dependsOn(ApiModule)
 
   val TargetModule = new TargetModuleConf(baseDir, "sigma-library",

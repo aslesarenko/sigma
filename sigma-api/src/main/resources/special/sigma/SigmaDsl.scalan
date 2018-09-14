@@ -2,20 +2,32 @@ package special.sigma {
   import scalan._
 
   trait SigmaDsl extends Base { self: SigmaDslModule =>
+    import CostModel._;
     import DslBuilder._;
     import SigmaDslBuilder._;
     import DslObject._;
     import Col._;
     import SigmaProp._;
-    import WECPoint._;
     import AnyValue._;
     import WOption._;
     import Box._;
     import AvlTree._;
     import Context._;
     import WBigInteger._;
+    import WECPoint._;
     import SigmaContract._;
     import ColBuilder._;
+    trait CostModel extends Def[CostModel] {
+      def AccessBox: Rep[Int];
+      def GetVar: Rep[Int];
+      def DeserializeVar: Rep[Int];
+      def GetRegister: Rep[Int];
+      def DeserializeRegister: Rep[Int];
+      def SelectField: Rep[Int];
+      def CollectionConst: Rep[Int];
+      def AccessKiloByteOfData: Rep[Int];
+      @Reified(value = "T") def dataSize[T](x: Rep[T])(implicit cT: Elem[T]): Rep[Long]
+    };
     trait DslBuilder extends Def[DslBuilder];
     trait DslObject extends Def[DslObject] {
       def builder: Rep[SigmaDslBuilder]
@@ -39,6 +51,7 @@ package special.sigma {
       def bytes: Rep[Col[Byte]];
       def bytesWithoutRef: Rep[Col[Byte]];
       def propositionBytes: Rep[Col[Byte]];
+      def cost: Rep[Int];
       def dataSize: Rep[Long];
       def registers: Rep[Col[AnyValue]];
       def deserialize[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]];
@@ -61,6 +74,7 @@ package special.sigma {
       def valueLengthOpt: Rep[WOption[Int]];
       def maxNumOperations: Rep[WOption[Int]];
       def maxDeletes: Rep[WOption[Int]];
+      def cost: Rep[Int];
       def dataSize: Rep[Long]
     };
     @Liftable trait Context extends Def[Context] {
@@ -71,7 +85,9 @@ package special.sigma {
       def SELF: Rep[Box];
       def LastBlockUtxoRootHash: Rep[AvlTree];
       def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]];
-      def deserialize[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]]
+      def deserialize[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]];
+      def cost: Rep[Int];
+      def dataSize: Rep[Long]
     };
     @Liftable trait SigmaContract extends Def[SigmaContract] {
       def builder: Rep[SigmaDslBuilder];
@@ -86,17 +102,18 @@ package special.sigma {
       def sigmaProp(b: Rep[Boolean]): Rep[SigmaProp] = this.builder.sigmaProp(b);
       def blake2b256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = this.builder.blake2b256(bytes);
       def sha256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = this.builder.sha256(bytes);
-      def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[BigInteger] = this.builder.byteArrayToBigInt(bytes);
+      def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[WBigInteger] = this.builder.byteArrayToBigInt(bytes);
       def longToByteArray(l: Rep[Long]): Rep[Col[Byte]] = this.builder.longToByteArray(l);
-      def proveDlog(g: Rep[ECPoint]): Rep[SigmaProp] = this.builder.proveDlog(g);
-      def proveDHTuple(g: Rep[ECPoint], h: Rep[ECPoint], u: Rep[ECPoint], v: Rep[ECPoint]): Rep[SigmaProp] = this.builder.proveDHTuple(g, h, u, v);
+      def proveDlog(g: Rep[WECPoint]): Rep[SigmaProp] = this.builder.proveDlog(g);
+      def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[SigmaProp] = this.builder.proveDHTuple(g, h, u, v);
       def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean] = this.builder.isMember(tree, key, proof);
-      def groupGenerator: Rep[ECPoint] = this.builder.groupGenerator;
+      def groupGenerator: Rep[WECPoint] = this.builder.groupGenerator;
       @clause def canOpen(ctx: Rep[Context]): Rep[Boolean];
       def asFunction: Rep[scala.Function1[Context, Boolean]] = fun(((ctx: Rep[Context]) => this.canOpen(ctx)))
     };
     @Liftable trait SigmaDslBuilder extends DslBuilder {
       def Cols: Rep[ColBuilder];
+      def CostModel: Rep[CostModel];
       def verifyZK(cond: Rep[Thunk[SigmaProp]]): Rep[Boolean];
       def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp];
       def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean];
@@ -107,13 +124,14 @@ package special.sigma {
       def sigmaProp(b: Rep[Boolean]): Rep[SigmaProp];
       def blake2b256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]];
       def sha256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]];
-      def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[BigInteger];
+      def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[WBigInteger];
       def longToByteArray(l: Rep[Long]): Rep[Col[Byte]];
-      def proveDlog(g: Rep[ECPoint]): Rep[SigmaProp];
-      def proveDHTuple(g: Rep[ECPoint], h: Rep[ECPoint], u: Rep[ECPoint], v: Rep[ECPoint]): Rep[SigmaProp];
+      def proveDlog(g: Rep[WECPoint]): Rep[SigmaProp];
+      def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[SigmaProp];
       def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean];
-      def groupGenerator: Rep[ECPoint]
+      def groupGenerator: Rep[WECPoint]
     };
+    trait CostModelCompanion;
     trait DslBuilderCompanion;
     trait DslObjectCompanion;
     trait SigmaPropCompanion;

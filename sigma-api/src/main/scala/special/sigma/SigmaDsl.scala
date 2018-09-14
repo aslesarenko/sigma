@@ -21,7 +21,7 @@ trait CostModel {
   def SelectField: Int // = "SelectField"
   def CollectionConst: Int // = "Const: () => Array[IV]"
   def AccessKiloByteOfData: Int // = "AccessKiloByteOfData"
-  def dataSize[T](x: T)(implicit cT: ClassTag[T]): Long
+  @Reified("T") def dataSize[T](x: T)(implicit cT: ClassTag[T]): Long
 }
 
 trait DslBuilder {}
