@@ -7,7 +7,7 @@ import org.bouncycastle.math.ec.ECPoint
 import scala.reflect.ClassTag
 import special.collection.{ColBuilder, Col}
 
-import scalan.{NeverInline, Reified, OverloadId, Liftable}
+import scalan._
 
 @scalan.Liftable
 trait CostModel {
@@ -81,6 +81,9 @@ trait Box extends DslObject {
   def R9[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](9)
 
   def tokens: Col[(Col[Byte], Long)] = this.R2[Col[(Col[Byte], Long)]].get
+
+  @Internal
+  override def toString = s"Box(id=$id; value=$value; cost=$cost; size=$dataSize; regs=$registers)"
 }
 
 @scalan.Liftable

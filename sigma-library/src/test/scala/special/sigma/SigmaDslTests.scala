@@ -18,6 +18,8 @@ class SigmaDslTests extends WrappersTests with ContractsTestkit {
     import Box._
     import SigmaProp._
     import SigmaDslBuilder._
+    import EnvRep._
+
     type RSigmaDslBuilder = cake.SigmaDslBuilder
     type RContext = cake.Context
     type RBox = cake.Box
@@ -32,19 +34,21 @@ class SigmaDslTests extends WrappersTests with ContractsTestkit {
 
     val dsl: SSigmaDslBuilder = SigmaDsl
 
-    check(dsl, (env: DataEnv, dsl: Rep[RSigmaDslBuilder]) => dsl.sigmaProp(env.lifted(true)), dsl.sigmaProp(true))
+    check(dsl,  { env: EnvRep[RSigmaDslBuilder] =>
+      for { dsl <- env; arg <- lifted(true) } yield dsl.sigmaProp(arg) }, dsl.sigmaProp(true))
 
-    check(ctx, (env: DataEnv, obj: Rep[RContext]) => obj.SELF, ctx.SELF)
-    check(ctx, (env: DataEnv, obj: Rep[RContext]) => obj.getVar[Int](env.lifted(1.toByte)), ctx.getVar[Int](1))
+    check(ctx, { env: EnvRep[RContext] => for { obj <- env } yield obj.SELF }, ctx.SELF)
+    check(ctx, { env: EnvRep[RContext] =>
+      for { obj <- env; id <- lifted(1.toByte) } yield obj.getVar[Int](id) }, ctx.getVar[Int](1))
 
-    check(boxA1, (env: DataEnv, obj: Rep[RBox]) => obj.value, boxA1.value)
-    check(boxA1, (env: DataEnv, obj: Rep[RBox]) => obj.getReg[Int](env.lifted(1)), boxA1.getReg[Int](1))
-    check(boxA1, (env: DataEnv, obj: Rep[RBox]) => obj.registers, boxA1.registers)
+    check(boxA1, { env: EnvRep[RBox] => for { obj <- env } yield obj.value }, boxA1.value)
+    check(boxA1, { env: EnvRep[RBox] => for { obj <- env; arg <- lifted(1) } yield obj.getReg[Int](arg) }, boxA1.getReg[Int](1))
+    check(boxA1, { env: EnvRep[RBox] => for { obj <- env } yield obj.registers }, boxA1.registers)
 
-    check(p1, (env: DataEnv, p1: Rep[RSigmaProp]) => p1 && env.lifted(true), p1 && true)
-    check(p1, (env: DataEnv, p1: Rep[RSigmaProp]) => p1 && env.lifted(p2), p1 && p2)
+    check(p1, { env: EnvRep[RSigmaProp] => for { p1 <- env; arg <- lifted(true) } yield p1 && arg }, p1 && true)
+    check(p1, { env: EnvRep[RSigmaProp] => for { p1 <- env; arg <- lifted(p2) } yield p1 && arg }, p1 && p2)
 
     val th = () => p2
-    check(p1, (env: DataEnv, p1: Rep[RSigmaProp]) => p1.lazyAnd(env.lifted(th)), p1.lazyAnd(th()))
+    check(p1, { env: EnvRep[RSigmaProp] => for { p1 <- env; thL <- lifted(th) } yield p1.lazyAnd(thL) }, p1.lazyAnd(th()))
   }
 }

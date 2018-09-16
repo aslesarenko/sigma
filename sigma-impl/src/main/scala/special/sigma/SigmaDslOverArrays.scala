@@ -48,6 +48,8 @@ case class TestAvlTree(
 class TestValue[T](val value: T) extends AnyValue {
   @NeverInline
   def dataSize = SigmaPredef.dataSize(value)
+  @Internal
+  override def toString = s"Value($value)"
 }
 
 class TestContext(

@@ -14,10 +14,12 @@ class WBigIntegerTests extends WrappersTests {
     import ctx._
     import Liftables._
     import WBigInteger._
-
+    import EnvRep._
+    
     val obj = BigInteger.valueOf(10L)
 
-    check(obj, (env: DataEnv, xs: Rep[WBigInteger]) => xs.add(env.lifted(BigInteger.ONE)), obj.add(BigInteger.ONE))
-    check(obj, (env: DataEnv, xs: Rep[WBigInteger]) => xs.multiply(xs), obj.multiply(obj))
+    check(obj, { env: EnvRep[WBigInteger] =>
+      for { xs <- env; one <- lifted(BigInteger.ONE) } yield xs.add(one) }, obj.add(BigInteger.ONE))
+    check(obj, { env: EnvRep[WBigInteger] => for { xs <- env } yield xs.multiply(xs) }, obj.multiply(obj))
   }
 }

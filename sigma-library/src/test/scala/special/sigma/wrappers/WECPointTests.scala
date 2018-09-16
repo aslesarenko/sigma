@@ -16,11 +16,12 @@ class WECPointTests extends WrappersTests {
     import WECPoint._
     import WBigInteger._
     import Liftables._
+    import EnvRep._
 
     val obj = CustomNamedCurves.getByName("curve25519").getG
     val ten = BigInteger.valueOf(10L)
-    check(obj, (env: DataEnv, xs: Rep[WECPoint]) => xs.add(xs), obj.add(obj))
-    check(obj, (env: DataEnv, xs: Rep[WECPoint]) => xs.multiply(env.lifted(ten)), obj.multiply(ten))
-    check(obj, (env: DataEnv, xs: Rep[WECPoint]) => xs.getEncoded(env.lifted(true)), obj.getEncoded(true))
+    check(obj, { env: EnvRep[WECPoint] => for { xs <- env } yield xs.add(xs) }, obj.add(obj))
+    check(obj, { env: EnvRep[WECPoint] => for { xs <- env; tenL <- lifted(ten) } yield xs.multiply(tenL) }, obj.multiply(ten))
+    check(obj, { env: EnvRep[WECPoint] => for { xs <- env; arg <- lifted(true) } yield xs.getEncoded(arg) }, obj.getEncoded(true))
   }
 }
