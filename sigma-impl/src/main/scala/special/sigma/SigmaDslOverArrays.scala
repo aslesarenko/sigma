@@ -67,7 +67,7 @@ class TestContext(
   @NeverInline
   def SELF   = selfBox
   @NeverInline
-  def INPUTS = builder.Cols.fromArray(outputs)
+  def INPUTS = builder.Cols.fromArray(inputs)
 
   @NeverInline
   def OUTPUTS = builder.Cols.fromArray(outputs)

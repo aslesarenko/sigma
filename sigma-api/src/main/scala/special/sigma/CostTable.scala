@@ -24,6 +24,7 @@ object CostTable {
     ("Const: () => SigmaProp", 0.000001),
     ("Const: () => Array[IV]", 0.000001),
     ("Self$: Context => Box", 0.000001),
+    ("SelectField", 0.000001),
     ("AccessKiloByteOfData", 0.000001),
     ("AccessBox: Context => Box", 0.000001),
     ("GetVar: (Context, Byte) => Option[T]", 0.000001),

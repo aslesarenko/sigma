@@ -38,7 +38,8 @@ trait ContractsTestkit {
   }
 
   def contextVars(m: Map[Byte, Any]): Col[AnyValue] = {
-    val res = new Array[AnyValue](m.keys.max)
+    val maxKey = if (m.keys.isEmpty) 0 else m.keys.max
+    val res = new Array[AnyValue](maxKey)
     for ((id, v) <- m) {
       val i = id - 1
       assert(res(i) == null, s"register $id is defined more then once")
