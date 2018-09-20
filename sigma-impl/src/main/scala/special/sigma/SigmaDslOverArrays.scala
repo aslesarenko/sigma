@@ -9,8 +9,9 @@ import org.bouncycastle.math.ec.ECPoint
 import scala.reflect.ClassTag
 import special.SpecialPredef
 import special.collection._
-
+import Types._
 import scalan.meta.RType
+import RType._
 import scalan.{NeverInline, Internal, OverloadId}
 
 class TestBox(
@@ -33,7 +34,6 @@ class TestBox(
   def deserialize[T](i: Int)(implicit cT: RType[T]): Option[T] = ???
 
   def tokens = {
-    implicit val t = RType[Col[(Col[Byte], Long)]]
     this.R2[Col[(Col[Byte], Long)]].get
   }
 }

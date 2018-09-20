@@ -30,7 +30,6 @@ trait CrossChainAtomicSwap extends SigmaContract {
   def pkA: SigmaProp
   def pkB: SigmaProp
   def hx: Col[Byte]
-  implicit def eColByte: RType[Col[Byte]]
   
   def templateForBobChain(ctx: Context) = verifyZK {
     anyZK(Collection(

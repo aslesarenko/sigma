@@ -15,8 +15,9 @@ package special.sigma {
     import Context._;
     import WBigInteger._;
     import WECPoint._;
-    import SigmaContract._;
     import ColBuilder._;
+    import MonoidBuilder._;
+    import CostedBuilder._;
     @Liftable trait CostModel extends Def[CostModel] {
       def AccessBox: Rep[Int];
       def GetVar: Rep[Int];
@@ -66,7 +67,7 @@ package special.sigma {
       def R7[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(7.asInstanceOf[Int]));
       def R8[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(8.asInstanceOf[Int]));
       def R9[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(9.asInstanceOf[Int]));
-      def tokens: Rep[Col[scala.Tuple2[Col[Byte], Long]]] = this.R2[Col[scala.Tuple2[Col[Byte], Long]]].get
+      def tokens: Rep[Col[scala.Tuple2[Col[Byte], Long]]]
     };
     @Liftable trait AvlTree extends DslObject {
       def startingDigest: Rep[Col[Byte]];
@@ -89,7 +90,7 @@ package special.sigma {
       def cost: Rep[Int];
       def dataSize: Rep[Long]
     };
-    @Liftable trait SigmaContract extends Def[SigmaContract] {
+    @Liftable trait SigmaContract extends DslObject with TypeDescriptors {
       def builder: Rep[SigmaDslBuilder];
       @NeverInline def Collection[T](items: Rep[T]*): Rep[Col[T]] = delayInvoke;
       def verifyZK(cond: Rep[Thunk[SigmaProp]]): Rep[Boolean] = this.builder.verifyZK(cond);
@@ -113,6 +114,8 @@ package special.sigma {
     };
     @Liftable trait SigmaDslBuilder extends DslBuilder {
       def Cols: Rep[ColBuilder];
+      def Monoids: Rep[MonoidBuilder];
+      def Costing: Rep[CostedBuilder];
       def CostModel: Rep[CostModel];
       def verifyZK(cond: Rep[Thunk[SigmaProp]]): Rep[Boolean];
       def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp];

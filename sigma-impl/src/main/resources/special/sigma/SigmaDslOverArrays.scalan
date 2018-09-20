@@ -6,13 +6,14 @@ package special.sigma {
     import SigmaProp._;
     import SigmaContract._;
     import WOption._;
+    import Col._;
     import Box._;
     import AvlTree._;
     import AnyValue._;
-    import Col._;
     import Context._;
     import ColOverArrayBuilder._;
     import MonoidBuilderInst._;
+    import ConcreteCostedBuilder._;
     import TrivialSigma._;
     import WBigInteger._;
     import WECPoint._;
@@ -35,7 +36,8 @@ package special.sigma {
       @NeverInline def getReg[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke;
       @NeverInline def cost: Rep[Int] = delayInvoke;
       @NeverInline def dataSize: Rep[Long] = delayInvoke;
-      @NeverInline def deserialize[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke
+      @NeverInline def deserialize[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke;
+      def tokens: Rep[Col[scala.Tuple2[Col[Byte], Long]]] = this.R2[Col[scala.Tuple2[Col[Byte], Long]]].get
     };
     abstract class TestAvlTree(val startingDigest: Rep[Col[Byte]], val keyLength: Rep[Int], val valueLengthOpt: Rep[WOption[Int]], val maxNumOperations: Rep[WOption[Int]], val maxDeletes: Rep[WOption[Int]]) extends AvlTree with Product with Serializable {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
@@ -60,6 +62,7 @@ package special.sigma {
     abstract class TestSigmaDslBuilder extends SigmaDslBuilder {
       def Cols: Rep[ColOverArrayBuilder] = RColOverArrayBuilder();
       def Monoids: Rep[MonoidBuilderInst] = RMonoidBuilderInst();
+      def Costing: Rep[ConcreteCostedBuilder] = RConcreteCostedBuilder();
       @NeverInline def CostModel: Rep[TestCostModel] = delayInvoke;
       @NeverInline def verifyZK(proof: Rep[Thunk[SigmaProp]]): Rep[Boolean] = delayInvoke;
       @NeverInline def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp] = delayInvoke;

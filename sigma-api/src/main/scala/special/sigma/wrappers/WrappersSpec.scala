@@ -2,19 +2,19 @@ package special.sigma.wrappers
 
 import java.math.BigInteger
 
-import special.wrappers.WrapSpec
+import special.wrappers.{WrapSpec, WrapSpecBase}
 import org.bouncycastle.math.ec.ECPoint
 import special.sigma.SigmaPredef
 
 import scala.reflect.ClassTag
 
-class ECPointWrapSpec extends WrapSpec {
+class ECPointWrapSpec extends WrapSpecBase {
   def getEncoded[A](g: ECPoint, compressed: Boolean): Array[Byte] = g.getEncoded(compressed)
   def multiply(l: ECPoint, r: BigInteger) = l.multiply(r)
   def add(l: ECPoint, r: ECPoint) = l.add(r)
 }
 
-class BigIntegerWrapSpec extends WrapSpec {
+class BigIntegerWrapSpec extends WrapSpecBase {
   def fromString(s: String) = new BigInteger(s)
   def fromArray(sig: Int, arr: Array[Byte]) = new BigInteger(sig, arr)
   def ZERO = BigInteger.ZERO
@@ -64,6 +64,6 @@ class BigIntegerWrapSpec extends WrapSpec {
 
 }
 
-class SigmaPredefWrapSpec extends WrapSpec {
+class SigmaPredefWrapSpec extends WrapSpecBase {
   def dataSize(v: Any): Long = SigmaPredef.dataSize(v)
 }

@@ -9,6 +9,10 @@ import special.collection.{CostedBuilder, ColBuilder, Col, MonoidBuilder}
 
 import scalan._
 import scalan.meta.RType
+import special.collection.Col
+
+import scalan.Internal
+import scalan.meta.RType
 
 @scalan.Liftable
 trait CostModel {

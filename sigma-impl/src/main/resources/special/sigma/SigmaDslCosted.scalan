@@ -8,18 +8,20 @@ package special.sigma {
     import CostedCol._;
     import Box._;
     import CostedOption._;
-    import CostedPrim._;
+    import CostedNone._;
+    import CostedSome._;
+    import WSpecialPredef._;
     import ConcreteCosted._;
-    import WOption._;
     import Costed._;
+    import CostedPrim._;
     import CostedBox._;
     import CostedAvlTree._;
     import Context._;
     import CostedSigmaObject._;
     import AnyValue._;
     import AvlTree._;
-    trait CostedSigmaObject[TObj] extends ConcreteCosted[TObj] {
-      implicit def eTObj: Elem[TObj];
+    trait CostedSigmaObject[Val] extends ConcreteCosted[Val] with TypeDescriptors {
+      implicit def eVal: Elem[Val];
       def dsl: Rep[SigmaDslBuilder] = RTestSigmaDslBuilder();
       def Operations: Rep[CostModel] = CostedSigmaObject.this.dsl.CostModel;
       def costBoxes(bs: Rep[Col[Box]]): Rep[CostedCol[Box]] = {
@@ -38,15 +40,7 @@ package special.sigma {
         val valueCost: Rep[Int] = CostedSigmaObject.this.Operations.CollectionConst;
         RCostedCol(xs, costs, sizes, valueCost)
       };
-      def costOption[T](opt: Rep[WOption[T]], opCost: Rep[Int]): Rep[CostedOption[T]] = {
-        val left: Rep[CostedPrim[Unit]] = RCostedPrim(toRep(().asInstanceOf[Unit]), opCost, toRep(0L.asInstanceOf[Long]));
-        val right: Rep[CostedPrim[Unit]] = RCostedPrim(toRep(().asInstanceOf[Unit]), opCost, CostedSigmaObject.this.Operations.dataSize[WOption[T]](opt));
-        RCostedOption(opt, left, right)
-      }
-    };
-    abstract class CostedOption[T](val value: Rep[WOption[T]], val left: Rep[Costed[Unit]], val right: Rep[Costed[Unit]]) extends ConcreteCosted[WOption[T]] {
-      @NeverInline def cost: Rep[Int] = delayInvoke;
-      @NeverInline def dataSize: Rep[Long] = delayInvoke
+      def costOption[T](opt: Rep[WOption[T]], opCost: Rep[Int]): Rep[CostedOption[T]] = opt.fold[CostedOption[T]](RCostedNone(opCost)(cT))(fun(((x: Rep[T]) => RCostedSome(CostedSigmaObject.this.dsl.Costing.costedValue[T](x, WSpecialPredef.some[Int](opCost))(cT)))))
     };
     abstract class CostedContext(val ctx: Rep[Context]) extends ConcreteCosted[Context] with CostedSigmaObject[Context] {
       def OUTPUTS: Rep[CostedCol[Box]] = this.costBoxes(CostedContext.this.ctx.OUTPUTS);
@@ -107,7 +101,6 @@ package special.sigma {
       def dataSize: Rep[Long] = CostedAvlTree.this.tree.dataSize
     };
     trait CostedSigmaObjectCompanion;
-    trait CostedOptionCompanion;
     trait CostedContextCompanion;
     trait CostedBoxCompanion;
     trait CostedAvlTreeCompanion
