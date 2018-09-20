@@ -2,7 +2,7 @@ package spu.device.config
 
 import special.library.config.SpecialLibraryConfig
 
-import scalan.{FunctorType, ContainerType}
+import scalan.{FunctorType, ContainerType, Liftable}
 import scalan.meta.ScalanAst.WrapperConf
 import scalan.meta.{LibraryConfig, ConfMap, TargetModuleConf, SourceModuleConf}
 
@@ -14,11 +14,13 @@ class SigmaLibraryConfig extends LibraryConfig {
   def wrapperConfigs: Map[String, WrapperConf] = List(
     WrapperConf(baseDir,
       packageName = "org.bouncycastle.math.ec",
-      name = "ECPoint"
+      name = "ECPoint",
+      annotations = List(classOf[Liftable]).map(_.getSimpleName)
     ),
     WrapperConf(baseDir,
       packageName = "java.math",
-      name = "BigInteger"
+      name = "BigInteger",
+      annotations = List(classOf[Liftable]).map(_.getSimpleName)
     ),
     WrapperConf(baseDir,
       packageName = "special.sigma",

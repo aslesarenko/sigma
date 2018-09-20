@@ -117,7 +117,7 @@ trait Context {
 }
 
 @scalan.Liftable
-trait SigmaContract extends DslObject with TypeDescriptors {
+trait SigmaContract {
   def builder: SigmaDslBuilder
   @NeverInline
   def Collection[T](items: T*): Col[T] = this.builder.Cols.apply[T](items:_*)

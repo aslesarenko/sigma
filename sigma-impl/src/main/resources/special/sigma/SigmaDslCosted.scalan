@@ -20,7 +20,7 @@ package special.sigma {
     import CostedSigmaObject._;
     import AnyValue._;
     import AvlTree._;
-    trait CostedSigmaObject[Val] extends ConcreteCosted[Val] with TypeDescriptors {
+    trait CostedSigmaObject[Val] extends ConcreteCosted[Val] {
       implicit def eVal: Elem[Val];
       def dsl: Rep[SigmaDslBuilder] = RTestSigmaDslBuilder();
       def Operations: Rep[CostModel] = CostedSigmaObject.this.dsl.CostModel;

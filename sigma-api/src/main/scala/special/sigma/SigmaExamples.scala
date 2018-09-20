@@ -3,6 +3,8 @@ package special.sigma
 import special.collection.Col
 
 import scalan.meta.RType
+import RType._
+import special.collection.Types._
 
 trait CrowdFunding extends SigmaContract {
   def deadline: Long

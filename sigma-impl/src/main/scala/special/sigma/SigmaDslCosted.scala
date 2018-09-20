@@ -7,7 +7,7 @@ import scala.reflect.ClassTag
 import scalan.meta.RType
 import scalan.{NeverInline, Reified}
 
-trait CostedSigmaObject[Val] extends ConcreteCosted[Val] with TypeDescriptors {
+trait CostedSigmaObject[Val] extends ConcreteCosted[Val] {
   def dsl: SigmaDslBuilder = new TestSigmaDslBuilder
   def Operations: CostModel = dsl.CostModel
   def costBoxes(bs: Col[Box]): CostedCol[Box] = {

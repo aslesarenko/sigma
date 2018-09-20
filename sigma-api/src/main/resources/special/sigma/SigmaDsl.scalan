@@ -15,6 +15,7 @@ package special.sigma {
     import Context._;
     import WBigInteger._;
     import WECPoint._;
+    import SigmaContract._;
     import ColBuilder._;
     import MonoidBuilder._;
     import CostedBuilder._;
@@ -90,7 +91,7 @@ package special.sigma {
       def cost: Rep[Int];
       def dataSize: Rep[Long]
     };
-    @Liftable trait SigmaContract extends DslObject with TypeDescriptors {
+    @Liftable trait SigmaContract extends Def[SigmaContract] {
       def builder: Rep[SigmaDslBuilder];
       @NeverInline def Collection[T](items: Rep[T]*): Rep[Col[T]] = delayInvoke;
       def verifyZK(cond: Rep[Thunk[SigmaProp]]): Rep[Boolean] = this.builder.verifyZK(cond);
