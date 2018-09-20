@@ -24,25 +24,33 @@ import WArray._
 object WECPoint extends EntityObject("WECPoint") {
   // entityConst: single const for each entity
   import Liftables._
-  case class WECPointConst(constValue: ECPoint) extends WECPoint with LiftedConst[ECPoint, WECPoint] {
-    val selfType: Elem[WECPoint] = wECPointElement
-    def liftable: Liftable[ECPoint, WECPoint] = LiftableECPoint
+  import scala.reflect.{ClassTag, classTag}
 
-    def getEncoded(x$1: Rep[Boolean]): Rep[WArray[Byte]] = delayInvoke
-    def add(x$1: Rep[WECPoint]): Rep[WECPoint] = delayInvoke
-    def multiply(x$1: Rep[WBigInteger]): Rep[WECPoint] = delayInvoke
+  case class WECPointConst(
+        constValue: ECPoint
+      ) extends WECPoint with LiftedConst[ECPoint, WECPoint] {
+    val liftable: Liftable[ECPoint, WECPoint] = LiftableECPoint
+    val selfType: Elem[WECPoint] = liftable.eW
+    @External def add(x$1: Rep[WECPoint]): Rep[WECPoint] = delayInvoke
+    @External def multiply(x$1: Rep[WBigInteger]): Rep[WECPoint] = delayInvoke
+    @External def getEncoded(x$1: Rep[Boolean]): Rep[WArray[Byte]] = delayInvoke
   }
 
-  implicit object LiftableECPoint extends Liftable[ECPoint, WECPoint] {
-    val eW: Elem[WECPoint] = wECPointElement
-    val sourceClassTag = classTag[ECPoint]
+  implicit object LiftableECPoint
+    extends Liftable[ECPoint, WECPoint] {
+    lazy val eW: Elem[WECPoint] = wECPointElement
+    lazy val sourceClassTag: ClassTag[ECPoint] = {
+      classTag[ECPoint]
+    }
     def lift(x: ECPoint): Rep[WECPoint] = WECPointConst(x)
     def unlift(w: Rep[WECPoint]): ECPoint = w match {
-      case Def(WECPointConst(x: ECPoint)) => x
+      case Def(WECPointConst(x: ECPoint))
+            => x.asInstanceOf[ECPoint]
       case _ => unliftError(w)
     }
   }
 
+  private val _ECPointWrapSpec = new ECPointWrapSpec
   // entityProxy: single proxy for each type family
   implicit def proxyWECPoint(p: Rep[WECPoint]): WECPoint = {
     proxyOps[WECPoint](p)(scala.reflect.classTag[WECPoint])
@@ -51,17 +59,13 @@ object WECPoint extends EntityObject("WECPoint") {
   // familyElem
   class WECPointElem[To <: WECPoint]
     extends EntityElem[To] {
-    override def liftable: Liftable[_, To] = LiftableECPoint.asLiftable[ECPoint, To]
-    override protected def collectMethods: Map[Method, MethodDesc] = {
-      val wrapCls = classOf[ECPointWrapSpec]
-      val srcCls = classOf[ECPoint]
-      val cls = classOf[WECPoint]
-      val spec = new ECPointWrapSpec
-      super.collectMethods ++ Seq(
-        cls.getMethod("add", SymClass) -> WMethodDesc(spec, wrapCls.getMethod("add", srcCls, classOf[ECPoint])),
-        cls.getMethod("multiply", SymClass) -> WMethodDesc(spec, wrapCls.getMethod("multiply", srcCls, classOf[BigInteger])),
-        cls.getMethod("getEncoded", SymClass) -> WMethodDesc(spec, wrapCls.getMethod("getEncoded", srcCls, classOf[Boolean])),
-      )
+    override val liftable = LiftableECPoint.asLiftable[ECPoint, To]
+
+    override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
+      super.collectMethods ++
+        Elem.declaredWrapperMethods(_ECPointWrapSpec, classOf[WECPoint], Set(
+        "add", "multiply", "getEncoded"
+        ))
     }
 
     lazy val parent: Option[Elem[_]] = None

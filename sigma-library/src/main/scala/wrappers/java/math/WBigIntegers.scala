@@ -8,7 +8,7 @@ package wrappers.java.math {
   trait WBigIntegers extends Base { self: WrappersModule =>
     import WBigInteger._;
     import WArray._;
-    @External("BigInteger") trait WBigInteger extends Def[WBigInteger] {
+    @External("BigInteger") @Liftable trait WBigInteger extends Def[WBigInteger] {
       @External def longValueExact: Rep[Long];
       @External def intValueExact: Rep[Int];
       @External def shortValueExact: Rep[Short];

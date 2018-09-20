@@ -20,7 +20,7 @@ class BigIntegerWrapSpec extends WrapSpecBase {
   def ZERO = BigInteger.ZERO
   def ONE = BigInteger.ONE
   def valueOf(l: Long) = BigInteger.valueOf(l)
-  def toStringWithRadix(l: BigInteger, radix: Int) = l.toString(radix)
+  def toString(l: BigInteger, radix: Int) = l.toString(radix)
   def toByteArray(l: BigInteger): Array[Byte] = l.toByteArray()
   def add(l: BigInteger, r: BigInteger) = l.add(r)
   def subtract(l: BigInteger, r: BigInteger) = l.subtract(r)
@@ -43,11 +43,11 @@ class BigIntegerWrapSpec extends WrapSpecBase {
   def testBit(l: BigInteger, r: Int) = l.testBit(r)
   def setBit(l: BigInteger, r: Int) = l.setBit(r)
   def clearBit(l: BigInteger, r: Int) = l.clearBit(r)
-  def flitBit(l: BigInteger, r: Int) = l.flipBit(r)
+  def flipBit(l: BigInteger, r: Int) = l.flipBit(r)
   def getLowestSetBit(l: BigInteger) = l.getLowestSetBit()
   def bitCount(l: BigInteger) = l.bitCount()
   def bitLength(l: BigInteger) = l.bitLength()
-  def isProbablyPrime(l: BigInteger, r: Int) = l.isProbablePrime(r)
+  def isProbablePrime(l: BigInteger, r: Int) = l.isProbablePrime(r)
   def shiftLeft(l: BigInteger, r: Int) = l.shiftLeft(r)
   def shiftRight(l: BigInteger, r: Int) = l.shiftRight(r)
   def abs(l: BigInteger) = l.abs()

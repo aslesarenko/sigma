@@ -3,7 +3,7 @@ package special.sigma {
   import scalan._
 
   trait SigmaDsl extends Base { self: SigmaLibrary =>
-//    import CostModel._;
+    import CostModel._;
     import DslBuilder._;
     import SigmaDslBuilder._;
     import DslObject._;
@@ -19,7 +19,9 @@ package special.sigma {
     import WECPoint._;
     import SigmaContract._;
     import ColBuilder._;
-    trait CostModel extends Def[CostModel] {
+    import MonoidBuilder._;
+    import CostedBuilder._;
+    @Liftable trait CostModel extends Def[CostModel] {
       def AccessBox: Rep[Int];
       def GetVar: Rep[Int];
       def DeserializeVar: Rep[Int];
@@ -68,7 +70,7 @@ package special.sigma {
       def R7[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(7.asInstanceOf[Int]));
       def R8[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(8.asInstanceOf[Int]));
       def R9[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(9.asInstanceOf[Int]));
-      def tokens: Rep[Col[scala.Tuple2[Col[Byte], Long]]] = this.R2[Col[scala.Tuple2[Col[Byte], Long]]].get
+      def tokens: Rep[Col[scala.Tuple2[Col[Byte], Long]]]
     };
     @Liftable trait AvlTree extends Def[AvlTree] with DslObject {
       def startingDigest: Rep[Col[Byte]];
@@ -115,6 +117,8 @@ package special.sigma {
     };
     @Liftable trait SigmaDslBuilder extends Def[SigmaDslBuilder] with DslBuilder {
       def Cols: Rep[ColBuilder];
+      def Monoids: Rep[MonoidBuilder];
+      def Costing: Rep[CostedBuilder];
       def CostModel: Rep[CostModel];
       def verifyZK(cond: Rep[Thunk[SigmaProp]]): Rep[Boolean];
       def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp];

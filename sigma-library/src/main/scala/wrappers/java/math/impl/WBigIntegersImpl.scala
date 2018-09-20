@@ -23,64 +23,73 @@ import WBigInteger._
 import WArray._
 
 object WBigInteger extends EntityObject("WBigInteger") {
+  // entityConst: single const for each entity
   import Liftables._
-  case class WBigIntegerConst(constValue: BigInteger) extends WBigInteger with LiftedConst[BigInteger, WBigInteger] {
-    val selfType: Elem[WBigInteger] = wBigIntegerElement
-    def liftable: Liftable[BigInteger, WBigInteger] = LiftableBigInteger
-    def longValueExact: Rep[Long] = delayInvoke
-    def intValueExact: Rep[Int] = delayInvoke
-    def shortValueExact: Rep[Short] = delayInvoke
-    def byteValueExact: Rep[Byte] = delayInvoke
-    def longValue: Rep[Long] = delayInvoke
-    def intValue: Rep[Int] = delayInvoke
-    def shortValue: Rep[Short] = delayInvoke
-    def byteValue: Rep[Byte] = delayInvoke
-    def signum: Rep[Int] = delayInvoke
-    def negate: Rep[WBigInteger] = delayInvoke
-    def abs: Rep[WBigInteger] = delayInvoke
-    def shiftRight(x$1: Rep[Int]): Rep[WBigInteger] = delayInvoke
-    def shiftLeft(x$1: Rep[Int]): Rep[WBigInteger] = delayInvoke
-    def isProbablePrime(x$1: Rep[Int]): Rep[Boolean] = delayInvoke
-    def bitLength: Rep[Int] = delayInvoke
-    def bitCount: Rep[Int] = delayInvoke
-    def getLowestSetBit: Rep[Int] = delayInvoke
-    def flipBit(x$1: Rep[Int]): Rep[WBigInteger] = delayInvoke
-    def clearBit(x$1: Rep[Int]): Rep[WBigInteger] = delayInvoke
-    def setBit(x$1: Rep[Int]): Rep[WBigInteger] = delayInvoke
-    def testBit(x$1: Rep[Int]): Rep[Boolean] = delayInvoke
-    def pow(x$1: Rep[Int]): Rep[WBigInteger] = delayInvoke
-    def andNot(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
-    def not: Rep[WBigInteger] = delayInvoke
-    def xor(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
-    def or(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
-    def and(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
-    def gcd(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
-    def max(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
-    def min(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
-    def compareTo(x$1: Rep[WBigInteger]): Rep[Int] = delayInvoke
-    def divide(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
-    def remainder(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
-    def modPow(x$1: Rep[WBigInteger],
-        x$2: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
-    def modInverse(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
-    def mod(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
-    def multiply(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
-    def subtract(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
-    def add(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
-    def toByteArray: Rep[WArray[Byte]] = delayInvoke
-    def toString(x$1: Rep[Int]): Rep[String] = delayInvoke
+  import scala.reflect.{ClassTag, classTag}
+
+  case class WBigIntegerConst(
+        constValue: BigInteger
+      ) extends WBigInteger with LiftedConst[BigInteger, WBigInteger] {
+    val liftable: Liftable[BigInteger, WBigInteger] = LiftableBigInteger
+    val selfType: Elem[WBigInteger] = liftable.eW
+    @External def longValueExact: Rep[Long] = delayInvoke
+    @External def intValueExact: Rep[Int] = delayInvoke
+    @External def shortValueExact: Rep[Short] = delayInvoke
+    @External def byteValueExact: Rep[Byte] = delayInvoke
+    @External def longValue: Rep[Long] = delayInvoke
+    @External def intValue: Rep[Int] = delayInvoke
+    @External def shortValue: Rep[Short] = delayInvoke
+    @External def byteValue: Rep[Byte] = delayInvoke
+    @External def signum: Rep[Int] = delayInvoke
+    @External def negate: Rep[WBigInteger] = delayInvoke
+    @External def abs: Rep[WBigInteger] = delayInvoke
+    @External def shiftRight(x$1: Rep[Int]): Rep[WBigInteger] = delayInvoke
+    @External def shiftLeft(x$1: Rep[Int]): Rep[WBigInteger] = delayInvoke
+    @External def isProbablePrime(x$1: Rep[Int]): Rep[Boolean] = delayInvoke
+    @External def bitLength: Rep[Int] = delayInvoke
+    @External def bitCount: Rep[Int] = delayInvoke
+    @External def getLowestSetBit: Rep[Int] = delayInvoke
+    @External def flipBit(x$1: Rep[Int]): Rep[WBigInteger] = delayInvoke
+    @External def clearBit(x$1: Rep[Int]): Rep[WBigInteger] = delayInvoke
+    @External def setBit(x$1: Rep[Int]): Rep[WBigInteger] = delayInvoke
+    @External def testBit(x$1: Rep[Int]): Rep[Boolean] = delayInvoke
+    @External def pow(x$1: Rep[Int]): Rep[WBigInteger] = delayInvoke
+    @External def andNot(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    @External def not: Rep[WBigInteger] = delayInvoke
+    @External def xor(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    @External def or(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    @External def and(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    @External def gcd(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    @External def max(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    @External def min(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    @External def compareTo(x$1: Rep[WBigInteger]): Rep[Int] = delayInvoke
+    @External def divide(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    @External def remainder(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    @External def modPow(x$1: Rep[WBigInteger], x$2: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    @External def modInverse(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    @External def mod(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    @External def multiply(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    @External def subtract(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    @External def add(x$1: Rep[WBigInteger]): Rep[WBigInteger] = delayInvoke
+    @External def toByteArray: Rep[WArray[Byte]] = delayInvoke
+    @External def toString(x$1: Rep[Int]): Rep[String] = delayInvoke
   }
 
-  implicit object LiftableBigInteger extends Liftable[BigInteger, WBigInteger] {
-    val eW: Elem[WBigInteger] = wBigIntegerElement
-    val sourceClassTag = classTag[BigInteger]
+  implicit object LiftableBigInteger
+    extends Liftable[BigInteger, WBigInteger] {
+    lazy val eW: Elem[WBigInteger] = wBigIntegerElement
+    lazy val sourceClassTag: ClassTag[BigInteger] = {
+      classTag[BigInteger]
+    }
     def lift(x: BigInteger): Rep[WBigInteger] = WBigIntegerConst(x)
     def unlift(w: Rep[WBigInteger]): BigInteger = w match {
-      case Def(WBigIntegerConst(x: BigInteger)) => x
+      case Def(WBigIntegerConst(x: BigInteger))
+            => x.asInstanceOf[BigInteger]
       case _ => unliftError(w)
     }
   }
 
+  private val _BigIntegerWrapSpec = new BigIntegerWrapSpec
   // entityProxy: single proxy for each type family
   implicit def proxyWBigInteger(p: Rep[WBigInteger]): WBigInteger = {
     proxyOps[WBigInteger](p)(scala.reflect.classTag[WBigInteger])
@@ -89,17 +98,13 @@ object WBigInteger extends EntityObject("WBigInteger") {
   // familyElem
   class WBigIntegerElem[To <: WBigInteger]
     extends EntityElem[To] {
-    override def liftable: Liftable[_, To] = LiftableBigInteger.asLiftable[BigInteger, To]
+    override val liftable = LiftableBigInteger.asLiftable[BigInteger, To]
 
-    override protected def collectMethods: Map[Method, MethodDesc] = {
-      val wrapCls = classOf[BigIntegerWrapSpec]
-      val srcCls = classOf[BigInteger]
-      val cls = classOf[WBigInteger]
-      val spec = new BigIntegerWrapSpec
-      super.collectMethods ++ Seq(
-        cls.getMethod("add", SymClass) -> WMethodDesc(spec, wrapCls.getMethod("add", srcCls, classOf[BigInteger])),
-        cls.getMethod("multiply", SymClass) -> WMethodDesc(spec, wrapCls.getMethod("multiply", srcCls, classOf[BigInteger])),
-      )
+    override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
+      super.collectMethods ++
+        Elem.declaredWrapperMethods(_BigIntegerWrapSpec, classOf[WBigInteger], Set(
+        "longValueExact", "intValueExact", "shortValueExact", "byteValueExact", "longValue", "intValue", "shortValue", "byteValue", "signum", "negate", "abs", "shiftRight", "shiftLeft", "isProbablePrime", "bitLength", "bitCount", "getLowestSetBit", "flipBit", "clearBit", "setBit", "testBit", "pow", "andNot", "not", "xor", "or", "and", "gcd", "max", "min", "compareTo", "divide", "remainder", "modPow", "modInverse", "mod", "multiply", "subtract", "add", "toByteArray", "toString"
+        ))
     }
 
     lazy val parent: Option[Elem[_]] = None

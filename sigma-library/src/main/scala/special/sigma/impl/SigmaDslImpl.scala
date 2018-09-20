@@ -27,6 +27,8 @@ import WBigInteger._
 import WECPoint._
 import SigmaContract._
 import ColBuilder._
+import MonoidBuilder._
+import CostedBuilder._
 
 object CostModel extends EntityObject("CostModel") {
   // entityConst: single const for each entity
@@ -74,9 +76,10 @@ object CostModel extends EntityObject("CostModel") {
     override val liftable = LiftableCostModel.asLiftable[SCostModel, To]
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
-      super.collectMethods ++ Elem.declaredMethods(classOf[CostModel], classOf[SCostModel], Set(
+      super.collectMethods ++
+        Elem.declaredMethods(classOf[CostModel], classOf[SCostModel], Set(
         "AccessBox", "GetVar", "DeserializeVar", "GetRegister", "DeserializeRegister", "SelectField", "CollectionConst", "AccessKiloByteOfData", "dataSize"
-      ))
+        ))
     }
 
     lazy val parent: Option[Elem[_]] = None
@@ -396,9 +399,10 @@ object SigmaProp extends EntityObject("SigmaProp") {
     override val liftable = LiftableSigmaProp.asLiftable[SSigmaProp, To]
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
-      super.collectMethods ++ Elem.declaredMethods(classOf[SigmaProp], classOf[SSigmaProp], Set(
+      super.collectMethods ++
+        Elem.declaredMethods(classOf[SigmaProp], classOf[SSigmaProp], Set(
         "isValid", "propBytes", "$amp$amp", "$amp$amp", "$bar$bar", "$bar$bar", "lazyAnd", "lazyOr"
-      ))
+        ))
     }
 
     override lazy val parent: Option[Elem[_]] = Some(dslObjectElement)
@@ -579,9 +583,10 @@ object AnyValue extends EntityObject("AnyValue") {
     override val liftable = LiftableAnyValue.asLiftable[SAnyValue, To]
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
-      super.collectMethods ++ Elem.declaredMethods(classOf[AnyValue], classOf[SAnyValue], Set(
+      super.collectMethods ++
+        Elem.declaredMethods(classOf[AnyValue], classOf[SAnyValue], Set(
         "dataSize"
-      ))
+        ))
     }
 
     lazy val parent: Option[Elem[_]] = None
@@ -661,6 +666,7 @@ object Box extends EntityObject("Box") {
     def registers: Rep[Col[AnyValue]] = delayInvoke
     def deserialize[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke
     def getReg[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke
+    def tokens: Rep[Col[scala.Tuple2[Col[Byte], Long]]] = delayInvoke
   }
 
   implicit object LiftableBox
@@ -688,9 +694,10 @@ object Box extends EntityObject("Box") {
     override val liftable = LiftableBox.asLiftable[SBox, To]
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
-      super.collectMethods ++ Elem.declaredMethods(classOf[Box], classOf[SBox], Set(
+      super.collectMethods ++
+        Elem.declaredMethods(classOf[Box], classOf[SBox], Set(
         "id", "value", "bytes", "bytesWithoutRef", "propositionBytes", "cost", "dataSize", "registers", "deserialize", "getReg", "R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "tokens"
-      ))
+        ))
     }
 
     override lazy val parent: Option[Elem[_]] = Some(dslObjectElement)
@@ -1034,9 +1041,10 @@ object AvlTree extends EntityObject("AvlTree") {
     override val liftable = LiftableAvlTree.asLiftable[SAvlTree, To]
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
-      super.collectMethods ++ Elem.declaredMethods(classOf[AvlTree], classOf[SAvlTree], Set(
+      super.collectMethods ++
+        Elem.declaredMethods(classOf[AvlTree], classOf[SAvlTree], Set(
         "startingDigest", "keyLength", "valueLengthOpt", "maxNumOperations", "maxDeletes", "cost", "dataSize"
-      ))
+        ))
     }
 
     override lazy val parent: Option[Elem[_]] = Some(dslObjectElement)
@@ -1214,9 +1222,10 @@ object Context extends EntityObject("Context") {
     override val liftable = LiftableContext.asLiftable[SContext, To]
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
-      super.collectMethods ++ Elem.declaredMethods(classOf[Context], classOf[SContext], Set(
+      super.collectMethods ++
+        Elem.declaredMethods(classOf[Context], classOf[SContext], Set(
         "builder", "OUTPUTS", "INPUTS", "HEIGHT", "SELF", "LastBlockUtxoRootHash", "getVar", "deserialize", "cost", "dataSize"
-      ))
+        ))
     }
 
     lazy val parent: Option[Elem[_]] = None
@@ -1422,9 +1431,10 @@ object SigmaContract extends EntityObject("SigmaContract") {
     override val liftable = LiftableSigmaContract.asLiftable[SSigmaContract, To]
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
-      super.collectMethods ++ Elem.declaredMethods(classOf[SigmaContract], classOf[SSigmaContract], Set(
+      super.collectMethods ++
+        Elem.declaredMethods(classOf[SigmaContract], classOf[SSigmaContract], Set(
         "builder", "Collection", "verifyZK", "atLeast", "allOf", "allZK", "anyOf", "anyZK", "PubKey", "sigmaProp", "blake2b256", "sha256", "byteArrayToBigInt", "longToByteArray", "proveDlog", "proveDHTuple", "isMember", "groupGenerator", "canOpen", "asFunction"
-      ))
+        ))
     }
 
     lazy val parent: Option[Elem[_]] = None
@@ -1722,6 +1732,8 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
     val liftable: Liftable[SSigmaDslBuilder, SigmaDslBuilder] = LiftableSigmaDslBuilder
     val selfType: Elem[SigmaDslBuilder] = liftable.eW
     def Cols: Rep[ColBuilder] = delayInvoke
+    def Monoids: Rep[MonoidBuilder] = delayInvoke
+    def Costing: Rep[CostedBuilder] = delayInvoke
     def CostModel: Rep[CostModel] = delayInvoke
     def verifyZK(cond: Rep[Thunk[SigmaProp]]): Rep[Boolean] = delayInvoke
     def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp] = delayInvoke
@@ -1766,9 +1778,10 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
     override val liftable = LiftableSigmaDslBuilder.asLiftable[SSigmaDslBuilder, To]
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
-      super.collectMethods ++ Elem.declaredMethods(classOf[SigmaDslBuilder], classOf[SSigmaDslBuilder], Set(
-        "Cols", "CostModel", "verifyZK", "atLeast", "allOf", "allZK", "anyOf", "anyZK", "PubKey", "sigmaProp", "blake2b256", "sha256", "byteArrayToBigInt", "longToByteArray", "proveDlog", "proveDHTuple", "isMember", "groupGenerator"
-      ))
+      super.collectMethods ++
+        Elem.declaredMethods(classOf[SigmaDslBuilder], classOf[SSigmaDslBuilder], Set(
+        "Cols", "Monoids", "Costing", "CostModel", "verifyZK", "atLeast", "allOf", "allZK", "anyOf", "anyZK", "PubKey", "sigmaProp", "blake2b256", "sha256", "byteArrayToBigInt", "longToByteArray", "proveDlog", "proveDHTuple", "isMember", "groupGenerator"
+        ))
     }
 
     override lazy val parent: Option[Elem[_]] = Some(dslBuilderElement)
@@ -1812,6 +1825,30 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
     object Cols {
       def unapply(d: Def[_]): Option[Rep[SigmaDslBuilder]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[SigmaDslBuilderElem[_]] && method.getName == "Cols" =>
+          Some(receiver).asInstanceOf[Option[Rep[SigmaDslBuilder]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[SigmaDslBuilder]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object Monoids {
+      def unapply(d: Def[_]): Option[Rep[SigmaDslBuilder]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[SigmaDslBuilderElem[_]] && method.getName == "Monoids" =>
+          Some(receiver).asInstanceOf[Option[Rep[SigmaDslBuilder]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[SigmaDslBuilder]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object Costing {
+      def unapply(d: Def[_]): Option[Rep[SigmaDslBuilder]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[SigmaDslBuilderElem[_]] && method.getName == "Costing" =>
           Some(receiver).asInstanceOf[Option[Rep[SigmaDslBuilder]]]
         case _ => None
       }

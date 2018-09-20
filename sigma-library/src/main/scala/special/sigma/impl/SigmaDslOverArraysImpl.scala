@@ -16,13 +16,14 @@ import SigmaContract._
 import Col._
 import WArray._
 import WOption._
+import Col._
 import Box._
 import AvlTree._
 import AnyValue._
-import Col._
 import Context._
 import ColOverArrayBuilder._
 import MonoidBuilderInst._
+import ConcreteCostedBuilder._
 import TrivialSigma._
 import WBigInteger._
 import WECPoint._
@@ -389,6 +390,18 @@ object TestBox extends EntityObject("TestBox") {
         case _ => None
       }
       def unapply(exp: Sym): Option[(Rep[TestBox], Rep[Int], Elem[T], Elem[T]) forSome {type T}] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object tokens {
+      def unapply(d: Def[_]): Option[Rep[TestBox]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[TestBoxElem] && method.getName == "tokens" =>
+          Some(receiver).asInstanceOf[Option[Rep[TestBox]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[TestBox]] = exp match {
         case Def(d) => unapply(d)
         case _ => None
       }
@@ -988,6 +1001,18 @@ object TestSigmaDslBuilder extends EntityObject("TestSigmaDslBuilder") {
     object Monoids {
       def unapply(d: Def[_]): Option[Rep[TestSigmaDslBuilder]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[TestSigmaDslBuilderElem] && method.getName == "Monoids" =>
+          Some(receiver).asInstanceOf[Option[Rep[TestSigmaDslBuilder]]]
+        case _ => None
+      }
+      def unapply(exp: Sym): Option[Rep[TestSigmaDslBuilder]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => None
+      }
+    }
+
+    object Costing {
+      def unapply(d: Def[_]): Option[Rep[TestSigmaDslBuilder]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[TestSigmaDslBuilderElem] && method.getName == "Costing" =>
           Some(receiver).asInstanceOf[Option[Rep[TestSigmaDslBuilder]]]
         case _ => None
       }

@@ -1,5 +1,6 @@
 package special.sigma {
   import scalan._
+  import scalan.meta.RType
 
   trait SigmaExamples extends Base { self: SigmaLibrary =>
     import SigmaProp._;
@@ -31,9 +32,9 @@ package special.sigma {
       def pkA: Rep[SigmaProp];
       def pkB: Rep[SigmaProp];
       def hx: Rep[Col[Byte]];
-      def templateForBobChain(ctx: Rep[Context]): Rep[Boolean] = CrossChainAtomicSwap.this.verifyZK(Thunk { CrossChainAtomicSwap.this.anyZK(CrossChainAtomicSwap.this.Collection[SigmaProp](CrossChainAtomicSwap.this.sigmaProp(ctx.HEIGHT.>(CrossChainAtomicSwap.this.deadlineBob)).&&(CrossChainAtomicSwap.this.pkA), CrossChainAtomicSwap.this.pkB.&&(CrossChainAtomicSwap.this.blake2b256(ctx.getVar[Col[Byte]](toRep(1.asInstanceOf[Byte])).get).==(CrossChainAtomicSwap.this.hx))))});
-      def templateForAliceChain(ctx: Rep[Context]): Rep[Boolean] = CrossChainAtomicSwap.this.verifyZK(Thunk {
-        val x: Rep[Col[Byte]] = ctx.getVar[Col[Byte]](toRep(1.asInstanceOf[Byte])).get;
+      def templateForBobChain(ctx: Rep[Context]): Rep[Boolean] = CrossChainAtomicSwap.this.verifyZK(Thunk {CrossChainAtomicSwap.this.anyZK(CrossChainAtomicSwap.this.Collection[SigmaProp](CrossChainAtomicSwap.this.sigmaProp(ctx.HEIGHT.>(CrossChainAtomicSwap.this.deadlineBob)).&&(CrossChainAtomicSwap.this.pkA), CrossChainAtomicSwap.this.pkB.&&(CrossChainAtomicSwap.this.blake2b256(ctx.getVar[Col[Byte]](toRep(1.asInstanceOf[Byte]))(special.collection.Types.colRType[Byte](RType.ByteType)).get).==(CrossChainAtomicSwap.this.hx))))});
+      def templateForAliceChain(ctx: Rep[Context]): Rep[Boolean] = CrossChainAtomicSwap.this.verifyZK(Thunk{
+        val x: Rep[Col[Byte]] = ctx.getVar[Col[Byte]](toRep(1.asInstanceOf[Byte]))(special.collection.Types.colRType[Byte](RType.ByteType)).get;
         CrossChainAtomicSwap.this.anyZK(CrossChainAtomicSwap.this.Collection[SigmaProp](CrossChainAtomicSwap.this.sigmaProp(ctx.HEIGHT.>(CrossChainAtomicSwap.this.deadlineAlice)).&&(CrossChainAtomicSwap.this.pkB), CrossChainAtomicSwap.this.allZK(CrossChainAtomicSwap.this.Collection[SigmaProp](CrossChainAtomicSwap.this.pkA, CrossChainAtomicSwap.this.sigmaProp(x.length.<(toRep(33.asInstanceOf[Int]))), CrossChainAtomicSwap.this.sigmaProp(CrossChainAtomicSwap.this.blake2b256(x).==(CrossChainAtomicSwap.this.hx))))))
       })
     };
@@ -59,8 +60,8 @@ package special.sigma {
         val coinsToIssue: Rep[Long] = IF(ctx.HEIGHT.<(CoinEmission.this.fixedRatePeriod)).THEN(CoinEmission.this.fixedRate).ELSE(CoinEmission.this.fixedRate.-(CoinEmission.this.oneEpochReduction.*(epoch)));
         val correctCoinsConsumed: Rep[Boolean] = coinsToIssue.==(ctx.SELF.value.-(out.value));
         val sameScriptRule: Rep[Boolean] = ctx.SELF.propositionBytes.==(out.propositionBytes);
-        val heightIncreased: Rep[Boolean] = ctx.HEIGHT.>(ctx.SELF.R4[Long].get);
-        val heightCorrect: Rep[Boolean] = out.R4[Long].get.==(ctx.HEIGHT);
+        val heightIncreased: Rep[Boolean] = ctx.HEIGHT.>(ctx.SELF.R4[Long](RType.LongType).get);
+        val heightCorrect: Rep[Boolean] = out.R4[Long](RType.LongType).get.==(ctx.HEIGHT);
         val lastCoins: Rep[Boolean] = ctx.SELF.value.<=(CoinEmission.this.oneEpochReduction);
         CoinEmission.this.allOf(CoinEmission.this.Collection[Boolean](correctCoinsConsumed, heightCorrect, heightIncreased, sameScriptRule)).||(heightIncreased.&&(lastCoins))
       }
@@ -70,7 +71,7 @@ package special.sigma {
       def demurrageCost: Rep[Long];
       def regScript: Rep[SigmaProp];
       @clause def canOpen(ctx: Rep[Context]): Rep[Boolean] = DemurrageCurrency.this.verifyZK(Thunk{
-        val c2: Rep[Boolean] = ctx.HEIGHT.>=(ctx.SELF.R4[Long].get.+(DemurrageCurrency.this.demurragePeriod)).&&(ctx.OUTPUTS.exists(fun(((out: Rep[Box]) => out.value.>=(ctx.SELF.value.-(DemurrageCurrency.this.demurrageCost)).&&(out.propositionBytes.==(ctx.SELF.propositionBytes))))));
+        val c2: Rep[Boolean] = ctx.HEIGHT.>=(ctx.SELF.R4[Long](RType.LongType).get.+(DemurrageCurrency.this.demurragePeriod)).&&(ctx.OUTPUTS.exists(fun(((out: Rep[Box]) => out.value.>=(ctx.SELF.value.-(DemurrageCurrency.this.demurrageCost)).&&(out.propositionBytes.==(ctx.SELF.propositionBytes))))));
         DemurrageCurrency.this.regScript.||(c2)
       })
     };
