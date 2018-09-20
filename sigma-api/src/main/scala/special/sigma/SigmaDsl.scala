@@ -5,9 +5,10 @@ import java.math.BigInteger
 import org.bouncycastle.math.ec.ECPoint
 
 import scala.reflect.ClassTag
-import special.collection.{ColBuilder, Col}
+import special.collection.{CostedBuilder, ColBuilder, Col, MonoidBuilder}
 
 import scalan._
+import scalan.meta.RType
 
 @scalan.Liftable
 trait CostModel {
@@ -57,30 +58,30 @@ trait Box extends DslObject {
   def cost: Int
   def dataSize: Long
   def registers: Col[AnyValue]
-  def deserialize[@Reified T](i: Int)(implicit cT:ClassTag[T]): Option[T]
-  def getReg[@Reified T](i: Int)(implicit cT:ClassTag[T]): Option[T]
+  def deserialize[@Reified T](i: Int)(implicit cT: RType[T]): Option[T]
+  def getReg[@Reified T](i: Int)(implicit cT: RType[T]): Option[T]
 
   /** Mandatory: Monetary value, in Ergo tokens */
-  def R0[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](0)
+  def R0[@Reified T](implicit cT:RType[T]): Option[T] = this.getReg[T](0)
 
   /** Mandatory: Guarding script */
-  def R1[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](1)
+  def R1[@Reified T](implicit cT:RType[T]): Option[T] = this.getReg[T](1)
 
   /** Mandatory: Secondary tokens */
-  def R2[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](2)
+  def R2[@Reified T](implicit cT:RType[T]): Option[T] = this.getReg[T](2)
 
   /** Mandatory: Reference to transaction and output id where the box was created */
-  def R3[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](3)
+  def R3[@Reified T](implicit cT:RType[T]): Option[T] = this.getReg[T](3)
 
   // Non-mandatory registers
-  def R4[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](4)
-  def R5[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](5)
-  def R6[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](6)
-  def R7[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](7)
-  def R8[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](8)
-  def R9[@Reified T](implicit cT:ClassTag[T]): Option[T] = this.getReg[T](9)
+  def R4[@Reified T](implicit cT:RType[T]): Option[T] = this.getReg[T](4)
+  def R5[@Reified T](implicit cT:RType[T]): Option[T] = this.getReg[T](5)
+  def R6[@Reified T](implicit cT:RType[T]): Option[T] = this.getReg[T](6)
+  def R7[@Reified T](implicit cT:RType[T]): Option[T] = this.getReg[T](7)
+  def R8[@Reified T](implicit cT:RType[T]): Option[T] = this.getReg[T](8)
+  def R9[@Reified T](implicit cT:RType[T]): Option[T] = this.getReg[T](9)
 
-  def tokens: Col[(Col[Byte], Long)] = this.R2[Col[(Col[Byte], Long)]].get
+  def tokens: Col[(Col[Byte], Long)]
 
   @Internal
   override def toString = s"Box(id=$id; value=$value; cost=$cost; size=$dataSize; regs=$registers)"
@@ -105,14 +106,14 @@ trait Context {
   def HEIGHT: Long
   def SELF: Box
   def LastBlockUtxoRootHash: AvlTree
-  def getVar[T](id: Byte)(implicit cT:ClassTag[T]): Option[T]
-  def deserialize[T](id: Byte)(implicit cT:ClassTag[T]): Option[T]
+  def getVar[T](id: Byte)(implicit cT: RType[T]): Option[T]
+  def deserialize[T](id: Byte)(implicit cT: RType[T]): Option[T]
   def cost: Int
   def dataSize: Long
 }
 
 @scalan.Liftable
-trait SigmaContract {
+trait SigmaContract extends DslObject with TypeDescriptors {
   def builder: SigmaDslBuilder
   @NeverInline
   def Collection[T](items: T*): Col[T] = this.builder.Cols.apply[T](items:_*)
@@ -152,6 +153,8 @@ trait SigmaContract {
 @scalan.Liftable
 trait SigmaDslBuilder extends DslBuilder {
   def Cols: ColBuilder
+  def Monoids: MonoidBuilder
+  def Costing: CostedBuilder
   def CostModel: CostModel
   def verifyZK(cond: => SigmaProp): Boolean
 

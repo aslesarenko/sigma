@@ -1,23 +1,13 @@
 package special.sigma
 
+import special.SpecialPredef
 import special.collection._
 
 import scala.reflect.ClassTag
+import scalan.meta.RType
 import scalan.{NeverInline, Reified}
 
-class CostedOption[T](
-    val value: Option[T],
-    val left: Costed[Unit],
-    val right: Costed[Unit]) extends ConcreteCosted[Option[T]]
-{
-  @NeverInline
-  def cost: Int = left.cost max right.cost + builder.ConstructSumCost
-  @NeverInline
-  def dataSize: Long = left.dataSize max right.dataSize + builder.SumTagSize
-}
-
-
-trait CostedSigmaObject[TObj] extends ConcreteCosted[TObj] {
+trait CostedSigmaObject[TObj] extends ConcreteCosted[TObj] with TypeDescriptors {
   def dsl: SigmaDslBuilder = new TestSigmaDslBuilder
   def Operations: CostModel = dsl.CostModel
   def costBoxes(bs: Col[Box]): CostedCol[Box] = {
@@ -37,10 +27,8 @@ trait CostedSigmaObject[TObj] extends ConcreteCosted[TObj] {
     val valueCost = Operations.CollectionConst
     new CostedCol(xs, costs, sizes, valueCost)
   }
-  def costOption[T](opt: Option[T], opCost: Int): CostedOption[T] = {
-    val left = new CostedPrim((), opCost, 0L)
-    val right = new CostedPrim((), opCost, Operations.dataSize(opt))
-    new CostedOption[T](opt, left, right)
+  def costOption[T](opt: Option[T], opCost: Int)(implicit cT: RType[T]): CostedOption[T] = {
+    opt.fold[CostedOption[T]](new CostedNone(opCost))(x => new CostedSome(dsl.Costing.costedValue(x, SpecialPredef.some(opCost))))
   }
 }
 
@@ -54,11 +42,11 @@ class CostedContext(val ctx: Context) extends ConcreteCosted[Context] with Coste
   def SELF: CostedBox = new CostedBox(ctx.SELF)
   def LastBlockUtxoRootHash: CostedAvlTree = new CostedAvlTree(ctx.LastBlockUtxoRootHash)
 
-  def getVar[T](id: Byte)(implicit cT: ClassTag[T]): CostedOption[T] = {
+  def getVar[T](id: Byte)(implicit cT: RType[T]): CostedOption[T] = {
     val opt = ctx.getVar(id)(cT)
     costOption(opt, Operations.GetVar)
   }
-  def deserialize[T](id: Byte)(implicit cT: ClassTag[T]): CostedOption[T] = {
+  def deserialize[T](id: Byte)(implicit cT: RType[T]): CostedOption[T] = {
     val opt = ctx.deserialize(id)(cT)
     costOption(opt, Operations.DeserializeVar)
   }
@@ -83,11 +71,11 @@ class CostedBox(box: Box) extends ConcreteCosted[Box] with CostedSigmaObject[Box
     val sizes = box.registers.map(o => o.dataSize)
     new CostedCol(box.registers, costs, sizes, Operations.CollectionConst)
   }
-  def deserialize[@Reified T](id: Int)(implicit cT:ClassTag[T]): CostedOption[T] = {
+  def deserialize[@Reified T](id: Int)(implicit cT: RType[T]): CostedOption[T] = {
     val opt = box.deserialize(id)(cT)
     costOption(opt, Operations.DeserializeRegister)
   }
-  def getReg[@Reified T](id: Int)(implicit cT:ClassTag[T]): CostedOption[T] = {
+  def getReg[@Reified T](id: Int)(implicit cT:RType[T]): CostedOption[T] = {
     val opt = box.getReg(id)(cT)
     costOption(opt, Operations.GetRegister)
   }

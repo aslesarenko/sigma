@@ -8,8 +8,9 @@ import org.bouncycastle.math.ec.ECPoint
 
 import scala.reflect.ClassTag
 import special.SpecialPredef
-import special.collection.{Col, ColOverArrayBuilder, ColOverArray, MonoidBuilderInst}
+import special.collection._
 
+import scalan.meta.RType
 import scalan.{NeverInline, Internal, OverloadId}
 
 class TestBox(
@@ -22,14 +23,19 @@ class TestBox(
 {
   def builder = new TestSigmaDslBuilder
   @NeverInline
-  def getReg[T](i: Int)(implicit cT:ClassTag[T]): Option[T] =
+  def getReg[T](i: Int)(implicit cT: RType[T]): Option[T] =
     SpecialPredef.cast[TestValue[T]](registers(i)).map(x => x.value)
   @NeverInline
   def cost = (dataSize / builder.CostModel.AccessKiloByteOfData.toLong).toInt
   @NeverInline
   def dataSize = bytes.length
   @NeverInline
-  def deserialize[T](i: Int)(implicit cT:ClassTag[T]): Option[T] = ???
+  def deserialize[T](i: Int)(implicit cT: RType[T]): Option[T] = ???
+
+  def tokens = {
+    implicit val t = RType[Col[(Col[Byte], Long)]]
+    this.R2[Col[(Col[Byte], Long)]].get
+  }
 }
 
 case class TestAvlTree(
@@ -76,10 +82,10 @@ class TestContext(
   def LastBlockUtxoRootHash = lastBlockUtxoRootHash
 
   @NeverInline
-  def getVar[T](id: Byte)(implicit cT: ClassTag[T]): Option[T] = SpecialPredef.cast[TestValue[T]](vars(id - 1)).map(_.value)
+  def getVar[T](id: Byte)(implicit cT: RType[T]): Option[T] = SpecialPredef.cast[TestValue[T]](vars(id - 1)).map(_.value)
 
   @NeverInline
-  def deserialize[T](id: Byte)(implicit cT: ClassTag[T]): Option[T] = ???
+  def deserialize[T](id: Byte)(implicit cT: RType[T]): Option[T] = ???
 
   @NeverInline
   def cost = (dataSize / builder.CostModel.AccessKiloByteOfData.toLong).toInt
@@ -95,6 +101,8 @@ class TestContext(
 class TestSigmaDslBuilder extends SigmaDslBuilder {
   def Cols = new ColOverArrayBuilder
   def Monoids = new MonoidBuilderInst
+  def Costing = new ConcreteCostedBuilder
+
   @NeverInline
   def CostModel = new TestCostModel
 

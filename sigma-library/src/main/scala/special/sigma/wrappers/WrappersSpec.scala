@@ -3,17 +3,16 @@ package special.sigma.wrappers {
 
   trait WrappersSpec extends Base { self: SigmaLibrary =>
     import WArray._;
-    import WrapSpec._;
+    import WrapSpecBase._;
     import WSigmaPredef._;
     import WECPoint._;
-    import WrapSpec._;
     import WBigInteger._;
-    abstract class ECPointWrapSpec extends WrapSpec {
+    abstract class ECPointWrapSpec extends WrapSpecBase {
       def getEncoded[A](g: Rep[WECPoint], compressed: Rep[Boolean]): Rep[WArray[Byte]] = g.getEncoded(compressed);
       def multiply(l: Rep[WECPoint], r: Rep[WBigInteger]): Rep[WECPoint] = l.multiply(r);
       def add(l: Rep[WECPoint], r: Rep[WECPoint]): Rep[WECPoint] = l.add(r)
     };
-    abstract class BigIntegerWrapSpec extends WrapSpec {
+    abstract class BigIntegerWrapSpec extends WrapSpecBase {
       def fromString(s: Rep[String]): Rep[WBigInteger] = RWBigInteger(s);
       def fromArray(sig: Rep[Int], arr: Rep[WArray[Byte]]): Rep[WBigInteger] = RWBigInteger(sig, arr);
       def ZERO: Rep[WBigInteger] = RWBigInteger.ZERO;
@@ -61,7 +60,7 @@ package special.sigma.wrappers {
       def intValueExact(l: Rep[WBigInteger]): Rep[Int] = l.intValueExact;
       def longValueExact(l: Rep[WBigInteger]): Rep[Long] = l.longValueExact
     };
-    abstract class SigmaPredefWrapSpec extends WrapSpec {
+    abstract class SigmaPredefWrapSpec extends WrapSpecBase {
       def dataSize(v: Rep[Any]): Rep[Long] = RWSigmaPredef.dataSize[Any](v)
     };
     trait ECPointWrapSpecCompanion;

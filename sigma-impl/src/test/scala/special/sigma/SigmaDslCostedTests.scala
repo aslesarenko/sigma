@@ -14,8 +14,8 @@ class SigmaDslCostedTests extends FunSuite with ContractsTestkit with Matchers {
 
   test("CostedContext") {
     val ctxC = new CostedContext(ctx)
-    ctx.cost shouldBe 13
-    ctxC.INPUTS.cost shouldBe 1
+    ctx.cost shouldBe 14
+    ctxC.INPUTS.cost shouldBe 2
     ctxC.OUTPUTS.cost shouldBe 1
   }
 }
