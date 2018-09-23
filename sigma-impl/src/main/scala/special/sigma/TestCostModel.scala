@@ -7,11 +7,11 @@ import scalan.Internal
 class TestCostModel extends CostModel {
   def AccessBox: Int = CostTable.DefaultCosts("AccessBox: Context => Box")
 
-  def GetVar: Int = CostTable.DefaultCosts("ContextVar: (Context, Byte) => Option[T]")
+  def GetVar: Int = CostTable.DefaultCosts("GetVar: (Context, Byte) => Option[T]")
   def DeserializeVar: Int = CostTable.DefaultCosts("DeserializeVar: (Context, Byte) => Option[T]")
 
-  def GetRegister: Int = CostTable.DefaultCosts("AccessRegister: (Box,Byte) => Option[T]")
-  def DeserializeRegister: Int  = CostTable.DefaultCosts("DeserializeRegister: (Box,Byte) => Option[T]")
+  def GetRegister: Int = CostTable.DefaultCosts("GetRegister: (Box, Byte) => Option[T]")
+  def DeserializeRegister: Int  = CostTable.DefaultCosts("DeserializeRegister: (Box, Byte) => Option[T]")
 
   def SelectField: Int      = CostTable.DefaultCosts("SelectField")
   def CollectionConst: Int  = CostTable.DefaultCosts("Const: () => Array[IV]")

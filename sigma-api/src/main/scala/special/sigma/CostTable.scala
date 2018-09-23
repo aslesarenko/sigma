@@ -27,8 +27,13 @@ object CostTable {
     ("SelectField", 0.000001),
     ("AccessKiloByteOfData", 0.000001),
     ("AccessBox: Context => Box", 0.000001),
+
     ("GetVar: (Context, Byte) => Option[T]", 0.000001),
-    ("AccessRegister: Box => Option[T]", 0.000001),
+    ("DeserializeVar: (Context, Byte) => Option[T]", 0.000001),
+
+    ("GetRegister: (Box, Byte) => Option[T]", 0.000001),
+    ("DeserializeRegister: (Box, Byte) => Option[T]", 0.000001),
+
     ("ExtractRegisterAs: (Box,Byte) => Array[BigInt]", 0.000001),
     ("SigmaPropIsValid: SigmaProp => Boolean", 0.000001),
     ("SigmaPropBytes: SigmaProp => Array[Byte]", 0.000001),
