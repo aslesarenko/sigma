@@ -24,7 +24,7 @@ trait SigmaLibrary extends Library
   import WECPoint._
   import SigmaDslBuilder._
 
-  implicit lazy val EcPointElement: Elem[ECPoint] = new BaseElem(CustomNamedCurves.getByName("curve25519").getG)
+//  implicit lazy val EcPointElement: Elem[ECPoint] = new BaseElem(CustomNamedCurves.getByName("curve25519").getG)
 
   private val WA = WArrayMethods
   private val CM = ColMethods
@@ -85,13 +85,13 @@ trait SigmaLibrary extends Library
       if (bools.isEmpty)
         zkAll.isValid
       else
-        (RTrivialSigma(sigmaDslBuilder.allOf(b.apply(bools:_*))) && zkAll).isValid
+        (RTrivialSigma(sigmaDslBuilder.allOf(b.apply(bools:_*))).asRep[SigmaProp] && zkAll).isValid
     case AnyOf(b, HasSigmas(bs, ss)) =>
       val zkAny = sigmaDslBuilder.anyZK(b.apply(ss:_*))
       if (bs.isEmpty)
         zkAny.isValid
       else
-        (RTrivialSigma(sigmaDslBuilder.anyOf(b.apply(bs:_*))) || zkAny).isValid
+        (RTrivialSigma(sigmaDslBuilder.anyOf(b.apply(bs:_*))).asRep[SigmaProp] || zkAny).isValid
     case AllOf(_,items) if items.length == 1 => items(0)
     case AnyOf(_,items) if items.length == 1 => items(0)
     case AllZk(_,items) if items.length == 1 => items(0)
@@ -125,7 +125,7 @@ trait SigmaLibrary extends Library
   }
 
   override def toRep[A](x: A)(implicit eA: Elem[A]):Rep[A] = eA match {
-    case EcPointElement => Const(x)
+//    case EcPointElement => Const(x)
     case _ => super.toRep(x)
   }
 
