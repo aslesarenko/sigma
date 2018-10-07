@@ -15,7 +15,7 @@ import DefaultContract._
 import DemurrageCurrency._
 import CrowdFundingContract._
 import DemurrageCurrencyContract._
-import SigmaProp._
+import SigmaProp._ // manual fix
 
 object CrowdFundingContract extends EntityObject("CrowdFundingContract") {
   case class CrowdFundingContractCtor
@@ -80,7 +80,10 @@ object CrowdFundingContract extends EntityObject("CrowdFundingContract") {
   lazy val CrowdFundingContractRep: Rep[CrowdFundingContractCompanionCtor] = new CrowdFundingContractCompanionCtor
   lazy val RCrowdFundingContract: CrowdFundingContractCompanionCtor = proxyCrowdFundingContractCompanion(CrowdFundingContractRep)
   implicit def proxyCrowdFundingContractCompanion(p: Rep[CrowdFundingContractCompanionCtor]): CrowdFundingContractCompanionCtor = {
-    proxyOps[CrowdFundingContractCompanionCtor](p)
+    if (p.rhs.isInstanceOf[CrowdFundingContractCompanionCtor])
+      p.rhs.asInstanceOf[CrowdFundingContractCompanionCtor]
+    else
+      proxyOps[CrowdFundingContractCompanionCtor](p)
   }
 
   implicit case object CrowdFundingContractCompanionElem extends CompanionElem[CrowdFundingContractCompanionCtor] {
@@ -107,7 +110,7 @@ object CrowdFundingContract extends EntityObject("CrowdFundingContract") {
   }
   def unmkCrowdFundingContract(p: Rep[CrowdFunding]) = p.elem.asInstanceOf[Elem[_]] match {
     case _: CrowdFundingContractElem @unchecked =>
-      Some((p.asRep[CrowdFundingContract].deadline, p.asRep[CrowdFundingContract].minToRaise, p.asRep[CrowdFundingContract].backerPubKey, p.asRep[CrowdFundingContract].projectPubKey))
+      Some((asRep[CrowdFundingContract](p).deadline, asRep[CrowdFundingContract](p).minToRaise, asRep[CrowdFundingContract](p).backerPubKey, asRep[CrowdFundingContract](p).projectPubKey))
     case _ =>
       None
   }
@@ -183,7 +186,10 @@ object DemurrageCurrencyContract extends EntityObject("DemurrageCurrencyContract
   lazy val DemurrageCurrencyContractRep: Rep[DemurrageCurrencyContractCompanionCtor] = new DemurrageCurrencyContractCompanionCtor
   lazy val RDemurrageCurrencyContract: DemurrageCurrencyContractCompanionCtor = proxyDemurrageCurrencyContractCompanion(DemurrageCurrencyContractRep)
   implicit def proxyDemurrageCurrencyContractCompanion(p: Rep[DemurrageCurrencyContractCompanionCtor]): DemurrageCurrencyContractCompanionCtor = {
-    proxyOps[DemurrageCurrencyContractCompanionCtor](p)
+    if (p.rhs.isInstanceOf[DemurrageCurrencyContractCompanionCtor])
+      p.rhs.asInstanceOf[DemurrageCurrencyContractCompanionCtor]
+    else
+      proxyOps[DemurrageCurrencyContractCompanionCtor](p)
   }
 
   implicit case object DemurrageCurrencyContractCompanionElem extends CompanionElem[DemurrageCurrencyContractCompanionCtor] {
@@ -210,7 +216,7 @@ object DemurrageCurrencyContract extends EntityObject("DemurrageCurrencyContract
   }
   def unmkDemurrageCurrencyContract(p: Rep[DemurrageCurrency]) = p.elem.asInstanceOf[Elem[_]] match {
     case _: DemurrageCurrencyContractElem @unchecked =>
-      Some((p.asRep[DemurrageCurrencyContract].demurragePeriod, p.asRep[DemurrageCurrencyContract].demurrageCost, p.asRep[DemurrageCurrencyContract].regScript))
+      Some((asRep[DemurrageCurrencyContract](p).demurragePeriod, asRep[DemurrageCurrencyContract](p).demurrageCost, asRep[DemurrageCurrencyContract](p).regScript))
     case _ =>
       None
   }

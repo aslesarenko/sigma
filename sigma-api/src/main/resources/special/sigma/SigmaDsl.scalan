@@ -109,6 +109,8 @@ package special.sigma {
       def proveDlog(g: Rep[WECPoint]): Rep[SigmaProp] = this.builder.proveDlog(g);
       def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[SigmaProp] = this.builder.proveDHTuple(g, h, u, v);
       def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean] = this.builder.isMember(tree, key, proof);
+      def treeLookup(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = this.builder.treeLookup(tree, key, proof);
+      def treeModifications(tree: Rep[AvlTree], operations: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = this.builder.treeModifications(tree, operations, proof);
       def groupGenerator: Rep[WECPoint] = this.builder.groupGenerator;
       @clause def canOpen(ctx: Rep[Context]): Rep[Boolean];
       def asFunction: Rep[scala.Function1[Context, Boolean]] = fun(((ctx: Rep[Context]) => this.canOpen(ctx)))
@@ -133,6 +135,8 @@ package special.sigma {
       def proveDlog(g: Rep[WECPoint]): Rep[SigmaProp];
       def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[SigmaProp];
       def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean];
+      def treeLookup(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]];
+      def treeModifications(tree: Rep[AvlTree], operations: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]];
       def groupGenerator: Rep[WECPoint]
     };
     trait CostModelCompanion;

@@ -1,15 +1,16 @@
 package special.sigma {
   import scalan._
-  import scalan.meta.RType
+  import scalan.meta.RType // manual fix
 
   trait SigmaExamples extends Base { self: SigmaLibrary =>
     import SigmaProp._;
     import CrowdFunding._;
     import SigmaContract._;
     import SigmaProp._;
-    import Context._
-    import Col._; import Box._
-    import WOption._
+    import Col._;
+    import Context._ // manual fix
+    import Box._ // manual fix
+    import WOption._ // manual fix
     import CrossChainAtomicSwap._;
     import InChainAtomicSwap._;
     import CoinEmission._;
@@ -19,6 +20,7 @@ package special.sigma {
       def minToRaise: Rep[Long];
       def backerPubKey: Rep[SigmaProp];
       def projectPubKey: Rep[SigmaProp];
+      // manual fix (companion)
       @clause def canOpen(ctx: Rep[Context]): Rep[Boolean] = CrowdFunding.this.verifyZK(Thunk{
         val fundraisingFailure: Rep[SigmaProp] = CrowdFunding.this.sigmaProp(ctx.HEIGHT.>=(CrowdFunding.this.deadline)).&&(CrowdFunding.this.backerPubKey);
         val enoughRaised: Rep[scala.Function1[Box, Boolean]] = fun(((outBox: Rep[Box]) => outBox.value.>=(CrowdFunding.this.minToRaise).&&(outBox.propositionBytes.==(CrowdFunding.this.projectPubKey.propBytes))));
@@ -32,6 +34,7 @@ package special.sigma {
       def pkA: Rep[SigmaProp];
       def pkB: Rep[SigmaProp];
       def hx: Rep[Col[Byte]];
+      // manual fix
       def templateForBobChain(ctx: Rep[Context]): Rep[Boolean] = CrossChainAtomicSwap.this.verifyZK(Thunk {CrossChainAtomicSwap.this.anyZK(CrossChainAtomicSwap.this.Collection[SigmaProp](CrossChainAtomicSwap.this.sigmaProp(ctx.HEIGHT.>(CrossChainAtomicSwap.this.deadlineBob)).&&(CrossChainAtomicSwap.this.pkA), CrossChainAtomicSwap.this.pkB.&&(CrossChainAtomicSwap.this.blake2b256(ctx.getVar[Col[Byte]](toRep(1.asInstanceOf[Byte]))(special.collection.Types.colRType[Byte](RType.ByteType)).get).==(CrossChainAtomicSwap.this.hx))))});
       def templateForAliceChain(ctx: Rep[Context]): Rep[Boolean] = CrossChainAtomicSwap.this.verifyZK(Thunk{
         val x: Rep[Col[Byte]] = ctx.getVar[Col[Byte]](toRep(1.asInstanceOf[Byte]))(special.collection.Types.colRType[Byte](RType.ByteType)).get;
@@ -43,10 +46,12 @@ package special.sigma {
       def pkA: Rep[SigmaProp];
       def pkB: Rep[SigmaProp];
       def token1: Rep[Col[Byte]];
+      // manual fix
       def templateForAlice(ctx: Rep[Context]): Rep[Boolean] = InChainAtomicSwap.this.verifyZK(Thunk { InChainAtomicSwap.this.pkA.&&(ctx.HEIGHT.>(InChainAtomicSwap.this.deadline)).||({
         val tokenData: Rep[scala.Tuple2[Col[Byte], Long]] = ctx.OUTPUTS.apply(toRep(0.asInstanceOf[Int])).tokens.apply(toRep(0.asInstanceOf[Int]));
         InChainAtomicSwap.this.allOf(InChainAtomicSwap.this.Collection[Boolean](tokenData._1.==(InChainAtomicSwap.this.token1), tokenData._2.>=(toRep(60L.asInstanceOf[Long])), ctx.OUTPUTS.apply(toRep(0.asInstanceOf[Int])).propositionBytes.==(InChainAtomicSwap.this.pkA.propBytes), ctx.OUTPUTS.apply(toRep(0.asInstanceOf[Int])).value.>=(toRep(1L.asInstanceOf[Long]))))
-      })});
+      })}); // manual fix }
+      // manual fix
       def templateForBob(ctx: Rep[Context]): Rep[Boolean] = InChainAtomicSwap.this.verifyZK(Thunk { InChainAtomicSwap.this.pkB.&&(ctx.HEIGHT.>(InChainAtomicSwap.this.deadline)).||(InChainAtomicSwap.this.allOf(InChainAtomicSwap.this.Collection[Boolean](ctx.OUTPUTS.apply(toRep(1.asInstanceOf[Int])).value.>=(toRep(100.asInstanceOf[Int])), ctx.OUTPUTS.apply(toRep(1.asInstanceOf[Int])).propositionBytes.==(InChainAtomicSwap.this.pkB.propBytes)))) } )
     };
     trait CoinEmission extends Def[CoinEmission] with SigmaContract {
@@ -55,14 +60,17 @@ package special.sigma {
       def fixedRate: Rep[Long];
       def oneEpochReduction: Rep[Long];
       def templateForTotalAmountBox(ctx: Rep[Context]): Rep[Boolean] = {
+        // manual fix (div)
         val epoch: Rep[Long] = toRep(1L.asInstanceOf[Long]).+(ctx.HEIGHT.-(CoinEmission.this.fixedRatePeriod).div(CoinEmission.this.epochLength));
         val out: Rep[Box] = ctx.OUTPUTS.apply(toRep(0.asInstanceOf[Int]));
         val coinsToIssue: Rep[Long] = IF(ctx.HEIGHT.<(CoinEmission.this.fixedRatePeriod)).THEN(CoinEmission.this.fixedRate).ELSE(CoinEmission.this.fixedRate.-(CoinEmission.this.oneEpochReduction.*(epoch)));
         val correctCoinsConsumed: Rep[Boolean] = coinsToIssue.==(ctx.SELF.value.-(out.value));
         val sameScriptRule: Rep[Boolean] = ctx.SELF.propositionBytes.==(out.propositionBytes);
+        // manual fix (RType)
         val heightIncreased: Rep[Boolean] = ctx.HEIGHT.>(ctx.SELF.R4[Long](RType.LongType).get);
         val heightCorrect: Rep[Boolean] = out.R4[Long](RType.LongType).get.==(ctx.HEIGHT);
         val lastCoins: Rep[Boolean] = ctx.SELF.value.<=(CoinEmission.this.oneEpochReduction);
+        // manual fix (companion)
         CoinEmission.this.allOf(CoinEmission.this.Collection[Boolean](correctCoinsConsumed, heightCorrect, heightIncreased, sameScriptRule)).||(heightIncreased.&&(lastCoins))
       }
     };
@@ -70,6 +78,7 @@ package special.sigma {
       def demurragePeriod: Rep[Long];
       def demurrageCost: Rep[Long];
       def regScript: Rep[SigmaProp];
+      // manual fix
       @clause def canOpen(ctx: Rep[Context]): Rep[Boolean] = DemurrageCurrency.this.verifyZK(Thunk{
         val c2: Rep[Boolean] = ctx.HEIGHT.>=(ctx.SELF.R4[Long](RType.LongType).get.+(DemurrageCurrency.this.demurragePeriod)).&&(ctx.OUTPUTS.exists(fun(((out: Rep[Box]) => out.value.>=(ctx.SELF.value.-(DemurrageCurrency.this.demurrageCost)).&&(out.propositionBytes.==(ctx.SELF.propositionBytes))))));
         DemurrageCurrency.this.regScript.||(c2)

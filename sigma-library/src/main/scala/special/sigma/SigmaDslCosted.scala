@@ -6,17 +6,17 @@ package special.sigma {
     import TestSigmaDslBuilder._;
     import CostModel._;
     import CostedCol._;
-    import Col._
-    import ColBuilder._
+    import Col._     // manual fix
+    import ColBuilder._     // manual fix
     import Box._;
     import CostedOption._;
     import CostedNone._;
     import CostedSome._;
-    import WOption._;
+    import WOption._;  // manual fix
     import WSpecialPredef._;
     import ConcreteCosted._;
     import Costed._;
-    import CostedBuilder._;
+    import CostedBuilder._;  // manual fix
     import CostedPrim._;
     import CostedBox._;
     import CostedAvlTree._;
@@ -38,12 +38,14 @@ package special.sigma {
       };
       def costColWithConstSizedItem[T](xs: Rep[Col[T]], itemSize: Rep[Long]): Rep[CostedCol[T]] = {
         val len: Rep[Int] = xs.length;
+        // manual fix (div)
         val perItemCost: Rep[Int] = len.*(itemSize.toInt).div(CostedSigmaObject.this.Operations.AccessKiloByteOfData);
         val costs: Rep[Col[Int]] = CostedSigmaObject.this.dsl.Cols.replicate[Int](len, perItemCost);
         val sizes: Rep[Col[Long]] = CostedSigmaObject.this.dsl.Cols.replicate[Long](len, itemSize);
         val valueCost: Rep[Int] = CostedSigmaObject.this.Operations.CollectionConst;
         RCostedCol(xs, costs, sizes, valueCost)
       };
+      // manual fix
       def costOption[T](opt: Rep[WOption[T]], opCost: Rep[Int]): Rep[CostedOption[T]] = {
         implicit val cT: Elem[T] = opt.elem.eA
         opt.fold[CostedOption[T]](Thunk(RCostedNone(opCost)(cT)), fun(((x: Rep[T]) => RCostedSome(CostedSigmaObject.this.dsl.Costing.costedValue[T](x, RWSpecialPredef.some[Int](opCost))))))

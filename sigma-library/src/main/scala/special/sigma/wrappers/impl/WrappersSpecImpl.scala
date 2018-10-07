@@ -81,7 +81,10 @@ object ECPointWrapSpec extends EntityObject("ECPointWrapSpec") {
   lazy val ECPointWrapSpecRep: Rep[ECPointWrapSpecCompanionCtor] = new ECPointWrapSpecCompanionCtor
   lazy val RECPointWrapSpec: ECPointWrapSpecCompanionCtor = proxyECPointWrapSpecCompanion(ECPointWrapSpecRep)
   implicit def proxyECPointWrapSpecCompanion(p: Rep[ECPointWrapSpecCompanionCtor]): ECPointWrapSpecCompanionCtor = {
-    proxyOps[ECPointWrapSpecCompanionCtor](p)
+    if (p.rhs.isInstanceOf[ECPointWrapSpecCompanionCtor])
+      p.rhs.asInstanceOf[ECPointWrapSpecCompanionCtor]
+    else
+      proxyOps[ECPointWrapSpecCompanionCtor](p)
   }
 
   implicit case object ECPointWrapSpecCompanionElem extends CompanionElem[ECPointWrapSpecCompanionCtor] {
@@ -115,38 +118,41 @@ object ECPointWrapSpec extends EntityObject("ECPointWrapSpec") {
 
     object ECPointWrapSpecMethods {
     object getEncoded {
-      def unapply(d: Def[_]): Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[Boolean], Elem[A]) forSome {type A}] = d match {
-        case MethodCall(receiver, method, Seq(g, compressed, emA, _*), _) if receiver.elem.isInstanceOf[ECPointWrapSpecElem] && method.getName == "getEncoded" =>
-          Some((receiver, g, compressed, emA)).asInstanceOf[Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[Boolean], Elem[A]) forSome {type A}]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[Boolean], Elem[A]) forSome {type A}] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ECPointWrapSpecElem] && method.getName == "getEncoded" =>
+          val res = (receiver, args(0), args(1), args(2))
+          Nullable(res).asInstanceOf[Nullable[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[Boolean], Elem[A]) forSome {type A}]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[Boolean], Elem[A]) forSome {type A}] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[Boolean], Elem[A]) forSome {type A}] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object multiply {
-      def unapply(d: Def[_]): Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[ECPointWrapSpecElem] && method.getName == "multiply" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ECPointWrapSpecElem] && method.getName == "multiply" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object add {
-      def unapply(d: Def[_]): Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[WECPoint])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[ECPointWrapSpecElem] && method.getName == "add" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[WECPoint])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[WECPoint])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ECPointWrapSpecElem] && method.getName == "add" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[WECPoint])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[WECPoint])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[ECPointWrapSpec], Rep[WECPoint], Rep[WECPoint])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
   }
@@ -219,7 +225,10 @@ object BigIntegerWrapSpec extends EntityObject("BigIntegerWrapSpec") {
   lazy val BigIntegerWrapSpecRep: Rep[BigIntegerWrapSpecCompanionCtor] = new BigIntegerWrapSpecCompanionCtor
   lazy val RBigIntegerWrapSpec: BigIntegerWrapSpecCompanionCtor = proxyBigIntegerWrapSpecCompanion(BigIntegerWrapSpecRep)
   implicit def proxyBigIntegerWrapSpecCompanion(p: Rep[BigIntegerWrapSpecCompanionCtor]): BigIntegerWrapSpecCompanionCtor = {
-    proxyOps[BigIntegerWrapSpecCompanionCtor](p)
+    if (p.rhs.isInstanceOf[BigIntegerWrapSpecCompanionCtor])
+      p.rhs.asInstanceOf[BigIntegerWrapSpecCompanionCtor]
+    else
+      proxyOps[BigIntegerWrapSpecCompanionCtor](p)
   }
 
   implicit case object BigIntegerWrapSpecCompanionElem extends CompanionElem[BigIntegerWrapSpecCompanionCtor] {
@@ -253,554 +262,600 @@ object BigIntegerWrapSpec extends EntityObject("BigIntegerWrapSpec") {
 
     object BigIntegerWrapSpecMethods {
     object fromString {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[String])] = d match {
-        case MethodCall(receiver, method, Seq(s, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "fromString" =>
-          Some((receiver, s)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[String])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[String])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "fromString" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[String])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[String])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[String])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object fromArray {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[Int], Rep[WArray[Byte]])] = d match {
-        case MethodCall(receiver, method, Seq(sig, arr, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "fromArray" =>
-          Some((receiver, sig, arr)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[Int], Rep[WArray[Byte]])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[Int], Rep[WArray[Byte]])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "fromArray" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[Int], Rep[WArray[Byte]])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[Int], Rep[WArray[Byte]])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[Int], Rep[WArray[Byte]])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object ZERO {
-      def unapply(d: Def[_]): Option[Rep[BigIntegerWrapSpec]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[BigIntegerWrapSpec]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "ZERO" =>
-          Some(receiver).asInstanceOf[Option[Rep[BigIntegerWrapSpec]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[BigIntegerWrapSpec]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[BigIntegerWrapSpec]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[BigIntegerWrapSpec]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object ONE {
-      def unapply(d: Def[_]): Option[Rep[BigIntegerWrapSpec]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[BigIntegerWrapSpec]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "ONE" =>
-          Some(receiver).asInstanceOf[Option[Rep[BigIntegerWrapSpec]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[BigIntegerWrapSpec]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[BigIntegerWrapSpec]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[BigIntegerWrapSpec]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object valueOf {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[Long])] = d match {
-        case MethodCall(receiver, method, Seq(l, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "valueOf" =>
-          Some((receiver, l)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[Long])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[Long])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "valueOf" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[Long])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[Long])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[Long])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
-    object toStringWithRadix {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
-        case MethodCall(receiver, method, Seq(l, radix, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "toStringWithRadix" =>
-          Some((receiver, l, radix)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])]]
-        case _ => None
+    object toString {
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "toString" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object toByteArray {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "toByteArray" =>
-          Some((receiver, l)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "toByteArray" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object add {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "add" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "add" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object subtract {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "subtract" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "subtract" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object multiply {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "multiply" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "multiply" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object mod {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "mod" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "mod" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object modInverse {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "modInverse" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "modInverse" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object modPow {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, exponent, m, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "modPow" =>
-          Some((receiver, l, exponent, m)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "modPow" =>
+          val res = (receiver, args(0), args(1), args(2))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object remainder {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "remainder" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "remainder" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object divide {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "divide" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "divide" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object compareTo {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "compareTo" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "compareTo" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object min {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "min" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "min" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object max {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "max" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "max" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object gcd {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "gcd" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "gcd" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object and {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "and" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "and" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object or {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "or" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "or" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object xor {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "xor" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "xor" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object not {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "not" =>
-          Some((receiver, l)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "not" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object andNot {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "andNot" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "andNot" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object pow {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "pow" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "pow" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object testBit {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "testBit" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "testBit" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object setBit {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "setBit" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "setBit" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object clearBit {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "clearBit" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "clearBit" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
-    object flitBit {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "flitBit" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])]]
-        case _ => None
+    object flipBit {
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "flipBit" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object getLowestSetBit {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "getLowestSetBit" =>
-          Some((receiver, l)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "getLowestSetBit" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object bitCount {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "bitCount" =>
-          Some((receiver, l)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "bitCount" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object bitLength {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "bitLength" =>
-          Some((receiver, l)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "bitLength" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
-    object isProbablyPrime {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "isProbablyPrime" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])]]
-        case _ => None
+    object isProbablePrime {
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "isProbablePrime" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object shiftLeft {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "shiftLeft" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "shiftLeft" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object shiftRight {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
-        case MethodCall(receiver, method, Seq(l, r, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "shiftRight" =>
-          Some((receiver, l, r)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "shiftRight" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object abs {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "abs" =>
-          Some((receiver, l)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "abs" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object negate {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "negate" =>
-          Some((receiver, l)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "negate" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object signum {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "signum" =>
-          Some((receiver, l)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "signum" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object byteValue {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "byteValue" =>
-          Some((receiver, l)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "byteValue" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object shortValue {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "shortValue" =>
-          Some((receiver, l)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "shortValue" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object intValue {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "intValue" =>
-          Some((receiver, l)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "intValue" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object longValue {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "longValue" =>
-          Some((receiver, l)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "longValue" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object byteValueExact {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "byteValueExact" =>
-          Some((receiver, l)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "byteValueExact" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object shortValueExact {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "shortValueExact" =>
-          Some((receiver, l)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "shortValueExact" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object intValueExact {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "intValueExact" =>
-          Some((receiver, l)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "intValueExact" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object longValueExact {
-      def unapply(d: Def[_]): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(l, _*), _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "longValueExact" =>
-          Some((receiver, l)).asInstanceOf[Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "longValueExact" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
   }
@@ -873,7 +928,10 @@ object SigmaPredefWrapSpec extends EntityObject("SigmaPredefWrapSpec") {
   lazy val SigmaPredefWrapSpecRep: Rep[SigmaPredefWrapSpecCompanionCtor] = new SigmaPredefWrapSpecCompanionCtor
   lazy val RSigmaPredefWrapSpec: SigmaPredefWrapSpecCompanionCtor = proxySigmaPredefWrapSpecCompanion(SigmaPredefWrapSpecRep)
   implicit def proxySigmaPredefWrapSpecCompanion(p: Rep[SigmaPredefWrapSpecCompanionCtor]): SigmaPredefWrapSpecCompanionCtor = {
-    proxyOps[SigmaPredefWrapSpecCompanionCtor](p)
+    if (p.rhs.isInstanceOf[SigmaPredefWrapSpecCompanionCtor])
+      p.rhs.asInstanceOf[SigmaPredefWrapSpecCompanionCtor]
+    else
+      proxyOps[SigmaPredefWrapSpecCompanionCtor](p)
   }
 
   implicit case object SigmaPredefWrapSpecCompanionElem extends CompanionElem[SigmaPredefWrapSpecCompanionCtor] {
@@ -907,14 +965,15 @@ object SigmaPredefWrapSpec extends EntityObject("SigmaPredefWrapSpec") {
 
     object SigmaPredefWrapSpecMethods {
     object dataSize {
-      def unapply(d: Def[_]): Option[(Rep[SigmaPredefWrapSpec], Rep[Any])] = d match {
-        case MethodCall(receiver, method, Seq(v, _*), _) if receiver.elem.isInstanceOf[SigmaPredefWrapSpecElem] && method.getName == "dataSize" =>
-          Some((receiver, v)).asInstanceOf[Option[(Rep[SigmaPredefWrapSpec], Rep[Any])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[SigmaPredefWrapSpec], Rep[Any])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[SigmaPredefWrapSpecElem] && method.getName == "dataSize" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[SigmaPredefWrapSpec], Rep[Any])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[SigmaPredefWrapSpec], Rep[Any])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[SigmaPredefWrapSpec], Rep[Any])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
   }

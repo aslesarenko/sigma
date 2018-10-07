@@ -1,5 +1,5 @@
 package special.sigma {
-  import scalan.OverloadHack.Overloaded1
+  import scalan.OverloadHack.Overloaded1   // manual fix
   import scalan._
 
   trait SigmaDsl extends Base { self: SigmaLibrary =>
@@ -9,7 +9,6 @@ package special.sigma {
     import DslObject._;
     import Col._;
     import SigmaProp._;
-    import WECPoint._;
     import AnyValue._;
     import WOption._;
     import Box._;
@@ -33,15 +32,18 @@ package special.sigma {
       @Reified(value = "T") def dataSize[T](x: Rep[T])(implicit cT: Elem[T]): Rep[Long]
     };
     trait DslBuilder extends Def[DslBuilder];
-    trait DslObject {
+    trait DslObject { // manual fix
       def builder: Rep[SigmaDslBuilder]
     };
+    // manual fix (Def)
     @Liftable trait SigmaProp extends Def[SigmaProp] with DslObject {
       def isValid: Rep[Boolean];
       def propBytes: Rep[Col[Byte]];
       @OverloadId(value = "and_sigma") def &&(other: Rep[SigmaProp]): Rep[SigmaProp];
+      // manual fix
       @OverloadId(value = "and_bool") def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp];
       @OverloadId(value = "or_sigma") def ||(other: Rep[SigmaProp]): Rep[SigmaProp];
+      // manual fix
       @OverloadId(value = "or_bool") def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp];
       def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp];
       def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp]
@@ -49,6 +51,7 @@ package special.sigma {
     @Liftable trait AnyValue extends Def[AnyValue] {
       def dataSize: Rep[Long]
     };
+    // manual fix (Def)
     @Liftable trait Box extends Def[Box] with DslObject {
       def id: Rep[Col[Byte]];
       def value: Rep[Long];
@@ -72,6 +75,7 @@ package special.sigma {
       def R9[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(9.asInstanceOf[Int]));
       def tokens: Rep[Col[scala.Tuple2[Col[Byte], Long]]]
     };
+    // manual fix (Def)
     @Liftable trait AvlTree extends Def[AvlTree] with DslObject {
       def startingDigest: Rep[Col[Byte]];
       def keyLength: Rep[Int];
@@ -111,10 +115,13 @@ package special.sigma {
       def proveDlog(g: Rep[WECPoint]): Rep[SigmaProp] = this.builder.proveDlog(g);
       def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[SigmaProp] = this.builder.proveDHTuple(g, h, u, v);
       def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean] = this.builder.isMember(tree, key, proof);
+      def treeLookup(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = this.builder.treeLookup(tree, key, proof);
+      def treeModifications(tree: Rep[AvlTree], operations: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = this.builder.treeModifications(tree, operations, proof);
       def groupGenerator: Rep[WECPoint] = this.builder.groupGenerator;
       @clause def canOpen(ctx: Rep[Context]): Rep[Boolean];
       def asFunction: Rep[scala.Function1[Context, Boolean]] = fun(((ctx: Rep[Context]) => this.canOpen(ctx)))
     };
+    // manual fix (Def)
     @Liftable trait SigmaDslBuilder extends Def[SigmaDslBuilder] with DslBuilder {
       def Cols: Rep[ColBuilder];
       def Monoids: Rep[MonoidBuilder];
@@ -135,6 +142,8 @@ package special.sigma {
       def proveDlog(g: Rep[WECPoint]): Rep[SigmaProp];
       def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[SigmaProp];
       def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean];
+      def treeLookup(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]];
+      def treeModifications(tree: Rep[AvlTree], operations: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]];
       def groupGenerator: Rep[WECPoint]
     };
     trait CostModelCompanion;

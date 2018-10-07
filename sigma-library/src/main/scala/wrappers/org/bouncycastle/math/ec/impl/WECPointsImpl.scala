@@ -7,11 +7,11 @@ import scala.reflect.runtime.universe._
 import scala.reflect._
 
 package impl {
-  import java.lang.reflect.Method
-  import java.math.BigInteger
+  import java.lang.reflect.Method  // manual fix
+  import java.math.BigInteger  // manual fix
 
-  import org.bouncycastle.math.ec.ECPoint
-  import special.sigma.wrappers.ECPointWrapSpec
+  import org.bouncycastle.math.ec.ECPoint  // manual fix
+  import special.sigma.wrappers.ECPointWrapSpec // manual fix
 
   // Abs -----------------------------------
 trait WECPointsDefs extends scalan.Scalan with WECPoints {
@@ -31,9 +31,28 @@ object WECPoint extends EntityObject("WECPoint") {
       ) extends WECPoint with LiftedConst[ECPoint, WECPoint] {
     val liftable: Liftable[ECPoint, WECPoint] = LiftableECPoint
     val selfType: Elem[WECPoint] = liftable.eW
-    @External def add(x$1: Rep[WECPoint]): Rep[WECPoint] = delayInvoke
-    @External def multiply(x$1: Rep[WBigInteger]): Rep[WECPoint] = delayInvoke
-    @External def getEncoded(x$1: Rep[Boolean]): Rep[WArray[Byte]] = delayInvoke
+    private val thisClass = classOf[WECPoint]
+
+    def add(x$1: Rep[WECPoint]): Rep[WECPoint] = {
+      asRep[WECPoint](mkMethodCall(self,
+        thisClass.getMethod("add", classOf[Sym]),
+        List(x$1),
+        true, element[WECPoint]))
+    }
+
+    def multiply(x$1: Rep[WBigInteger]): Rep[WECPoint] = {
+      asRep[WECPoint](mkMethodCall(self,
+        thisClass.getMethod("multiply", classOf[Sym]),
+        List(x$1),
+        true, element[WECPoint]))
+    }
+
+    def getEncoded(x$1: Rep[Boolean]): Rep[WArray[Byte]] = {
+      asRep[WArray[Byte]](mkMethodCall(self,
+        thisClass.getMethod("getEncoded", classOf[Sym]),
+        List(x$1),
+        true, element[WArray[Byte]]))
+    }
   }
 
   implicit object LiftableECPoint
@@ -53,7 +72,9 @@ object WECPoint extends EntityObject("WECPoint") {
   private val _ECPointWrapSpec = new ECPointWrapSpec
   // entityProxy: single proxy for each type family
   implicit def proxyWECPoint(p: Rep[WECPoint]): WECPoint = {
-    proxyOps[WECPoint](p)(scala.reflect.classTag[WECPoint])
+    if (p.rhs.isInstanceOf[WECPoint@unchecked]) p.rhs.asInstanceOf[WECPoint]
+    else
+      proxyOps[WECPoint](p)(scala.reflect.classTag[WECPoint])
   }
 
   // familyElem
@@ -80,7 +101,7 @@ object WECPoint extends EntityObject("WECPoint") {
 
     def convertWECPoint(x: Rep[WECPoint]): Rep[To] = {
       x.elem match {
-        case _: WECPointElem[_] => x.asRep[To]
+        case _: WECPointElem[_] => asRep[To](x)
         case e => !!!(s"Expected $x to have WECPointElem[_], but got $e", x)
       }
     }
@@ -103,42 +124,46 @@ object WECPoint extends EntityObject("WECPoint") {
     proxyOps[WECPointCompanionCtor](p)
 
   lazy val RWECPoint: Rep[WECPointCompanionCtor] = new WECPointCompanionCtor {
+    private val thisClass = classOf[WECPointCompanion]
   }
 
   object WECPointMethods {
     object add {
-      def unapply(d: Def[_]): Option[(Rep[WECPoint], Rep[WECPoint])] = d match {
-        case MethodCall(receiver, method, Seq(x$1, _*), _) if receiver.elem.isInstanceOf[WECPointElem[_]] && method.getName == "add" =>
-          Some((receiver, x$1)).asInstanceOf[Option[(Rep[WECPoint], Rep[WECPoint])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[WECPoint], Rep[WECPoint])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[WECPointElem[_]] && method.getName == "add" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[WECPoint], Rep[WECPoint])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[WECPoint], Rep[WECPoint])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[WECPoint], Rep[WECPoint])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object multiply {
-      def unapply(d: Def[_]): Option[(Rep[WECPoint], Rep[WBigInteger])] = d match {
-        case MethodCall(receiver, method, Seq(x$1, _*), _) if receiver.elem.isInstanceOf[WECPointElem[_]] && method.getName == "multiply" =>
-          Some((receiver, x$1)).asInstanceOf[Option[(Rep[WECPoint], Rep[WBigInteger])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[WECPoint], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[WECPointElem[_]] && method.getName == "multiply" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[WECPoint], Rep[WBigInteger])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[WECPoint], Rep[WBigInteger])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[WECPoint], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object getEncoded {
-      def unapply(d: Def[_]): Option[(Rep[WECPoint], Rep[Boolean])] = d match {
-        case MethodCall(receiver, method, Seq(x$1, _*), _) if receiver.elem.isInstanceOf[WECPointElem[_]] && method.getName == "getEncoded" =>
-          Some((receiver, x$1)).asInstanceOf[Option[(Rep[WECPoint], Rep[Boolean])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[WECPoint], Rep[Boolean])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[WECPointElem[_]] && method.getName == "getEncoded" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[WECPoint], Rep[Boolean])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[WECPoint], Rep[Boolean])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[WECPoint], Rep[Boolean])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
   }

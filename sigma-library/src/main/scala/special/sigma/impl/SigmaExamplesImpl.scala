@@ -22,7 +22,9 @@ import DemurrageCurrency._
 object CrowdFunding extends EntityObject("CrowdFunding") {
   // entityProxy: single proxy for each type family
   implicit def proxyCrowdFunding(p: Rep[CrowdFunding]): CrowdFunding = {
-    proxyOps[CrowdFunding](p)(scala.reflect.classTag[CrowdFunding])
+    if (p.rhs.isInstanceOf[CrowdFunding@unchecked]) p.rhs.asInstanceOf[CrowdFunding]
+    else
+      proxyOps[CrowdFunding](p)(scala.reflect.classTag[CrowdFunding])
   }
 
   // familyElem
@@ -40,7 +42,7 @@ object CrowdFunding extends EntityObject("CrowdFunding") {
 
     def convertCrowdFunding(x: Rep[CrowdFunding]): Rep[To] = {
       x.elem match {
-        case _: CrowdFundingElem[_] => x.asRep[To]
+        case _: CrowdFundingElem[_] => asRep[To](x)
         case e => !!!(s"Expected $x to have CrowdFundingElem[_], but got $e", x)
       }
     }
@@ -63,66 +65,72 @@ object CrowdFunding extends EntityObject("CrowdFunding") {
     proxyOps[CrowdFundingCompanionCtor](p)
 
   lazy val RCrowdFunding: Rep[CrowdFundingCompanionCtor] = new CrowdFundingCompanionCtor {
+    private val thisClass = classOf[CrowdFundingCompanion]
   }
 
   object CrowdFundingMethods {
     object deadline {
-      def unapply(d: Def[_]): Option[Rep[CrowdFunding]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[CrowdFunding]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CrowdFundingElem[_]] && method.getName == "deadline" =>
-          Some(receiver).asInstanceOf[Option[Rep[CrowdFunding]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[CrowdFunding]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[CrowdFunding]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[CrowdFunding]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object minToRaise {
-      def unapply(d: Def[_]): Option[Rep[CrowdFunding]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[CrowdFunding]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CrowdFundingElem[_]] && method.getName == "minToRaise" =>
-          Some(receiver).asInstanceOf[Option[Rep[CrowdFunding]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[CrowdFunding]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[CrowdFunding]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[CrowdFunding]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object backerPubKey {
-      def unapply(d: Def[_]): Option[Rep[CrowdFunding]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[CrowdFunding]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CrowdFundingElem[_]] && method.getName == "backerPubKey" =>
-          Some(receiver).asInstanceOf[Option[Rep[CrowdFunding]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[CrowdFunding]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[CrowdFunding]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[CrowdFunding]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object projectPubKey {
-      def unapply(d: Def[_]): Option[Rep[CrowdFunding]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[CrowdFunding]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CrowdFundingElem[_]] && method.getName == "projectPubKey" =>
-          Some(receiver).asInstanceOf[Option[Rep[CrowdFunding]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[CrowdFunding]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[CrowdFunding]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[CrowdFunding]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object canOpen {
-      def unapply(d: Def[_]): Option[(Rep[CrowdFunding], Rep[Context])] = d match {
-        case MethodCall(receiver, method, Seq(ctx, _*), _) if receiver.elem.isInstanceOf[CrowdFundingElem[_]] && method.getName == "canOpen" =>
-          Some((receiver, ctx)).asInstanceOf[Option[(Rep[CrowdFunding], Rep[Context])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[CrowdFunding], Rep[Context])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[CrowdFundingElem[_]] && method.getName == "canOpen" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[CrowdFunding], Rep[Context])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[CrowdFunding], Rep[Context])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[CrowdFunding], Rep[Context])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
   }
@@ -135,7 +143,9 @@ object CrowdFunding extends EntityObject("CrowdFunding") {
 object CrossChainAtomicSwap extends EntityObject("CrossChainAtomicSwap") {
   // entityProxy: single proxy for each type family
   implicit def proxyCrossChainAtomicSwap(p: Rep[CrossChainAtomicSwap]): CrossChainAtomicSwap = {
-    proxyOps[CrossChainAtomicSwap](p)(scala.reflect.classTag[CrossChainAtomicSwap])
+    if (p.rhs.isInstanceOf[CrossChainAtomicSwap@unchecked]) p.rhs.asInstanceOf[CrossChainAtomicSwap]
+    else
+      proxyOps[CrossChainAtomicSwap](p)(scala.reflect.classTag[CrossChainAtomicSwap])
   }
 
   // familyElem
@@ -153,7 +163,7 @@ object CrossChainAtomicSwap extends EntityObject("CrossChainAtomicSwap") {
 
     def convertCrossChainAtomicSwap(x: Rep[CrossChainAtomicSwap]): Rep[To] = {
       x.elem match {
-        case _: CrossChainAtomicSwapElem[_] => x.asRep[To]
+        case _: CrossChainAtomicSwapElem[_] => asRep[To](x)
         case e => !!!(s"Expected $x to have CrossChainAtomicSwapElem[_], but got $e", x)
       }
     }
@@ -176,90 +186,98 @@ object CrossChainAtomicSwap extends EntityObject("CrossChainAtomicSwap") {
     proxyOps[CrossChainAtomicSwapCompanionCtor](p)
 
   lazy val RCrossChainAtomicSwap: Rep[CrossChainAtomicSwapCompanionCtor] = new CrossChainAtomicSwapCompanionCtor {
+    private val thisClass = classOf[CrossChainAtomicSwapCompanion]
   }
 
   object CrossChainAtomicSwapMethods {
     object deadlineBob {
-      def unapply(d: Def[_]): Option[Rep[CrossChainAtomicSwap]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[CrossChainAtomicSwap]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CrossChainAtomicSwapElem[_]] && method.getName == "deadlineBob" =>
-          Some(receiver).asInstanceOf[Option[Rep[CrossChainAtomicSwap]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[CrossChainAtomicSwap]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[CrossChainAtomicSwap]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[CrossChainAtomicSwap]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object deadlineAlice {
-      def unapply(d: Def[_]): Option[Rep[CrossChainAtomicSwap]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[CrossChainAtomicSwap]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CrossChainAtomicSwapElem[_]] && method.getName == "deadlineAlice" =>
-          Some(receiver).asInstanceOf[Option[Rep[CrossChainAtomicSwap]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[CrossChainAtomicSwap]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[CrossChainAtomicSwap]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[CrossChainAtomicSwap]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object pkA {
-      def unapply(d: Def[_]): Option[Rep[CrossChainAtomicSwap]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[CrossChainAtomicSwap]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CrossChainAtomicSwapElem[_]] && method.getName == "pkA" =>
-          Some(receiver).asInstanceOf[Option[Rep[CrossChainAtomicSwap]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[CrossChainAtomicSwap]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[CrossChainAtomicSwap]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[CrossChainAtomicSwap]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object pkB {
-      def unapply(d: Def[_]): Option[Rep[CrossChainAtomicSwap]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[CrossChainAtomicSwap]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CrossChainAtomicSwapElem[_]] && method.getName == "pkB" =>
-          Some(receiver).asInstanceOf[Option[Rep[CrossChainAtomicSwap]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[CrossChainAtomicSwap]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[CrossChainAtomicSwap]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[CrossChainAtomicSwap]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object hx {
-      def unapply(d: Def[_]): Option[Rep[CrossChainAtomicSwap]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[CrossChainAtomicSwap]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CrossChainAtomicSwapElem[_]] && method.getName == "hx" =>
-          Some(receiver).asInstanceOf[Option[Rep[CrossChainAtomicSwap]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[CrossChainAtomicSwap]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[CrossChainAtomicSwap]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[CrossChainAtomicSwap]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object templateForBobChain {
-      def unapply(d: Def[_]): Option[(Rep[CrossChainAtomicSwap], Rep[Context])] = d match {
-        case MethodCall(receiver, method, Seq(ctx, _*), _) if receiver.elem.isInstanceOf[CrossChainAtomicSwapElem[_]] && method.getName == "templateForBobChain" =>
-          Some((receiver, ctx)).asInstanceOf[Option[(Rep[CrossChainAtomicSwap], Rep[Context])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[CrossChainAtomicSwap], Rep[Context])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[CrossChainAtomicSwapElem[_]] && method.getName == "templateForBobChain" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[CrossChainAtomicSwap], Rep[Context])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[CrossChainAtomicSwap], Rep[Context])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[CrossChainAtomicSwap], Rep[Context])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object templateForAliceChain {
-      def unapply(d: Def[_]): Option[(Rep[CrossChainAtomicSwap], Rep[Context])] = d match {
-        case MethodCall(receiver, method, Seq(ctx, _*), _) if receiver.elem.isInstanceOf[CrossChainAtomicSwapElem[_]] && method.getName == "templateForAliceChain" =>
-          Some((receiver, ctx)).asInstanceOf[Option[(Rep[CrossChainAtomicSwap], Rep[Context])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[CrossChainAtomicSwap], Rep[Context])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[CrossChainAtomicSwapElem[_]] && method.getName == "templateForAliceChain" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[CrossChainAtomicSwap], Rep[Context])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[CrossChainAtomicSwap], Rep[Context])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[CrossChainAtomicSwap], Rep[Context])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
   }
@@ -272,7 +290,9 @@ object CrossChainAtomicSwap extends EntityObject("CrossChainAtomicSwap") {
 object InChainAtomicSwap extends EntityObject("InChainAtomicSwap") {
   // entityProxy: single proxy for each type family
   implicit def proxyInChainAtomicSwap(p: Rep[InChainAtomicSwap]): InChainAtomicSwap = {
-    proxyOps[InChainAtomicSwap](p)(scala.reflect.classTag[InChainAtomicSwap])
+    if (p.rhs.isInstanceOf[InChainAtomicSwap@unchecked]) p.rhs.asInstanceOf[InChainAtomicSwap]
+    else
+      proxyOps[InChainAtomicSwap](p)(scala.reflect.classTag[InChainAtomicSwap])
   }
 
   // familyElem
@@ -290,7 +310,7 @@ object InChainAtomicSwap extends EntityObject("InChainAtomicSwap") {
 
     def convertInChainAtomicSwap(x: Rep[InChainAtomicSwap]): Rep[To] = {
       x.elem match {
-        case _: InChainAtomicSwapElem[_] => x.asRep[To]
+        case _: InChainAtomicSwapElem[_] => asRep[To](x)
         case e => !!!(s"Expected $x to have InChainAtomicSwapElem[_], but got $e", x)
       }
     }
@@ -313,78 +333,85 @@ object InChainAtomicSwap extends EntityObject("InChainAtomicSwap") {
     proxyOps[InChainAtomicSwapCompanionCtor](p)
 
   lazy val RInChainAtomicSwap: Rep[InChainAtomicSwapCompanionCtor] = new InChainAtomicSwapCompanionCtor {
+    private val thisClass = classOf[InChainAtomicSwapCompanion]
   }
 
   object InChainAtomicSwapMethods {
     object deadline {
-      def unapply(d: Def[_]): Option[Rep[InChainAtomicSwap]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[InChainAtomicSwap]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[InChainAtomicSwapElem[_]] && method.getName == "deadline" =>
-          Some(receiver).asInstanceOf[Option[Rep[InChainAtomicSwap]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[InChainAtomicSwap]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[InChainAtomicSwap]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[InChainAtomicSwap]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object pkA {
-      def unapply(d: Def[_]): Option[Rep[InChainAtomicSwap]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[InChainAtomicSwap]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[InChainAtomicSwapElem[_]] && method.getName == "pkA" =>
-          Some(receiver).asInstanceOf[Option[Rep[InChainAtomicSwap]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[InChainAtomicSwap]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[InChainAtomicSwap]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[InChainAtomicSwap]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object pkB {
-      def unapply(d: Def[_]): Option[Rep[InChainAtomicSwap]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[InChainAtomicSwap]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[InChainAtomicSwapElem[_]] && method.getName == "pkB" =>
-          Some(receiver).asInstanceOf[Option[Rep[InChainAtomicSwap]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[InChainAtomicSwap]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[InChainAtomicSwap]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[InChainAtomicSwap]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object token1 {
-      def unapply(d: Def[_]): Option[Rep[InChainAtomicSwap]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[InChainAtomicSwap]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[InChainAtomicSwapElem[_]] && method.getName == "token1" =>
-          Some(receiver).asInstanceOf[Option[Rep[InChainAtomicSwap]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[InChainAtomicSwap]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[InChainAtomicSwap]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[InChainAtomicSwap]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object templateForAlice {
-      def unapply(d: Def[_]): Option[(Rep[InChainAtomicSwap], Rep[Context])] = d match {
-        case MethodCall(receiver, method, Seq(ctx, _*), _) if receiver.elem.isInstanceOf[InChainAtomicSwapElem[_]] && method.getName == "templateForAlice" =>
-          Some((receiver, ctx)).asInstanceOf[Option[(Rep[InChainAtomicSwap], Rep[Context])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[InChainAtomicSwap], Rep[Context])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[InChainAtomicSwapElem[_]] && method.getName == "templateForAlice" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[InChainAtomicSwap], Rep[Context])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[InChainAtomicSwap], Rep[Context])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[InChainAtomicSwap], Rep[Context])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object templateForBob {
-      def unapply(d: Def[_]): Option[(Rep[InChainAtomicSwap], Rep[Context])] = d match {
-        case MethodCall(receiver, method, Seq(ctx, _*), _) if receiver.elem.isInstanceOf[InChainAtomicSwapElem[_]] && method.getName == "templateForBob" =>
-          Some((receiver, ctx)).asInstanceOf[Option[(Rep[InChainAtomicSwap], Rep[Context])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[InChainAtomicSwap], Rep[Context])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[InChainAtomicSwapElem[_]] && method.getName == "templateForBob" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[InChainAtomicSwap], Rep[Context])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[InChainAtomicSwap], Rep[Context])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[InChainAtomicSwap], Rep[Context])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
   }
@@ -397,7 +424,9 @@ object InChainAtomicSwap extends EntityObject("InChainAtomicSwap") {
 object CoinEmission extends EntityObject("CoinEmission") {
   // entityProxy: single proxy for each type family
   implicit def proxyCoinEmission(p: Rep[CoinEmission]): CoinEmission = {
-    proxyOps[CoinEmission](p)(scala.reflect.classTag[CoinEmission])
+    if (p.rhs.isInstanceOf[CoinEmission@unchecked]) p.rhs.asInstanceOf[CoinEmission]
+    else
+      proxyOps[CoinEmission](p)(scala.reflect.classTag[CoinEmission])
   }
 
   // familyElem
@@ -415,7 +444,7 @@ object CoinEmission extends EntityObject("CoinEmission") {
 
     def convertCoinEmission(x: Rep[CoinEmission]): Rep[To] = {
       x.elem match {
-        case _: CoinEmissionElem[_] => x.asRep[To]
+        case _: CoinEmissionElem[_] => asRep[To](x)
         case e => !!!(s"Expected $x to have CoinEmissionElem[_], but got $e", x)
       }
     }
@@ -438,66 +467,72 @@ object CoinEmission extends EntityObject("CoinEmission") {
     proxyOps[CoinEmissionCompanionCtor](p)
 
   lazy val RCoinEmission: Rep[CoinEmissionCompanionCtor] = new CoinEmissionCompanionCtor {
+    private val thisClass = classOf[CoinEmissionCompanion]
   }
 
   object CoinEmissionMethods {
     object fixedRatePeriod {
-      def unapply(d: Def[_]): Option[Rep[CoinEmission]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[CoinEmission]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CoinEmissionElem[_]] && method.getName == "fixedRatePeriod" =>
-          Some(receiver).asInstanceOf[Option[Rep[CoinEmission]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[CoinEmission]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[CoinEmission]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[CoinEmission]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object epochLength {
-      def unapply(d: Def[_]): Option[Rep[CoinEmission]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[CoinEmission]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CoinEmissionElem[_]] && method.getName == "epochLength" =>
-          Some(receiver).asInstanceOf[Option[Rep[CoinEmission]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[CoinEmission]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[CoinEmission]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[CoinEmission]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object fixedRate {
-      def unapply(d: Def[_]): Option[Rep[CoinEmission]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[CoinEmission]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CoinEmissionElem[_]] && method.getName == "fixedRate" =>
-          Some(receiver).asInstanceOf[Option[Rep[CoinEmission]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[CoinEmission]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[CoinEmission]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[CoinEmission]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object oneEpochReduction {
-      def unapply(d: Def[_]): Option[Rep[CoinEmission]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[CoinEmission]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CoinEmissionElem[_]] && method.getName == "oneEpochReduction" =>
-          Some(receiver).asInstanceOf[Option[Rep[CoinEmission]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[CoinEmission]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[CoinEmission]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[CoinEmission]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object templateForTotalAmountBox {
-      def unapply(d: Def[_]): Option[(Rep[CoinEmission], Rep[Context])] = d match {
-        case MethodCall(receiver, method, Seq(ctx, _*), _) if receiver.elem.isInstanceOf[CoinEmissionElem[_]] && method.getName == "templateForTotalAmountBox" =>
-          Some((receiver, ctx)).asInstanceOf[Option[(Rep[CoinEmission], Rep[Context])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[CoinEmission], Rep[Context])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[CoinEmissionElem[_]] && method.getName == "templateForTotalAmountBox" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[CoinEmission], Rep[Context])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[CoinEmission], Rep[Context])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[CoinEmission], Rep[Context])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
   }
@@ -510,7 +545,9 @@ object CoinEmission extends EntityObject("CoinEmission") {
 object DemurrageCurrency extends EntityObject("DemurrageCurrency") {
   // entityProxy: single proxy for each type family
   implicit def proxyDemurrageCurrency(p: Rep[DemurrageCurrency]): DemurrageCurrency = {
-    proxyOps[DemurrageCurrency](p)(scala.reflect.classTag[DemurrageCurrency])
+    if (p.rhs.isInstanceOf[DemurrageCurrency@unchecked]) p.rhs.asInstanceOf[DemurrageCurrency]
+    else
+      proxyOps[DemurrageCurrency](p)(scala.reflect.classTag[DemurrageCurrency])
   }
 
   // familyElem
@@ -528,7 +565,7 @@ object DemurrageCurrency extends EntityObject("DemurrageCurrency") {
 
     def convertDemurrageCurrency(x: Rep[DemurrageCurrency]): Rep[To] = {
       x.elem match {
-        case _: DemurrageCurrencyElem[_] => x.asRep[To]
+        case _: DemurrageCurrencyElem[_] => asRep[To](x)
         case e => !!!(s"Expected $x to have DemurrageCurrencyElem[_], but got $e", x)
       }
     }
@@ -551,54 +588,59 @@ object DemurrageCurrency extends EntityObject("DemurrageCurrency") {
     proxyOps[DemurrageCurrencyCompanionCtor](p)
 
   lazy val RDemurrageCurrency: Rep[DemurrageCurrencyCompanionCtor] = new DemurrageCurrencyCompanionCtor {
+    private val thisClass = classOf[DemurrageCurrencyCompanion]
   }
 
   object DemurrageCurrencyMethods {
     object demurragePeriod {
-      def unapply(d: Def[_]): Option[Rep[DemurrageCurrency]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[DemurrageCurrency]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[DemurrageCurrencyElem[_]] && method.getName == "demurragePeriod" =>
-          Some(receiver).asInstanceOf[Option[Rep[DemurrageCurrency]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[DemurrageCurrency]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[DemurrageCurrency]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[DemurrageCurrency]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object demurrageCost {
-      def unapply(d: Def[_]): Option[Rep[DemurrageCurrency]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[DemurrageCurrency]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[DemurrageCurrencyElem[_]] && method.getName == "demurrageCost" =>
-          Some(receiver).asInstanceOf[Option[Rep[DemurrageCurrency]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[DemurrageCurrency]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[DemurrageCurrency]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[DemurrageCurrency]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object regScript {
-      def unapply(d: Def[_]): Option[Rep[DemurrageCurrency]] = d match {
+      def unapply(d: Def[_]): Nullable[Rep[DemurrageCurrency]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[DemurrageCurrencyElem[_]] && method.getName == "regScript" =>
-          Some(receiver).asInstanceOf[Option[Rep[DemurrageCurrency]]]
-        case _ => None
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[DemurrageCurrency]]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[DemurrageCurrency]] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[DemurrageCurrency]] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
 
     object canOpen {
-      def unapply(d: Def[_]): Option[(Rep[DemurrageCurrency], Rep[Context])] = d match {
-        case MethodCall(receiver, method, Seq(ctx, _*), _) if receiver.elem.isInstanceOf[DemurrageCurrencyElem[_]] && method.getName == "canOpen" =>
-          Some((receiver, ctx)).asInstanceOf[Option[(Rep[DemurrageCurrency], Rep[Context])]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[(Rep[DemurrageCurrency], Rep[Context])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[DemurrageCurrencyElem[_]] && method.getName == "canOpen" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[DemurrageCurrency], Rep[Context])]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[(Rep[DemurrageCurrency], Rep[Context])] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[DemurrageCurrency], Rep[Context])] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
   }

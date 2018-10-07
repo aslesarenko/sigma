@@ -3,9 +3,9 @@ package special.sigma.wrappers {
 
   trait WrappersSpec extends Base { self: SigmaLibrary =>
     import WArray._;
-    import WrapSpecBase._;
-    import WSigmaPredef._;
+    import WSigmaPredef._; // manual fix
     import WECPoint._;
+    import WrapSpecBase._;
     import WBigInteger._;
     abstract class ECPointWrapSpec extends WrapSpecBase {
       def getEncoded[A](g: Rep[WECPoint], compressed: Rep[Boolean]): Rep[WArray[Byte]] = g.getEncoded(compressed);
@@ -18,7 +18,7 @@ package special.sigma.wrappers {
       def ZERO: Rep[WBigInteger] = RWBigInteger.ZERO;
       def ONE: Rep[WBigInteger] = RWBigInteger.ONE;
       def valueOf(l: Rep[Long]): Rep[WBigInteger] = RWBigInteger.valueOf(l);
-      def toStringWithRadix(l: Rep[WBigInteger], radix: Rep[Int]): Rep[String] = l.toString(radix);
+      def toString(l: Rep[WBigInteger], radix: Rep[Int]): Rep[String] = l.toString(radix);
       def toByteArray(l: Rep[WBigInteger]): Rep[WArray[Byte]] = l.toByteArray;
       def add(l: Rep[WBigInteger], r: Rep[WBigInteger]): Rep[WBigInteger] = l.add(r);
       def subtract(l: Rep[WBigInteger], r: Rep[WBigInteger]): Rep[WBigInteger] = l.subtract(r);
@@ -41,11 +41,11 @@ package special.sigma.wrappers {
       def testBit(l: Rep[WBigInteger], r: Rep[Int]): Rep[Boolean] = l.testBit(r);
       def setBit(l: Rep[WBigInteger], r: Rep[Int]): Rep[WBigInteger] = l.setBit(r);
       def clearBit(l: Rep[WBigInteger], r: Rep[Int]): Rep[WBigInteger] = l.clearBit(r);
-      def flitBit(l: Rep[WBigInteger], r: Rep[Int]): Rep[WBigInteger] = l.flipBit(r);
+      def flipBit(l: Rep[WBigInteger], r: Rep[Int]): Rep[WBigInteger] = l.flipBit(r);
       def getLowestSetBit(l: Rep[WBigInteger]): Rep[Int] = l.getLowestSetBit;
       def bitCount(l: Rep[WBigInteger]): Rep[Int] = l.bitCount;
       def bitLength(l: Rep[WBigInteger]): Rep[Int] = l.bitLength;
-      def isProbablyPrime(l: Rep[WBigInteger], r: Rep[Int]): Rep[Boolean] = l.isProbablePrime(r);
+      def isProbablePrime(l: Rep[WBigInteger], r: Rep[Int]): Rep[Boolean] = l.isProbablePrime(r);
       def shiftLeft(l: Rep[WBigInteger], r: Rep[Int]): Rep[WBigInteger] = l.shiftLeft(r);
       def shiftRight(l: Rep[WBigInteger], r: Rep[Int]): Rep[WBigInteger] = l.shiftRight(r);
       def abs(l: Rep[WBigInteger]): Rep[WBigInteger] = l.abs;

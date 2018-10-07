@@ -17,7 +17,9 @@ import WSigmaPredef._
 object WSigmaPredef extends EntityObject("WSigmaPredef") {
   // entityProxy: single proxy for each type family
   implicit def proxyWSigmaPredef(p: Rep[WSigmaPredef]): WSigmaPredef = {
-    proxyOps[WSigmaPredef](p)(scala.reflect.classTag[WSigmaPredef])
+    if (p.rhs.isInstanceOf[WSigmaPredef@unchecked]) p.rhs.asInstanceOf[WSigmaPredef]
+    else
+      proxyOps[WSigmaPredef](p)(scala.reflect.classTag[WSigmaPredef])
   }
 
   // familyElem
@@ -35,7 +37,7 @@ object WSigmaPredef extends EntityObject("WSigmaPredef") {
 
     def convertWSigmaPredef(x: Rep[WSigmaPredef]): Rep[To] = {
       x.elem match {
-        case _: WSigmaPredefElem[_] => x.asRep[To]
+        case _: WSigmaPredefElem[_] => asRep[To](x)
         case e => !!!(s"Expected $x to have WSigmaPredefElem[_], but got $e", x)
       }
     }
@@ -58,12 +60,14 @@ object WSigmaPredef extends EntityObject("WSigmaPredef") {
     proxyOps[WSigmaPredefCompanionCtor](p)
 
   lazy val RWSigmaPredef: Rep[WSigmaPredefCompanionCtor] = new WSigmaPredefCompanionCtor {
+    private val thisClass = classOf[WSigmaPredefCompanion]
+
     def dataSize[T](v: Rep[T]): Rep[Long] = {
       implicit val eT = v.elem
-      mkMethodCall(self,
-        this.getClass.getMethod("dataSize", classOf[Sym]),
+      asRep[Long](mkMethodCall(self,
+        thisClass.getMethod("dataSize", classOf[Sym]),
         List(v),
-        true, element[Long]).asRep[Long]
+        true, element[Long]))
     }
   }
 
@@ -72,14 +76,15 @@ object WSigmaPredef extends EntityObject("WSigmaPredef") {
 
   object WSigmaPredefCompanionMethods {
     object dataSize {
-      def unapply(d: Def[_]): Option[Rep[T] forSome {type T}] = d match {
-        case MethodCall(receiver, method, Seq(v, _*), _) if receiver.elem == WSigmaPredefCompanionElem && method.getName == "dataSize" =>
-          Some(v).asInstanceOf[Option[Rep[T] forSome {type T}]]
-        case _ => None
+      def unapply(d: Def[_]): Nullable[Rep[T] forSome {type T}] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem == WSigmaPredefCompanionElem && method.getName == "dataSize" =>
+          val res = args(0)
+          Nullable(res).asInstanceOf[Nullable[Rep[T] forSome {type T}]]
+        case _ => Nullable.None
       }
-      def unapply(exp: Sym): Option[Rep[T] forSome {type T}] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[T] forSome {type T}] = exp match {
         case Def(d) => unapply(d)
-        case _ => None
+        case _ => Nullable.None
       }
     }
   }

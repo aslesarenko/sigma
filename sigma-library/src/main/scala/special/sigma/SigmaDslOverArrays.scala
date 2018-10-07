@@ -1,5 +1,5 @@
 package special.sigma {
-  import scalan.OverloadHack.Overloaded1
+  import scalan.OverloadHack.Overloaded1  // manual fix
   import scalan._
 
   trait SigmaDslOverArrays extends Base { self: SigmaLibrary =>
@@ -23,8 +23,10 @@ package special.sigma {
     trait DefaultSigma extends SigmaProp {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
       @NeverInline @OverloadId(value = "and_sigma") def &&(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
+      // manual fix
       @NeverInline @OverloadId(value = "and_bool") def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = delayInvoke;
       @NeverInline @OverloadId(value = "or_sigma") def ||(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
+      // manual fix
       @NeverInline @OverloadId(value = "or_bool") def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = delayInvoke;
       @NeverInline def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke;
       @NeverInline def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke
@@ -80,6 +82,8 @@ package special.sigma {
       @NeverInline def proveDlog(g: Rep[WECPoint]): Rep[SigmaProp] = delayInvoke;
       @NeverInline def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[SigmaProp] = delayInvoke;
       @NeverInline def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean] = delayInvoke;
+      @NeverInline def treeLookup(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = delayInvoke;
+      @NeverInline def treeModifications(tree: Rep[AvlTree], operations: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = delayInvoke;
       @NeverInline def groupGenerator: Rep[WECPoint] = delayInvoke
     };
     abstract class TrivialSigma(val isValid: Rep[Boolean]) extends SigmaProp with DefaultSigma with Product with Serializable {

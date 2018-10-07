@@ -104,7 +104,7 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
   def Costing = new ConcreteCostedBuilder
 
   @NeverInline
-  def CostModel = new TestCostModel
+  def CostModel: CostModel = new TestCostModel
 
   @NeverInline
   def verifyZK(proof: => SigmaProp) = proof.isValid
