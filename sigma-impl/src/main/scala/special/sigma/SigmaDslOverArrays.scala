@@ -107,7 +107,7 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
   def CostModel: CostModel = new TestCostModel
 
   @NeverInline
-  def verifyZK(proof: => SigmaProp) = proof.isValid
+  def verifyZK(proof: => SigmaProp): Boolean = proof.isValid
 
   @NeverInline
   def atLeast(bound: Int, props: Col[SigmaProp]): SigmaProp = {
@@ -122,14 +122,14 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
   }
 
   @NeverInline
-  def allOf(conditions: Col[Boolean]) = conditions.forall(c => c)
+  def allOf(conditions: Col[Boolean]): Boolean = conditions.forall(c => c)
   @NeverInline
-  def anyOf(conditions: Col[Boolean]) = conditions.exists(c => c)
+  def anyOf(conditions: Col[Boolean]): Boolean = conditions.exists(c => c)
 
   @NeverInline
-  def allZK(proofs: Col[SigmaProp]) = new TrivialSigma(proofs.forall(p => p.isValid))
+  def allZK(proofs: Col[SigmaProp]): SigmaProp = new TrivialSigma(proofs.forall(p => p.isValid))
   @NeverInline
-  def anyZK(proofs: Col[SigmaProp]) = new TrivialSigma(proofs.exists(p => p.isValid))
+  def anyZK(proofs: Col[SigmaProp]): SigmaProp = new TrivialSigma(proofs.exists(p => p.isValid))
 
   @NeverInline
   def sigmaProp(b: Boolean): SigmaProp = TrivialSigma(b)
@@ -141,7 +141,7 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
   def sha256(bytes: Col[Byte]): Col[Byte] = ???
 
   @NeverInline
-  def PubKey(base64String: String) = ???
+  def PubKey(base64String: String): SigmaProp = ???
 
   @NeverInline
   def byteArrayToBigInt(bytes: Col[Byte]): BigInteger = new BigInteger(bytes.arr)
@@ -199,25 +199,25 @@ trait DefaultSigma extends SigmaProp {
   * and DefaultSigma is used just to mixin implementations. */
 case class TrivialSigma(val isValid: Boolean) extends SigmaProp with DefaultSigma {
   @NeverInline
-  def propBytes = builder.Cols(if(isValid) 1 else 0)
+  def propBytes: Col[Byte] = builder.Cols(if(isValid) 1 else 0)
 }
 
 case class ProveDlogEvidence(val value: ECPoint) extends SigmaProp with DefaultSigma {
   @NeverInline
   def propBytes: Col[Byte] = new ColOverArray(value.getEncoded(true))
   @NeverInline
-  def isValid = true
+  def isValid: Boolean = true
 }
 
 case class ProveDHTEvidence(val value: ECPoint) extends SigmaProp with DefaultSigma {
   @NeverInline
   def propBytes: Col[Byte] = new ColOverArray(value.getEncoded(true))
   @NeverInline
-  def isValid = true
+  def isValid: Boolean = true
 }
 
 trait DefaultContract extends SigmaContract {
-  def builder = new TestSigmaDslBuilder
+  def builder: SigmaDslBuilder = new TestSigmaDslBuilder
 }
 
 
