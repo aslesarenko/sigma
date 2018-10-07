@@ -65,7 +65,7 @@ trait SigmaLibrary extends Library
   }
   object HasSigmas {
     def unapply(items: Seq[Sym]): Option[(Seq[Rep[Boolean]], Seq[Rep[SigmaProp]])] = {
-      val bs = ArrayBuffer.empty[BoolRep]
+      val bs = ArrayBuffer.empty[Rep[Boolean]]
       val ss = ArrayBuffer.empty[Rep[SigmaProp]]
       for (i <- items) {
         i match {

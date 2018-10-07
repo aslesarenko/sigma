@@ -147,6 +147,9 @@ trait SigmaContract {
   def proveDHTuple(g: ECPoint, h: ECPoint, u: ECPoint, v: ECPoint): SigmaProp = this.builder.proveDHTuple(g, h, u, v)
 
   def isMember(tree: AvlTree, key: Col[Byte], proof: Col[Byte]): Boolean = this.builder.isMember(tree, key, proof)
+  def treeLookup(tree: AvlTree, key: Col[Byte], proof: Col[Byte]): Option[Col[Byte]] = this.builder.treeLookup(tree, key, proof)
+  def treeModifications(tree: AvlTree, operations: Col[Byte], proof: Col[Byte]): Option[Col[Byte]] = this.builder.treeModifications(tree, operations, proof)
+
   def groupGenerator: ECPoint = this.builder.groupGenerator
 
   @clause def canOpen(ctx: Context): Boolean
@@ -184,6 +187,9 @@ trait SigmaDslBuilder extends DslBuilder {
   def proveDHTuple(g: ECPoint, h: ECPoint, u: ECPoint, v: ECPoint): SigmaProp
 
   def isMember(tree: AvlTree, key: Col[Byte], proof: Col[Byte]): Boolean
+  def treeLookup(tree: AvlTree, key: Col[Byte], proof: Col[Byte]): Option[Col[Byte]]
+  def treeModifications(tree: AvlTree, operations: Col[Byte], proof: Col[Byte]): Option[Col[Byte]]
+
   def groupGenerator: ECPoint
 }
 

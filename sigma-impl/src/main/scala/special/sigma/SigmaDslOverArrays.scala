@@ -156,7 +156,13 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
   def proveDHTuple(g: ECPoint, h: ECPoint, u: ECPoint, v: ECPoint): SigmaProp = ???
 
   @NeverInline
-  def isMember(tree: AvlTree, key: Col[Byte], proof: Col[Byte]): Boolean = ???
+  def isMember(tree: AvlTree, key: Col[Byte], proof: Col[Byte]): Boolean = treeLookup(tree, key, proof).isDefined
+
+  @NeverInline
+  def treeLookup(tree: AvlTree, key: Col[Byte], proof: Col[Byte]): Option[Col[Byte]] = ???
+
+  @NeverInline
+  def treeModifications(tree: AvlTree, operations: Col[Byte], proof: Col[Byte]): Option[Col[Byte]] = ???
 
   @Internal val __curve__ = CustomNamedCurves.getByName("curve25519")
   @Internal val __g__ = __curve__.getG
