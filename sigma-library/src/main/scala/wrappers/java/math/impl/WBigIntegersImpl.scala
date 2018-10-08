@@ -996,7 +996,7 @@ object WBigInteger extends EntityObject("WBigInteger") {
         case _ => Nullable.None
       }
     }
-
+// manual fix
 //    object ONE {
 //      def unapply(d: Def[_]): Nullable[Unit] = d match {
 //        case MethodCall(receiver, method, _, _) if receiver.elem == WBigIntegerCompanionElem && method.getName == "ONE" =>

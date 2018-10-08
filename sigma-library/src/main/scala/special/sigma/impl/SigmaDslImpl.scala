@@ -1729,7 +1729,7 @@ object Context extends EntityObject("Context") {
         case _ => Nullable.None
       }
     }
-
+    // manual fix
     object getVar {
       def unapply(d: Def[_]): Nullable[(Rep[Context], Rep[Byte], Elem[T]) forSome {type T}] = d match {
         case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ContextElem[_]] && method.getName == "getVar" =>
@@ -1742,7 +1742,7 @@ object Context extends EntityObject("Context") {
         case _ => Nullable.None
       }
     }
-
+    // manual fix
     object deserialize {
       def unapply(d: Def[_]): Nullable[(Rep[Context], Rep[Byte], Elem[T]) forSome {type T}] = d match {
         case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ContextElem[_]] && method.getName == "deserialize" =>

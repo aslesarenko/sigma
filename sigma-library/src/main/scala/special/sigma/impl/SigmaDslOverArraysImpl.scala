@@ -5,7 +5,10 @@ import scala.reflect.runtime.universe._
 import scala.reflect._
 
 package impl {
-// Abs -----------------------------------
+  // manual fix
+  import scalan.OverloadHack.Overloaded1
+
+  // Abs -----------------------------------
 trait SigmaDslOverArraysDefs extends scalan.Scalan with SigmaDslOverArrays {
   self: SigmaLibrary =>
 import IsoUR._
@@ -24,7 +27,7 @@ import Context._
 import ColOverArrayBuilder._
 import MonoidBuilderInst._
 import ConcreteCostedBuilder._
-import TrivialSigma._
+import CostModel._
 import WBigInteger._
 import WECPoint._
 import SigmaDslBuilder._
@@ -34,6 +37,7 @@ import TestBox._
 import TestAvlTree._
 import TestValue._
 import TestContext._
+import TrivialSigma._
 import ProveDlogEvidence._
 import ProveDHTEvidence._
 
@@ -258,7 +262,8 @@ object TestBox extends EntityObject("TestBox") {
       (override val id: Rep[Col[Byte]], override val value: Rep[Long], override val bytes: Rep[Col[Byte]], override val bytesWithoutRef: Rep[Col[Byte]], override val propositionBytes: Rep[Col[Byte]], override val registers: Rep[Col[AnyValue]])
     extends TestBox(id, value, bytes, bytesWithoutRef, propositionBytes, registers) with Def[TestBox] {
     lazy val selfType = element[TestBox]
-    private val thisClass = classOf[TestBox]
+    // manual fix
+    private val thisClass = classOf[Box]
 
     // manual fix (elems)
     override def getReg[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = {
@@ -474,7 +479,8 @@ object TestAvlTree extends EntityObject("TestAvlTree") {
       (override val startingDigest: Rep[Col[Byte]], override val keyLength: Rep[Int], override val valueLengthOpt: Rep[WOption[Int]], override val maxNumOperations: Rep[WOption[Int]], override val maxDeletes: Rep[WOption[Int]])
     extends TestAvlTree(startingDigest, keyLength, valueLengthOpt, maxNumOperations, maxDeletes) with Def[TestAvlTree] {
     lazy val selfType = element[TestAvlTree]
-    private val thisClass = classOf[TestAvlTree]
+    // manual fix
+    private val thisClass = classOf[AvlTree]
 
     override def dataSize: Rep[Long] = {
       asRep[Long](mkMethodCall(self,
@@ -635,7 +641,8 @@ object TestValue extends EntityObject("TestValue") {
     implicit lazy val eT = value.elem
 
     lazy val selfType = element[TestValue[T]]
-    private val thisClass = classOf[TestValue[T]]
+    // manual fix
+    private val thisClass = classOf[AnyValue]
 
     override def dataSize: Rep[Long] = {
       asRep[Long](mkMethodCall(self,
@@ -761,7 +768,8 @@ object TestContext extends EntityObject("TestContext") {
       (override val inputs: Rep[WArray[Box]], override val outputs: Rep[WArray[Box]], override val height: Rep[Long], override val selfBox: Rep[Box], override val lastBlockUtxoRootHash: Rep[AvlTree], override val vars: Rep[WArray[AnyValue]])
     extends TestContext(inputs, outputs, height, selfBox, lastBlockUtxoRootHash, vars) with Def[TestContext] {
     lazy val selfType = element[TestContext]
-    private val thisClass = classOf[TestContext]
+    // manual fix
+    private val thisClass = classOf[Context]
 
     override def HEIGHT: Rep[Long] = {
       asRep[Long](mkMethodCall(self,
@@ -1065,7 +1073,8 @@ object TestSigmaDslBuilder extends EntityObject("TestSigmaDslBuilder") {
       ()
     extends TestSigmaDslBuilder() with Def[TestSigmaDslBuilder] {
     lazy val selfType = element[TestSigmaDslBuilder]
-    private val thisClass = classOf[TestSigmaDslBuilder]
+    // manual fix
+    private val thisClass = classOf[SigmaDslBuilder]
 
    // manual fix
     override def CostModel: Rep[CostModel] = {
@@ -1103,18 +1112,18 @@ object TestSigmaDslBuilder extends EntityObject("TestSigmaDslBuilder") {
         true, element[Boolean]))
     }
 
-    override def allZK(proofs: Rep[Col[SigmaProp]]): Rep[TrivialSigma] = {
-      asRep[TrivialSigma](mkMethodCall(self,
+    override def allZK(proofs: Rep[Col[SigmaProp]]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("allZK", classOf[Sym]),
         List(proofs),
-        true, element[TrivialSigma]))
+        true, element[SigmaProp]))
     }
 
-    override def anyZK(proofs: Rep[Col[SigmaProp]]): Rep[TrivialSigma] = {
-      asRep[TrivialSigma](mkMethodCall(self,
+    override def anyZK(proofs: Rep[Col[SigmaProp]]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("anyZK", classOf[Sym]),
         List(proofs),
-        true, element[TrivialSigma]))
+        true, element[SigmaProp]))
     }
 
     override def sigmaProp(b: Rep[Boolean]): Rep[SigmaProp] = {
@@ -1138,8 +1147,8 @@ object TestSigmaDslBuilder extends EntityObject("TestSigmaDslBuilder") {
         true, element[Col[Byte]]))
     }
 
-    override def PubKey(base64String: Rep[String]): Rep[Nothing] = {
-      asRep[Nothing](mkMethodCall(self,
+    override def PubKey(base64String: Rep[String]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("PubKey", classOf[Sym]),
         List(base64String),
         true, element[SigmaProp]))
@@ -1588,16 +1597,66 @@ object TestSigmaDslBuilder extends EntityObject("TestSigmaDslBuilder") {
 
 object TrivialSigma extends EntityObject("TrivialSigma") {
   case class TrivialSigmaCtor
-      (override val isValid: Rep[Boolean])
-    extends TrivialSigma(isValid) with Def[TrivialSigma] {
+      (override val _isValid: Rep[Boolean])
+    extends TrivialSigma(_isValid) with Def[TrivialSigma] {
     lazy val selfType = element[TrivialSigma]
-    private val thisClass = classOf[TrivialSigma]
+    // manual fix
+    private val thisClass = classOf[SigmaProp]
 
     override def propBytes: Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(self,
         thisClass.getMethod("propBytes"),
         List(),
         true, element[Col[Byte]]))
+    }
+
+    override def isValid: Rep[Boolean] = {
+      asRep[Boolean](mkMethodCall(self,
+        thisClass.getMethod("isValid"),
+        List(),
+        true, element[Boolean]))
+    }
+
+    override def $amp$amp(other: Rep[SigmaProp]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
+        thisClass.getMethod("$amp$amp", classOf[Sym]),
+        List(other),
+        true, element[SigmaProp]))
+    }
+
+    override def $amp$amp(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
+        thisClass.getMethod("$amp$amp", classOf[Sym], classOf[Sym]),
+        List(other, o),
+        true, element[SigmaProp]))
+    }
+
+    override def $bar$bar(other: Rep[SigmaProp]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
+        thisClass.getMethod("$bar$bar", classOf[Sym]),
+        List(other),
+        true, element[SigmaProp]))
+    }
+
+    override def $bar$bar(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
+        thisClass.getMethod("$bar$bar", classOf[Sym], classOf[Sym]),
+        List(other, o),
+        true, element[SigmaProp]))
+    }
+
+    override def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
+        thisClass.getMethod("lazyAnd", classOf[Sym]),
+        List(other),
+        true, element[SigmaProp]))
+    }
+
+    override def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
+        thisClass.getMethod("lazyOr", classOf[Sym]),
+        List(other),
+        true, element[SigmaProp]))
     }
   }
   // elem for concrete class
@@ -1606,6 +1665,7 @@ object TrivialSigma extends EntityObject("TrivialSigma") {
     with ConcreteElem[TrivialSigmaData, TrivialSigma] {
     override lazy val parent: Option[Elem[_]] = Some(sigmaPropElement)
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
+    // manual fix
     override def convertSigmaProp(x: Rep[SigmaProp]) = RTrivialSigma(x.isValid)
     override def getDefaultRep = RTrivialSigma(false)
     override lazy val tag = {
@@ -1619,12 +1679,12 @@ object TrivialSigma extends EntityObject("TrivialSigma") {
   // 3) Iso for concrete class
   class TrivialSigmaIso
     extends EntityIso[TrivialSigmaData, TrivialSigma] with Def[TrivialSigmaIso] {
-    private lazy val _safeFrom = fun { p: Rep[TrivialSigma] => p.isValid }
+    private lazy val _safeFrom = fun { p: Rep[TrivialSigma] => p._isValid }
     override def from(p: Rep[TrivialSigma]) =
       tryConvert[TrivialSigma, Boolean](eTo, eFrom, p, _safeFrom)
     override def to(p: Rep[Boolean]) = {
-      val isValid = p
-      RTrivialSigma(isValid)
+      val _isValid = p
+      RTrivialSigma(_isValid)
     }
     lazy val eFrom = element[Boolean]
     lazy val eTo = new TrivialSigmaElem(self)
@@ -1645,8 +1705,8 @@ object TrivialSigma extends EntityObject("TrivialSigma") {
     override def toString = "TrivialSigmaCompanion"
 
     @scalan.OverloadId("fromFields")
-    def apply(isValid: Rep[Boolean]): Rep[TrivialSigma] =
-      mkTrivialSigma(isValid)
+    def apply(_isValid: Rep[Boolean]): Rep[TrivialSigma] =
+      mkTrivialSigma(_isValid)
 
     def unapply(p: Rep[SigmaProp]) = unmkTrivialSigma(p)
   }
@@ -1678,12 +1738,12 @@ object TrivialSigma extends EntityObject("TrivialSigma") {
     reifyObject(new TrivialSigmaIso())
 
   def mkTrivialSigma
-    (isValid: Rep[Boolean]): Rep[TrivialSigma] = {
-    new TrivialSigmaCtor(isValid)
+    (_isValid: Rep[Boolean]): Rep[TrivialSigma] = {
+    new TrivialSigmaCtor(_isValid)
   }
   def unmkTrivialSigma(p: Rep[SigmaProp]) = p.elem.asInstanceOf[Elem[_]] match {
     case _: TrivialSigmaElem @unchecked =>
-      Some((asRep[TrivialSigma](p).isValid))
+      Some((asRep[TrivialSigma](p)._isValid))
     case _ =>
       None
   }
@@ -1701,6 +1761,97 @@ object TrivialSigma extends EntityObject("TrivialSigma") {
         case _ => Nullable.None
       }
     }
+
+    object isValid {
+      def unapply(d: Def[_]): Nullable[Rep[TrivialSigma]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[TrivialSigmaElem] && method.getName == "isValid" =>
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[TrivialSigma]]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[Rep[TrivialSigma]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object and_sigma_&& {
+      def unapply(d: Def[_]): Nullable[(Rep[TrivialSigma], Rep[SigmaProp])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[TrivialSigmaElem] && method.getName == "$amp$amp" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "and_sigma" } =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[TrivialSigma], Rep[SigmaProp])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[TrivialSigma], Rep[SigmaProp])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object and_bool_&& {
+      def unapply(d: Def[_]): Nullable[(Rep[TrivialSigma], Rep[Boolean])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[TrivialSigmaElem] && method.getName == "$amp$amp" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "and_bool" } =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[TrivialSigma], Rep[Boolean])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[TrivialSigma], Rep[Boolean])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object or_sigma_|| {
+      def unapply(d: Def[_]): Nullable[(Rep[TrivialSigma], Rep[SigmaProp])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[TrivialSigmaElem] && method.getName == "$bar$bar" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "or_sigma" } =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[TrivialSigma], Rep[SigmaProp])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[TrivialSigma], Rep[SigmaProp])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object or_bool_|| {
+      def unapply(d: Def[_]): Nullable[(Rep[TrivialSigma], Rep[Boolean])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[TrivialSigmaElem] && method.getName == "$bar$bar" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "or_bool" } =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[TrivialSigma], Rep[Boolean])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[TrivialSigma], Rep[Boolean])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object lazyAnd {
+      def unapply(d: Def[_]): Nullable[(Rep[TrivialSigma], Rep[Thunk[SigmaProp]])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[TrivialSigmaElem] && method.getName == "lazyAnd" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[TrivialSigma], Rep[Thunk[SigmaProp]])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[TrivialSigma], Rep[Thunk[SigmaProp]])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object lazyOr {
+      def unapply(d: Def[_]): Nullable[(Rep[TrivialSigma], Rep[Thunk[SigmaProp]])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[TrivialSigmaElem] && method.getName == "lazyOr" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[TrivialSigma], Rep[Thunk[SigmaProp]])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[TrivialSigma], Rep[Thunk[SigmaProp]])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
   }
 
   object TrivialSigmaCompanionMethods {
@@ -1713,7 +1864,8 @@ object ProveDlogEvidence extends EntityObject("ProveDlogEvidence") {
       (override val value: Rep[WECPoint])
     extends ProveDlogEvidence(value) with Def[ProveDlogEvidence] {
     lazy val selfType = element[ProveDlogEvidence]
-    private val thisClass = classOf[ProveDlogEvidence]
+    // manual fix
+    private val thisClass = classOf[SigmaProp]
 
     override def propBytes: Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(self,
@@ -1727,6 +1879,48 @@ object ProveDlogEvidence extends EntityObject("ProveDlogEvidence") {
         thisClass.getMethod("isValid"),
         List(),
         true, element[Boolean]))
+    }
+
+    override def $amp$amp(other: Rep[SigmaProp]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
+        thisClass.getMethod("$amp$amp", classOf[Sym]),
+        List(other),
+        true, element[SigmaProp]))
+    }
+
+    override def $amp$amp(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
+        thisClass.getMethod("$amp$amp", classOf[Sym], classOf[Sym]),
+        List(other, o),
+        true, element[SigmaProp]))
+    }
+
+    override def $bar$bar(other: Rep[SigmaProp]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
+        thisClass.getMethod("$bar$bar", classOf[Sym]),
+        List(other),
+        true, element[SigmaProp]))
+    }
+
+    override def $bar$bar(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
+        thisClass.getMethod("$bar$bar", classOf[Sym], classOf[Sym]),
+        List(other, o),
+        true, element[SigmaProp]))
+    }
+
+    override def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
+        thisClass.getMethod("lazyAnd", classOf[Sym]),
+        List(other),
+        true, element[SigmaProp]))
+    }
+
+    override def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
+        thisClass.getMethod("lazyOr", classOf[Sym]),
+        List(other),
+        true, element[SigmaProp]))
     }
   }
   // elem for concrete class
@@ -1844,6 +2038,84 @@ object ProveDlogEvidence extends EntityObject("ProveDlogEvidence") {
         case _ => Nullable.None
       }
     }
+
+    object and_sigma_&& {
+      def unapply(d: Def[_]): Nullable[(Rep[ProveDlogEvidence], Rep[SigmaProp])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ProveDlogEvidenceElem] && method.getName == "$amp$amp" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "and_sigma" } =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[ProveDlogEvidence], Rep[SigmaProp])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[ProveDlogEvidence], Rep[SigmaProp])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object and_bool_&& {
+      def unapply(d: Def[_]): Nullable[(Rep[ProveDlogEvidence], Rep[Boolean])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ProveDlogEvidenceElem] && method.getName == "$amp$amp" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "and_bool" } =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[ProveDlogEvidence], Rep[Boolean])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[ProveDlogEvidence], Rep[Boolean])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object or_sigma_|| {
+      def unapply(d: Def[_]): Nullable[(Rep[ProveDlogEvidence], Rep[SigmaProp])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ProveDlogEvidenceElem] && method.getName == "$bar$bar" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "or_sigma" } =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[ProveDlogEvidence], Rep[SigmaProp])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[ProveDlogEvidence], Rep[SigmaProp])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object or_bool_|| {
+      def unapply(d: Def[_]): Nullable[(Rep[ProveDlogEvidence], Rep[Boolean])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ProveDlogEvidenceElem] && method.getName == "$bar$bar" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "or_bool" } =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[ProveDlogEvidence], Rep[Boolean])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[ProveDlogEvidence], Rep[Boolean])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object lazyAnd {
+      def unapply(d: Def[_]): Nullable[(Rep[ProveDlogEvidence], Rep[Thunk[SigmaProp]])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ProveDlogEvidenceElem] && method.getName == "lazyAnd" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[ProveDlogEvidence], Rep[Thunk[SigmaProp]])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[ProveDlogEvidence], Rep[Thunk[SigmaProp]])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object lazyOr {
+      def unapply(d: Def[_]): Nullable[(Rep[ProveDlogEvidence], Rep[Thunk[SigmaProp]])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ProveDlogEvidenceElem] && method.getName == "lazyOr" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[ProveDlogEvidence], Rep[Thunk[SigmaProp]])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[ProveDlogEvidence], Rep[Thunk[SigmaProp]])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
   }
 
   object ProveDlogEvidenceCompanionMethods {
@@ -1856,7 +2128,8 @@ object ProveDHTEvidence extends EntityObject("ProveDHTEvidence") {
       (override val value: Rep[WECPoint])
     extends ProveDHTEvidence(value) with Def[ProveDHTEvidence] {
     lazy val selfType = element[ProveDHTEvidence]
-    private val thisClass = classOf[ProveDHTEvidence]
+    // manual fix
+    private val thisClass = classOf[SigmaProp]
 
     override def propBytes: Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(self,
@@ -1870,6 +2143,48 @@ object ProveDHTEvidence extends EntityObject("ProveDHTEvidence") {
         thisClass.getMethod("isValid"),
         List(),
         true, element[Boolean]))
+    }
+
+    override def $amp$amp(other: Rep[SigmaProp]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
+        thisClass.getMethod("$amp$amp", classOf[Sym]),
+        List(other),
+        true, element[SigmaProp]))
+    }
+
+    override def $amp$amp(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
+        thisClass.getMethod("$amp$amp", classOf[Sym], classOf[Sym]),
+        List(other, o),
+        true, element[SigmaProp]))
+    }
+
+    override def $bar$bar(other: Rep[SigmaProp]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
+        thisClass.getMethod("$bar$bar", classOf[Sym]),
+        List(other),
+        true, element[SigmaProp]))
+    }
+
+    override def $bar$bar(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
+        thisClass.getMethod("$bar$bar", classOf[Sym], classOf[Sym]),
+        List(other, o),
+        true, element[SigmaProp]))
+    }
+
+    override def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
+        thisClass.getMethod("lazyAnd", classOf[Sym]),
+        List(other),
+        true, element[SigmaProp]))
+    }
+
+    override def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(self,
+        thisClass.getMethod("lazyOr", classOf[Sym]),
+        List(other),
+        true, element[SigmaProp]))
     }
   }
   // elem for concrete class
@@ -1983,6 +2298,84 @@ object ProveDHTEvidence extends EntityObject("ProveDHTEvidence") {
         case _ => Nullable.None
       }
       def unapply(exp: Sym): Nullable[Rep[ProveDHTEvidence]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object and_sigma_&& {
+      def unapply(d: Def[_]): Nullable[(Rep[ProveDHTEvidence], Rep[SigmaProp])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ProveDHTEvidenceElem] && method.getName == "$amp$amp" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "and_sigma" } =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[ProveDHTEvidence], Rep[SigmaProp])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[ProveDHTEvidence], Rep[SigmaProp])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object and_bool_&& {
+      def unapply(d: Def[_]): Nullable[(Rep[ProveDHTEvidence], Rep[Boolean])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ProveDHTEvidenceElem] && method.getName == "$amp$amp" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "and_bool" } =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[ProveDHTEvidence], Rep[Boolean])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[ProveDHTEvidence], Rep[Boolean])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object or_sigma_|| {
+      def unapply(d: Def[_]): Nullable[(Rep[ProveDHTEvidence], Rep[SigmaProp])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ProveDHTEvidenceElem] && method.getName == "$bar$bar" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "or_sigma" } =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[ProveDHTEvidence], Rep[SigmaProp])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[ProveDHTEvidence], Rep[SigmaProp])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object or_bool_|| {
+      def unapply(d: Def[_]): Nullable[(Rep[ProveDHTEvidence], Rep[Boolean])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ProveDHTEvidenceElem] && method.getName == "$bar$bar" && { val ann = method.getAnnotation(classOf[scalan.OverloadId]); ann != null && ann.value == "or_bool" } =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[ProveDHTEvidence], Rep[Boolean])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[ProveDHTEvidence], Rep[Boolean])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object lazyAnd {
+      def unapply(d: Def[_]): Nullable[(Rep[ProveDHTEvidence], Rep[Thunk[SigmaProp]])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ProveDHTEvidenceElem] && method.getName == "lazyAnd" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[ProveDHTEvidence], Rep[Thunk[SigmaProp]])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[ProveDHTEvidence], Rep[Thunk[SigmaProp]])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object lazyOr {
+      def unapply(d: Def[_]): Nullable[(Rep[ProveDHTEvidence], Rep[Thunk[SigmaProp]])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ProveDHTEvidenceElem] && method.getName == "lazyOr" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[ProveDHTEvidence], Rep[Thunk[SigmaProp]])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[ProveDHTEvidence], Rep[Thunk[SigmaProp]])] = exp match {
         case Def(d) => unapply(d)
         case _ => Nullable.None
       }

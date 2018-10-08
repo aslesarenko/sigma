@@ -197,9 +197,23 @@ trait DefaultSigma extends SigmaProp {
 
 /**NOTE: this should extend SigmaProp because semantically it subclass of SigmaProp
   * and DefaultSigma is used just to mixin implementations. */
-case class TrivialSigma(val isValid: Boolean) extends SigmaProp with DefaultSigma {
+case class TrivialSigma(val _isValid: Boolean) extends SigmaProp with DefaultSigma {
   @NeverInline
   def propBytes: Col[Byte] = builder.Cols(if(isValid) 1 else 0)
+  @NeverInline
+  def isValid: Boolean = _isValid
+  @NeverInline
+  override def &&(other: SigmaProp) = super.&&(other)
+  @NeverInline
+  override def &&(other: Boolean) = super.&&(other)
+  @NeverInline
+  override def ||(other: SigmaProp) = super.||(other)
+  @NeverInline
+  override def ||(other: Boolean) = super.||(other)
+  @NeverInline
+  override def lazyAnd(other: => SigmaProp) = super.lazyAnd(other)
+  @NeverInline
+  override def lazyOr(other: => SigmaProp) = super.lazyOr(other)
 }
 
 case class ProveDlogEvidence(val value: ECPoint) extends SigmaProp with DefaultSigma {
@@ -207,6 +221,18 @@ case class ProveDlogEvidence(val value: ECPoint) extends SigmaProp with DefaultS
   def propBytes: Col[Byte] = new ColOverArray(value.getEncoded(true))
   @NeverInline
   def isValid: Boolean = true
+  @NeverInline
+  override def &&(other: SigmaProp) = super.&&(other)
+  @NeverInline
+  override def &&(other: Boolean) = super.&&(other)
+  @NeverInline
+  override def ||(other: SigmaProp) = super.||(other)
+  @NeverInline
+  override def ||(other: Boolean) = super.||(other)
+  @NeverInline
+  override def lazyAnd(other: => SigmaProp) = super.lazyAnd(other)
+  @NeverInline
+  override def lazyOr(other: => SigmaProp) = super.lazyOr(other)
 }
 
 case class ProveDHTEvidence(val value: ECPoint) extends SigmaProp with DefaultSigma {
@@ -214,6 +240,18 @@ case class ProveDHTEvidence(val value: ECPoint) extends SigmaProp with DefaultSi
   def propBytes: Col[Byte] = new ColOverArray(value.getEncoded(true))
   @NeverInline
   def isValid: Boolean = true
+  @NeverInline
+  override def &&(other: SigmaProp) = super.&&(other)
+  @NeverInline
+  override def &&(other: Boolean) = super.&&(other)
+  @NeverInline
+  override def ||(other: SigmaProp) = super.||(other)
+  @NeverInline
+  override def ||(other: Boolean) = super.||(other)
+  @NeverInline
+  override def lazyAnd(other: => SigmaProp) = super.lazyAnd(other)
+  @NeverInline
+  override def lazyOr(other: => SigmaProp) = super.lazyOr(other)
 }
 
 trait DefaultContract extends SigmaContract {
