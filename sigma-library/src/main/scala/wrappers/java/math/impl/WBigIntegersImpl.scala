@@ -942,7 +942,8 @@ object WBigInteger extends EntityObject("WBigInteger") {
       }
     }
 
-    object toString {
+    // manual fix (method name)
+    object toStringMethod {
       def unapply(d: Def[_]): Nullable[(Rep[WBigInteger], Rep[Int])] = d match {
         case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[WBigIntegerElem[_]] && method.getName == "toString" =>
           val res = (receiver, args(0))
@@ -996,31 +997,31 @@ object WBigInteger extends EntityObject("WBigInteger") {
       }
     }
 
-    object ONE {
-      def unapply(d: Def[_]): Nullable[Unit] = d match {
-        case MethodCall(receiver, method, _, _) if receiver.elem == WBigIntegerCompanionElem && method.getName == "ONE" =>
-          val res = ()
-          Nullable(res).asInstanceOf[Nullable[Unit]]
-        case _ => Nullable.None
-      }
-      def unapply(exp: Sym): Nullable[Unit] = exp match {
-        case Def(d) => unapply(d)
-        case _ => Nullable.None
-      }
-    }
-
-    object ZERO {
-      def unapply(d: Def[_]): Nullable[Unit] = d match {
-        case MethodCall(receiver, method, _, _) if receiver.elem == WBigIntegerCompanionElem && method.getName == "ZERO" =>
-          val res = ()
-          Nullable(res).asInstanceOf[Nullable[Unit]]
-        case _ => Nullable.None
-      }
-      def unapply(exp: Sym): Nullable[Unit] = exp match {
-        case Def(d) => unapply(d)
-        case _ => Nullable.None
-      }
-    }
+//    object ONE {
+//      def unapply(d: Def[_]): Nullable[Unit] = d match {
+//        case MethodCall(receiver, method, _, _) if receiver.elem == WBigIntegerCompanionElem && method.getName == "ONE" =>
+//          val res = ()
+//          Nullable(res).asInstanceOf[Nullable[Unit]]
+//        case _ => Nullable.None
+//      }
+//      def unapply(exp: Sym): Nullable[Unit] = exp match {
+//        case Def(d) => unapply(d)
+//        case _ => Nullable.None
+//      }
+//    }
+//
+//    object ZERO {
+//      def unapply(d: Def[_]): Nullable[Unit] = d match {
+//        case MethodCall(receiver, method, _, _) if receiver.elem == WBigIntegerCompanionElem && method.getName == "ZERO" =>
+//          val res = ()
+//          Nullable(res).asInstanceOf[Nullable[Unit]]
+//        case _ => Nullable.None
+//      }
+//      def unapply(exp: Sym): Nullable[Unit] = exp match {
+//        case Def(d) => unapply(d)
+//        case _ => Nullable.None
+//      }
+//    }
   }
 } // of object WBigInteger
   registerEntityObject("WBigInteger", WBigInteger)

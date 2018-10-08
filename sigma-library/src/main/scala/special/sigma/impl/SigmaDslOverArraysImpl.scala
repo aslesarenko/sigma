@@ -1142,7 +1142,7 @@ object TestSigmaDslBuilder extends EntityObject("TestSigmaDslBuilder") {
       asRep[Nothing](mkMethodCall(self,
         thisClass.getMethod("PubKey", classOf[Sym]),
         List(base64String),
-        true, element[Nothing]))
+        true, element[SigmaProp]))
     }
 
     override def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[WBigInteger] = {

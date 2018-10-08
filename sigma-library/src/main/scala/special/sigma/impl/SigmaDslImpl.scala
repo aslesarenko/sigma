@@ -98,11 +98,12 @@ object CostModel extends EntityObject("CostModel") {
         true, element[Int]))
     }
 
-    def dataSize[T](x: Rep[T])(implicit cT: Elem[T], emT: Elem[T]): Rep[Long] = {
+    // manual fix (elems)
+    def dataSize[T](x: Rep[T])(implicit cT: Elem[T]): Rep[Long] = {
       implicit val eT = x.elem
       asRep[Long](mkMethodCall(self,
-        thisClass.getMethod("dataSize", classOf[Sym], classOf[Sym], classOf[Sym]),
-        List(x, cT, emT),
+        thisClass.getMethod("dataSize", classOf[Sym], classOf[Elem[_]]),
+        List(x, cT),
         true, element[Long]))
     }
   }
@@ -440,6 +441,14 @@ object SigmaProp extends EntityObject("SigmaProp") {
     val selfType: Elem[SigmaProp] = liftable.eW
     private val thisClass = classOf[SigmaProp]
 
+    // manual fix
+    def builder: Rep[SigmaDslBuilder] = {
+      asRep[SigmaDslBuilder](mkMethodCall(self,
+        thisClass.getMethod("builder"),
+        List(),
+        true, element[SigmaDslBuilder]))
+    }
+
     def isValid: Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(self,
         thisClass.getMethod("isValid"),
@@ -463,10 +472,10 @@ object SigmaProp extends EntityObject("SigmaProp") {
     }
 
     // manual fix &&
-    def &&(other: Rep[Boolean]): Rep[SigmaProp] = {
+    def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
-        thisClass.getMethod("$amp$amp", classOf[Sym]),
-        List(other),
+        thisClass.getMethod("$amp$amp", classOf[Sym], classOf[Overloaded1]),
+        List(other, o),
         true, element[SigmaProp]))
     }
 
@@ -479,10 +488,10 @@ object SigmaProp extends EntityObject("SigmaProp") {
     }
 
     // manual fix ||
-    def ||(other: Rep[Boolean]): Rep[SigmaProp] = {
+    def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
-        thisClass.getMethod("$bar$bar", classOf[Sym]),
-        List(other),
+        thisClass.getMethod("$bar$bar", classOf[Sym], classOf[Overloaded1]),
+        List(other, o),
         true, element[SigmaProp]))
     }
 
@@ -805,6 +814,14 @@ object Box extends EntityObject("Box") {
     val liftable: Liftable[SBox, Box] = LiftableBox
     val selfType: Elem[Box] = liftable.eW
     private val thisClass = classOf[Box]
+
+    // manual fix
+    def builder: Rep[SigmaDslBuilder] = {
+      asRep[SigmaDslBuilder](mkMethodCall(self,
+        thisClass.getMethod("builder"),
+        List(),
+        true, element[SigmaDslBuilder]))
+    }
 
     def id: Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(self,
@@ -1250,6 +1267,14 @@ object AvlTree extends EntityObject("AvlTree") {
     val liftable: Liftable[SAvlTree, AvlTree] = LiftableAvlTree
     val selfType: Elem[AvlTree] = liftable.eW
     private val thisClass = classOf[AvlTree]
+
+    // manual fix
+    def builder: Rep[SigmaDslBuilder] = {
+      asRep[SigmaDslBuilder](mkMethodCall(self,
+        thisClass.getMethod("builder"),
+        List(),
+        true, element[SigmaDslBuilder]))
+    }
 
     def startingDigest: Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(self,

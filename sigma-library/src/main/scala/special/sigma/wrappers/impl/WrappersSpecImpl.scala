@@ -326,7 +326,8 @@ object BigIntegerWrapSpec extends EntityObject("BigIntegerWrapSpec") {
       }
     }
 
-    object toString {
+    // manual fix (method name)
+    object toStringMethod {
       def unapply(d: Def[_]): Nullable[(Rep[BigIntegerWrapSpec], Rep[WBigInteger], Rep[Int])] = d match {
         case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BigIntegerWrapSpecElem] && method.getName == "toString" =>
           val res = (receiver, args(0), args(1))

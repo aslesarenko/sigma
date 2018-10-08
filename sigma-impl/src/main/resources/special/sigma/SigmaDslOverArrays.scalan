@@ -4,6 +4,7 @@ package special.sigma {
   trait SigmaDslOverArrays extends Base { self: SigmaDslOverArraysModule =>
     import TestSigmaDslBuilder._;
     import SigmaProp._;
+    import SigmaDslBuilder._;
     import SigmaContract._;
     import WOption._;
     import Col._;
@@ -14,10 +15,9 @@ package special.sigma {
     import ColOverArrayBuilder._;
     import MonoidBuilderInst._;
     import ConcreteCostedBuilder._;
-    import TrivialSigma._;
+    import CostModel._;
     import WBigInteger._;
     import WECPoint._;
-    import SigmaDslBuilder._;
     import DefaultSigma._;
     trait DefaultSigma extends SigmaProp {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
@@ -29,7 +29,7 @@ package special.sigma {
       @NeverInline def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke
     };
     trait DefaultContract extends SigmaContract {
-      def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder()
+      def builder: Rep[SigmaDslBuilder] = RTestSigmaDslBuilder()
     };
     abstract class TestBox(val id: Rep[Col[Byte]], val value: Rep[Long], val bytes: Rep[Col[Byte]], val bytesWithoutRef: Rep[Col[Byte]], val propositionBytes: Rep[Col[Byte]], val registers: Rep[Col[AnyValue]]) extends Box {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
@@ -63,17 +63,17 @@ package special.sigma {
       def Cols: Rep[ColOverArrayBuilder] = RColOverArrayBuilder();
       def Monoids: Rep[MonoidBuilderInst] = RMonoidBuilderInst();
       def Costing: Rep[ConcreteCostedBuilder] = RConcreteCostedBuilder();
-      @NeverInline def CostModel: Rep[TestCostModel] = delayInvoke;
+      @NeverInline def CostModel: Rep[CostModel] = delayInvoke;
       @NeverInline def verifyZK(proof: Rep[Thunk[SigmaProp]]): Rep[Boolean] = delayInvoke;
       @NeverInline def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp] = delayInvoke;
       @NeverInline def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = delayInvoke;
       @NeverInline def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = delayInvoke;
-      @NeverInline def allZK(proofs: Rep[Col[SigmaProp]]): Rep[TrivialSigma] = delayInvoke;
-      @NeverInline def anyZK(proofs: Rep[Col[SigmaProp]]): Rep[TrivialSigma] = delayInvoke;
+      @NeverInline def allZK(proofs: Rep[Col[SigmaProp]]): Rep[SigmaProp] = delayInvoke;
+      @NeverInline def anyZK(proofs: Rep[Col[SigmaProp]]): Rep[SigmaProp] = delayInvoke;
       @NeverInline def sigmaProp(b: Rep[Boolean]): Rep[SigmaProp] = delayInvoke;
       @NeverInline def blake2b256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = delayInvoke;
       @NeverInline def sha256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = delayInvoke;
-      @NeverInline def PubKey(base64String: Rep[String]): Rep[Nothing] = delayInvoke;
+      @NeverInline def PubKey(base64String: Rep[String]): Rep[SigmaProp] = delayInvoke;
       @NeverInline def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[WBigInteger] = delayInvoke;
       @NeverInline def longToByteArray(l: Rep[Long]): Rep[Col[Byte]] = delayInvoke;
       @NeverInline def proveDlog(g: Rep[WECPoint]): Rep[SigmaProp] = delayInvoke;
