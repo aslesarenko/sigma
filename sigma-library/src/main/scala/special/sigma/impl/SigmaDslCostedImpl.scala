@@ -227,7 +227,10 @@ object CostedContext extends EntityObject("CostedContext") {
   }
 
   implicit def proxyCostedContext(p: Rep[CostedContext]): CostedContext =
-    proxyOps[CostedContext](p)
+    if (p.rhs.isInstanceOf[CostedContext])
+      p.rhs.asInstanceOf[CostedContext]
+    else
+      proxyOps[CostedContext](p)
 
   implicit class ExtendedCostedContext(p: Rep[CostedContext]) {
     def toData: Rep[CostedContextData] = {

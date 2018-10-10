@@ -122,11 +122,83 @@ object CostModel extends EntityObject("CostModel") {
     }
   }
 
+  case class CostModelAdapter(source: Rep[CostModel]) extends CostModel {
+    val liftable: Liftable[SCostModel, CostModel] = LiftableCostModel
+    val selfType: Elem[CostModel] = source.elem
+    private val thisClass = classOf[CostModel]
+
+    def AccessBox: Rep[Int] = {
+      asRep[Int](mkMethodCall(source,
+        thisClass.getMethod("AccessBox"),
+        List(),
+        true, element[Int]))
+    }
+
+    def GetVar: Rep[Int] = {
+      asRep[Int](mkMethodCall(source,
+        thisClass.getMethod("GetVar"),
+        List(),
+        true, element[Int]))
+    }
+
+    def DeserializeVar: Rep[Int] = {
+      asRep[Int](mkMethodCall(source,
+        thisClass.getMethod("DeserializeVar"),
+        List(),
+        true, element[Int]))
+    }
+
+    def GetRegister: Rep[Int] = {
+      asRep[Int](mkMethodCall(source,
+        thisClass.getMethod("GetRegister"),
+        List(),
+        true, element[Int]))
+    }
+
+    def DeserializeRegister: Rep[Int] = {
+      asRep[Int](mkMethodCall(source,
+        thisClass.getMethod("DeserializeRegister"),
+        List(),
+        true, element[Int]))
+    }
+
+    def SelectField: Rep[Int] = {
+      asRep[Int](mkMethodCall(source,
+        thisClass.getMethod("SelectField"),
+        List(),
+        true, element[Int]))
+    }
+
+    def CollectionConst: Rep[Int] = {
+      asRep[Int](mkMethodCall(source,
+        thisClass.getMethod("CollectionConst"),
+        List(),
+        true, element[Int]))
+    }
+
+    def AccessKiloByteOfData: Rep[Int] = {
+      asRep[Int](mkMethodCall(source,
+        thisClass.getMethod("AccessKiloByteOfData"),
+        List(),
+        true, element[Int]))
+    }
+
+    // manual fix (elems)
+    def dataSize[T](x: Rep[T])(implicit cT: Elem[T]): Rep[Long] = {
+      implicit val eT = x.elem
+      asRep[Long](mkMethodCall(source,
+        thisClass.getMethod("dataSize", classOf[Sym], classOf[Elem[_]]),
+        List(x, cT),
+        true, element[Long]))
+    }
+  }
+  
   // entityProxy: single proxy for each type family
   implicit def proxyCostModel(p: Rep[CostModel]): CostModel = {
     if (p.rhs.isInstanceOf[CostModel@unchecked]) p.rhs.asInstanceOf[CostModel]
     else
-      proxyOps[CostModel](p)(scala.reflect.classTag[CostModel])
+      CostModelAdapter(p)
+//      proxyOps[CostModel](p)(scala.reflect.classTag[CostModel])
   }
 
   // familyElem
@@ -524,11 +596,86 @@ object SigmaProp extends EntityObject("SigmaProp") {
     }
   }
 
+  // manual fix
+  case class SigmaPropAdapter(source: Rep[SigmaProp]) extends SigmaProp {
+    val selfType: Elem[SigmaProp] = source.elem 
+    private val thisClass = classOf[SigmaProp]
+
+    // manual fix
+    def builder: Rep[SigmaDslBuilder] = {
+      asRep[SigmaDslBuilder](mkMethodCall(source,
+        thisClass.getMethod("builder"),
+        List(),
+        true, element[SigmaDslBuilder]))
+    }
+
+    def isValid: Rep[Boolean] = {
+      asRep[Boolean](mkMethodCall(source,
+        thisClass.getMethod("isValid"),
+        List(),
+        true, element[Boolean]))
+    }
+
+    def propBytes: Rep[Col[Byte]] = {
+      asRep[Col[Byte]](mkMethodCall(source,
+        thisClass.getMethod("propBytes"),
+        List(),
+        true, element[Col[Byte]]))
+    }
+
+    // manual fix &&
+    def &&(other: Rep[SigmaProp]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(source,
+        thisClass.getMethod("$amp$amp", classOf[Sym]),
+        List(other),
+        true, element[SigmaProp]))
+    }
+
+    // manual fix &&
+    def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(source,
+        thisClass.getMethod("$amp$amp", classOf[Sym], classOf[Overloaded1]),
+        List(other, o),
+        true, element[SigmaProp]))
+    }
+
+    // manual fix ||
+    def ||(other: Rep[SigmaProp]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(source,
+        thisClass.getMethod("$bar$bar", classOf[Sym]),
+        List(other),
+        true, element[SigmaProp]))
+    }
+
+    // manual fix ||
+    def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(source,
+        thisClass.getMethod("$bar$bar", classOf[Sym], classOf[Overloaded1]),
+        List(other, o),
+        true, element[SigmaProp]))
+    }
+
+    def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(source,
+        thisClass.getMethod("lazyAnd", classOf[Sym]),
+        List(other),
+        true, element[SigmaProp]))
+    }
+
+    def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(source,
+        thisClass.getMethod("lazyOr", classOf[Sym]),
+        List(other),
+        true, element[SigmaProp]))
+    }
+  }
+
   // entityProxy: single proxy for each type family
   implicit def proxySigmaProp(p: Rep[SigmaProp]): SigmaProp = {
     if (p.rhs.isInstanceOf[SigmaProp@unchecked]) p.rhs.asInstanceOf[SigmaProp]
     else
-      proxyOps[SigmaProp](p)(scala.reflect.classTag[SigmaProp])
+      SigmaPropAdapter(p) // manual fix
+//      proxyOps[SigmaProp](p)(scala.reflect.classTag[SigmaProp])
   }
 
   // familyElem
@@ -917,11 +1064,104 @@ object Box extends EntityObject("Box") {
     }
   }
 
+  case class BoxAdapter(source: Rep[Box]) extends Box {
+    val selfType: Elem[Box] = source.elem
+    private val thisClass = classOf[Box]
+
+    // manual fix
+    def builder: Rep[SigmaDslBuilder] = {
+      asRep[SigmaDslBuilder](mkMethodCall(source,
+        thisClass.getMethod("builder"),
+        List(),
+        true, element[SigmaDslBuilder]))
+    }
+
+    def id: Rep[Col[Byte]] = {
+      asRep[Col[Byte]](mkMethodCall(source,
+        thisClass.getMethod("id"),
+        List(),
+        true, element[Col[Byte]]))
+    }
+
+    def value: Rep[Long] = {
+      asRep[Long](mkMethodCall(source,
+        thisClass.getMethod("value"),
+        List(),
+        true, element[Long]))
+    }
+
+    def bytes: Rep[Col[Byte]] = {
+      asRep[Col[Byte]](mkMethodCall(source,
+        thisClass.getMethod("bytes"),
+        List(),
+        true, element[Col[Byte]]))
+    }
+
+    def bytesWithoutRef: Rep[Col[Byte]] = {
+      asRep[Col[Byte]](mkMethodCall(source,
+        thisClass.getMethod("bytesWithoutRef"),
+        List(),
+        true, element[Col[Byte]]))
+    }
+
+    def propositionBytes: Rep[Col[Byte]] = {
+      asRep[Col[Byte]](mkMethodCall(source,
+        thisClass.getMethod("propositionBytes"),
+        List(),
+        true, element[Col[Byte]]))
+    }
+
+    def cost: Rep[Int] = {
+      asRep[Int](mkMethodCall(source,
+        thisClass.getMethod("cost"),
+        List(),
+        true, element[Int]))
+    }
+
+    def dataSize: Rep[Long] = {
+      asRep[Long](mkMethodCall(source,
+        thisClass.getMethod("dataSize"),
+        List(),
+        true, element[Long]))
+    }
+
+    def registers: Rep[Col[AnyValue]] = {
+      asRep[Col[AnyValue]](mkMethodCall(source,
+        thisClass.getMethod("registers"),
+        List(),
+        true, element[Col[AnyValue]]))
+    }
+
+    // manual fix (elems)
+    def deserialize[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = {
+      asRep[WOption[T]](mkMethodCall(source,
+        thisClass.getMethod("deserialize", classOf[Sym], classOf[Elem[_]]),
+        List(i, cT),
+        true, element[WOption[T]]))
+    }
+
+    // manual fix (elems)
+    def getReg[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = {
+      asRep[WOption[T]](mkMethodCall(source,
+        thisClass.getMethod("getReg", classOf[Sym], classOf[Elem[_]]),
+        List(i, cT),
+        true, element[WOption[T]]))
+    }
+
+    def tokens: Rep[Col[(Col[Byte], Long)]] = {
+      asRep[Col[(Col[Byte], Long)]](mkMethodCall(source,
+        thisClass.getMethod("tokens"),
+        List(),
+        true, element[Col[(Col[Byte], Long)]]))
+    }
+  }
+  
   // entityProxy: single proxy for each type family
   implicit def proxyBox(p: Rep[Box]): Box = {
     if (p.rhs.isInstanceOf[Box@unchecked]) p.rhs.asInstanceOf[Box]
     else
-      proxyOps[Box](p)(scala.reflect.classTag[Box])
+      BoxAdapter(p)
+//      proxyOps[Box](p)(scala.reflect.classTag[Box])
   }
 
   // familyElem
@@ -1594,11 +1834,90 @@ object Context extends EntityObject("Context") {
     }
   }
 
+  // manual fix
+  case class ContextAdapter(source: Rep[Context]) extends Context {
+    val selfType: Elem[Context] = source.elem
+    private val thisClass = classOf[Context]
+
+    def builder: Rep[SigmaDslBuilder] = {
+      asRep[SigmaDslBuilder](mkMethodCall(source,
+        thisClass.getMethod("builder"),
+        List(),
+        true, element[SigmaDslBuilder]))
+    }
+
+    def OUTPUTS: Rep[Col[Box]] = {
+      asRep[Col[Box]](mkMethodCall(source,
+        thisClass.getMethod("OUTPUTS"),
+        List(),
+        true, element[Col[Box]]))
+    }
+
+    def INPUTS: Rep[Col[Box]] = {
+      asRep[Col[Box]](mkMethodCall(source,
+        thisClass.getMethod("INPUTS"),
+        List(),
+        true, element[Col[Box]]))
+    }
+
+    def HEIGHT: Rep[Long] = {
+      asRep[Long](mkMethodCall(source,
+        thisClass.getMethod("HEIGHT"),
+        List(),
+        true, element[Long]))
+    }
+
+    def SELF: Rep[Box] = {
+      asRep[Box](mkMethodCall(source,
+        thisClass.getMethod("SELF"),
+        List(),
+        true, element[Box]))
+    }
+
+    def LastBlockUtxoRootHash: Rep[AvlTree] = {
+      asRep[AvlTree](mkMethodCall(source,
+        thisClass.getMethod("LastBlockUtxoRootHash"),
+        List(),
+        true, element[AvlTree]))
+    }
+
+    // manual fix (elems)
+    def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = {
+      asRep[WOption[T]](mkMethodCall(source,
+        thisClass.getMethod("getVar", classOf[Sym], classOf[Elem[_]]),
+        List(id, cT),
+        true, element[WOption[T]]))
+    }
+
+    // manual fix (elems)
+    def deserialize[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = {
+      asRep[WOption[T]](mkMethodCall(source,
+        thisClass.getMethod("deserialize", classOf[Sym], classOf[Elem[_]]),
+        List(id, cT),
+        true, element[WOption[T]]))
+    }
+
+    def cost: Rep[Int] = {
+      asRep[Int](mkMethodCall(source,
+        thisClass.getMethod("cost"),
+        List(),
+        true, element[Int]))
+    }
+
+    def dataSize: Rep[Long] = {
+      asRep[Long](mkMethodCall(source,
+        thisClass.getMethod("dataSize"),
+        List(),
+        true, element[Long]))
+    }
+  }
+  
   // entityProxy: single proxy for each type family
   implicit def proxyContext(p: Rep[Context]): Context = {
     if (p.rhs.isInstanceOf[Context@unchecked]) p.rhs.asInstanceOf[Context]
     else
-      proxyOps[Context](p)(scala.reflect.classTag[Context])
+      ContextAdapter(p) // manual fix
+//      proxyOps[Context](p)(scala.reflect.classTag[Context])
   }
 
   // familyElem
