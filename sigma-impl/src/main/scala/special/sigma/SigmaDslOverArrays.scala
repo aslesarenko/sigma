@@ -82,7 +82,20 @@ class TestContext(
   def LastBlockUtxoRootHash = lastBlockUtxoRootHash
 
   @NeverInline
-  def getVar[T](id: Byte)(implicit cT: RType[T]): Option[T] = SpecialPredef.cast[TestValue[T]](vars(id - 1)).map(_.value)
+  def getVar[T](id: Byte)(implicit cT: RType[T]): Option[T] = {
+    implicit val tag: ClassTag[T] = cT.classTag
+    if (id < 0 || id >= vars.length) throw new IndexOutOfBoundsException(s"Invalid id for getVar($id)")
+    val value = vars(id)
+    if (value != null ) {
+      value match {
+        case value: TestValue[_] if value.value != null =>
+          Some(value.value.asInstanceOf[T])
+        case _ =>
+          throw new InvalidType(s"Cannot getVar($id): invalid type of value $value at id=$id")
+      }
+    } else None
+
+  }
 
   @NeverInline
   def deserialize[T](id: Byte)(implicit cT: RType[T]): Option[T] = ???
