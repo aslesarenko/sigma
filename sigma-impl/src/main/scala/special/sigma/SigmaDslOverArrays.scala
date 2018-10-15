@@ -24,8 +24,20 @@ class TestBox(
 {
   def builder = new TestSigmaDslBuilder
   @NeverInline
-  def getReg[T](i: Int)(implicit cT: RType[T]): Option[T] =
-    SpecialPredef.cast[TestValue[T]](registers(i)).map(x => x.value)
+  def getReg[T](id: Int)(implicit cT: RType[T]): Option[T] = {
+    implicit val tag: ClassTag[T] = cT.classTag
+    if (id < 0 || id >= registers.length) throw new IndexOutOfBoundsException(s"Invalid id for getReg($id)")
+    val value = registers(id)
+    if (value != null ) {
+      // once the value is not null it should be of the right type
+      value match {
+        case value: TestValue[_] if value.value != null =>
+          Some(value.value.asInstanceOf[T])
+        case _ =>
+          throw new InvalidType(s"Cannot getVar($id): invalid type of value $value at id=$id")
+      }
+    } else None
+  }
   @NeverInline
   def cost = (dataSize / builder.CostModel.AccessKiloByteOfData.toLong).toInt
   @NeverInline
@@ -87,6 +99,7 @@ class TestContext(
     if (id < 0 || id >= vars.length) throw new IndexOutOfBoundsException(s"Invalid id for getVar($id)")
     val value = vars(id)
     if (value != null ) {
+      // once the value is not null it should be of the right type
       value match {
         case value: TestValue[_] if value.value != null =>
           Some(value.value.asInstanceOf[T])
@@ -94,7 +107,6 @@ class TestContext(
           throw new InvalidType(s"Cannot getVar($id): invalid type of value $value at id=$id")
       }
     } else None
-
   }
 
   @NeverInline
