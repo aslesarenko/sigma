@@ -26,7 +26,7 @@ class TestBox(
   @NeverInline
   def getReg[T](id: Int)(implicit cT: RType[T]): Option[T] = {
     implicit val tag: ClassTag[T] = cT.classTag
-    if (id < 0 || id >= registers.length) throw new IndexOutOfBoundsException(s"Invalid id for getReg($id)")
+    if (id < 0 || id >= registers.length) return None
     val value = registers(id)
     if (value != null ) {
       // once the value is not null it should be of the right type
@@ -96,7 +96,7 @@ class TestContext(
   @NeverInline
   def getVar[T](id: Byte)(implicit cT: RType[T]): Option[T] = {
     implicit val tag: ClassTag[T] = cT.classTag
-    if (id < 0 || id >= vars.length) throw new IndexOutOfBoundsException(s"Invalid id for getVar($id)")
+    if (id < 0 || id >= vars.length) return None
     val value = vars(id)
     if (value != null ) {
       // once the value is not null it should be of the right type
