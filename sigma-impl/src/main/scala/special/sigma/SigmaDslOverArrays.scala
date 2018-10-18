@@ -10,6 +10,8 @@ import scala.reflect.ClassTag
 import special.SpecialPredef
 import special.collection._
 import Types._
+import scorex.crypto.hash.{Blake2b256, Sha256}
+
 import scalan.meta.RType
 import RType._
 import scalan.{NeverInline, Internal, OverloadId}
@@ -160,10 +162,10 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
   def sigmaProp(b: Boolean): SigmaProp = TrivialSigma(b)
 
   @NeverInline
-  def blake2b256(bytes: Col[Byte]): Col[Byte] = ???
+  def blake2b256(bytes: Col[Byte]): Col[Byte] = Cols.fromArray(Blake2b256.hash(bytes.arr))
 
   @NeverInline
-  def sha256(bytes: Col[Byte]): Col[Byte] = ???
+  def sha256(bytes: Col[Byte]): Col[Byte] = Cols.fromArray(Sha256.hash(bytes.arr))
 
   @NeverInline
   def PubKey(base64String: String): SigmaProp = ???

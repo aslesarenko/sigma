@@ -464,8 +464,19 @@ object CostedBox extends EntityObject("CostedBox") {
     protected def getDefaultRep = CostedBoxRep
   }
 
+  // manual fix
+  // TODO CostedBox should be trait
+//  case class CostedBoxAdapter(source: Rep[CostedBox]) extends CostedBox with Def[CostedBox] {
+//    val selfType: Elem[CostedBox] = source.elem
+//    private val thisClass = classOf[CostedBox]
+//  }
+
   implicit def proxyCostedBox(p: Rep[CostedBox]): CostedBox =
     proxyOps[CostedBox](p)
+//  if (p.rhs.isInstanceOf[CostedBox])
+//    p.rhs.asInstanceOf[CostedBox]
+//  else
+//    CostedBoxAdapter(p)
 
   implicit class ExtendedCostedBox(p: Rep[CostedBox]) {
     def toData: Rep[CostedBoxData] = {

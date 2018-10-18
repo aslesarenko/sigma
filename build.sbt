@@ -54,14 +54,15 @@ def libraryDefSettings = commonSettings ++ Seq(
 lazy val allConfigDependency = "compile->compile;test->test"
 cancelable in Global := true
 
-val paradise = "org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full
-val common = "special" %% "common" % "0.3.0-SNAPSHOT"
-val meta = "special" %% "meta" % "0.3.0-SNAPSHOT"
-val core = "special" %% "core" % "0.3.0-SNAPSHOT"
-val plugin = "special" %% "plugin" % "0.3.0-SNAPSHOT"
-val libraryapi = "special" %% "library-api" % "0.3.0-SNAPSHOT"
+val scripto     = "org.scorexfoundation" %% "scrypto" % "2.1.3"
+val paradise    = "org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full
+val common      = "special" %% "common" % "0.3.0-SNAPSHOT"
+val meta        = "special" %% "meta" % "0.3.0-SNAPSHOT"
+val core        = "special" %% "core" % "0.3.0-SNAPSHOT"
+val plugin      = "special" %% "plugin" % "0.3.0-SNAPSHOT"
+val libraryapi  = "special" %% "library-api" % "0.3.0-SNAPSHOT"
 val libraryimpl = "special" %% "library-impl" % "0.3.0-SNAPSHOT"
-val library= "special" %% "library" % "0.3.0-SNAPSHOT"
+val library     = "special" %% "library" % "0.3.0-SNAPSHOT"
 val libraryconf = "special" %% "library-conf" % "0.3.0-SNAPSHOT"
 
 lazy val sigmaconf = Project("sigma-conf", file("sigma-conf"))
@@ -97,7 +98,7 @@ lazy val sigmaimpl = Project("sigma-impl", file("sigma-impl"))
     .settings(libraryDefSettings,
       libraryDependencies ++= Seq(
         libraryapi, libraryimpl,
-        "org.scorexfoundation" %% "scrypto" % "2.1.2",
+        scripto,
         "org.bouncycastle" % "bcprov-jdk15on" % "1.+"
       ))
 
