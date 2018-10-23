@@ -10,7 +10,7 @@ import scala.reflect.ClassTag
 import special.SpecialPredef
 import special.collection._
 import Types._
-import scorex.crypto.hash.{Blake2b256, Sha256}
+import scorex.crypto.hash.{Sha256, Blake2b256}
 
 import scalan.meta.RType
 import RType._
@@ -121,7 +121,7 @@ class TestContext(
   def dataSize = {
     val inputsSize = INPUTS.map(_.dataSize).sum(builder.Monoids.longPlusMonoid)
     val outputsSize = OUTPUTS.map(_.dataSize).sum(builder.Monoids.longPlusMonoid)
-    8L + SELF.dataSize + inputsSize + outputsSize + LastBlockUtxoRootHash.dataSize
+    8L + (if (SELF == null) 0 else SELF.dataSize) + inputsSize + outputsSize + LastBlockUtxoRootHash.dataSize
   }
 }
 
@@ -196,6 +196,9 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
 
   @NeverInline
   def groupGenerator: ECPoint = __g__
+
+  @NeverInline
+  def exponentiate(base: ECPoint, exponent: BigInteger): ECPoint = ???
 }
 
 trait DefaultSigma extends SigmaProp {

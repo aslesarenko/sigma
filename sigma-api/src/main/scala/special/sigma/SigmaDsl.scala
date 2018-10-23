@@ -151,6 +151,7 @@ trait SigmaContract {
   def treeModifications(tree: AvlTree, operations: Col[Byte], proof: Col[Byte]): Option[Col[Byte]] = this.builder.treeModifications(tree, operations, proof)
 
   def groupGenerator: ECPoint = this.builder.groupGenerator
+  def exponentiate(base: ECPoint, exponent: BigInteger): ECPoint = this.builder.exponentiate(base, exponent)
 
   @clause def canOpen(ctx: Context): Boolean
 
@@ -191,5 +192,6 @@ trait SigmaDslBuilder extends DslBuilder {
   def treeModifications(tree: AvlTree, operations: Col[Byte], proof: Col[Byte]): Option[Col[Byte]]
 
   def groupGenerator: ECPoint
+  def exponentiate(base: ECPoint, exponent: BigInteger): ECPoint
 }
 

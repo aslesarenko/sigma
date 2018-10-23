@@ -1209,6 +1209,13 @@ object TestSigmaDslBuilder extends EntityObject("TestSigmaDslBuilder") {
         List(),
         true, element[WECPoint]))
     }
+
+    override def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint]  = {
+      asRep[WECPoint](mkMethodCall(self,
+        thisClass.getMethod("exponentiate", classOf[Sym], classOf[Sym]),
+        List(base, exponent),
+        true, element[WECPoint]))
+    }
   }
   // elem for concrete class
   class TestSigmaDslBuilderElem(val iso: Iso[TestSigmaDslBuilderData, TestSigmaDslBuilder])

@@ -82,6 +82,7 @@ package special.sigma {
       @NeverInline def treeLookup(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = delayInvoke;
       @NeverInline def treeModifications(tree: Rep[AvlTree], operations: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = delayInvoke;
       @NeverInline def groupGenerator: Rep[WECPoint] = delayInvoke
+      @NeverInline def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint] = delayInvoke
     };
     abstract class TrivialSigma(val _isValid: Rep[Boolean]) extends SigmaProp with DefaultSigma with Product with Serializable {
       @NeverInline def propBytes: Rep[Col[Byte]] = delayInvoke;

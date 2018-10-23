@@ -2663,6 +2663,13 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
         List(),
         true, element[WECPoint]))
     }
+
+    def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint]  = {
+      asRep[WECPoint](mkMethodCall(self,
+        thisClass.getMethod("exponentiate", classOf[Sym], classOf[Sym]),
+        List(base, exponent),
+        true, element[WECPoint]))
+    }
   }
 
   implicit object LiftableSigmaDslBuilder
@@ -2694,7 +2701,7 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++
         Elem.declaredMethods(classOf[SigmaDslBuilder], classOf[SSigmaDslBuilder], Set(
-        "Cols", "Monoids", "Costing", "CostModel", "verifyZK", "atLeast", "allOf", "allZK", "anyOf", "anyZK", "PubKey", "sigmaProp", "blake2b256", "sha256", "byteArrayToBigInt", "longToByteArray", "proveDlog", "proveDHTuple", "isMember", "treeLookup", "treeModifications", "groupGenerator"
+        "Cols", "Monoids", "Costing", "CostModel", "verifyZK", "atLeast", "allOf", "allZK", "anyOf", "anyZK", "PubKey", "sigmaProp", "blake2b256", "sha256", "byteArrayToBigInt", "longToByteArray", "proveDlog", "proveDHTuple", "isMember", "treeLookup", "treeModifications", "groupGenerator", "exponentiate"
         ))
     }
 

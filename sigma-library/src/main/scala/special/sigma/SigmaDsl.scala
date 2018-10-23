@@ -118,6 +118,7 @@ package special.sigma {
       def treeLookup(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = this.builder.treeLookup(tree, key, proof);
       def treeModifications(tree: Rep[AvlTree], operations: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = this.builder.treeModifications(tree, operations, proof);
       def groupGenerator: Rep[WECPoint] = this.builder.groupGenerator;
+      def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint] = this.builder.exponentiate(base, exponent)
       @clause def canOpen(ctx: Rep[Context]): Rep[Boolean];
       def asFunction: Rep[scala.Function1[Context, Boolean]] = fun(((ctx: Rep[Context]) => this.canOpen(ctx)))
     };
@@ -145,6 +146,7 @@ package special.sigma {
       def treeLookup(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]];
       def treeModifications(tree: Rep[AvlTree], operations: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]];
       def groupGenerator: Rep[WECPoint]
+      def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint]
     };
     trait CostModelCompanion;
     trait DslBuilderCompanion;
