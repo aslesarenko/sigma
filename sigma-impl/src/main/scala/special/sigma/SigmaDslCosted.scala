@@ -39,7 +39,7 @@ class CostedContext(val ctx: Context) extends ConcreteCosted[Context] with Coste
     val cost = Operations.SelectField
     new CostedPrim(ctx.HEIGHT, cost, 8L)
   }
-  def SELF: CostedBox = new CostedBox(ctx.SELF)
+  def SELF: CostedBox = new CostedBox(ctx.SELF, Operations.AccessBox)
   def LastBlockUtxoRootHash: CostedAvlTree = new CostedAvlTree(ctx.LastBlockUtxoRootHash)
 
   def getVar[T](id: Byte)(implicit cT: RType[T]): CostedOption[T] = {
@@ -56,7 +56,7 @@ class CostedContext(val ctx: Context) extends ConcreteCosted[Context] with Coste
   def dataSize = ctx.dataSize
 }
 
-class CostedBox(box: Box) extends ConcreteCosted[Box] with CostedSigmaObject[Box] {
+class CostedBox(box: Box, val cost: Int) extends ConcreteCosted[Box] with CostedSigmaObject[Box] {
   def id: CostedCol[Byte] = costColWithConstSizedItem(box.id, 1)
   def valueCosted: Costed[Long] = {
     val cost = Operations.SelectField
@@ -81,7 +81,6 @@ class CostedBox(box: Box) extends ConcreteCosted[Box] with CostedSigmaObject[Box
   }
 
   def value = box
-  def cost = box.cost
   def dataSize = box.dataSize
 }
 
