@@ -233,12 +233,16 @@ case class TrivialSigma(val _isValid: Boolean) extends SigmaProp with DefaultSig
   @NeverInline
   def isValid: Boolean = _isValid
   @NeverInline
+  @OverloadId("and_sigma")
   override def &&(other: SigmaProp) = super.&&(other)
   @NeverInline
+  @OverloadId("and_bool")
   override def &&(other: Boolean) = super.&&(other)
   @NeverInline
+  @OverloadId("or_sigma")
   override def ||(other: SigmaProp) = super.||(other)
   @NeverInline
+  @OverloadId("or_bool")
   override def ||(other: Boolean) = super.||(other)
   @NeverInline
   override def lazyAnd(other: => SigmaProp) = super.lazyAnd(other)
