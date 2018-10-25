@@ -192,13 +192,12 @@ object CostModel extends EntityObject("CostModel") {
         true, element[Long]))
     }
   }
-  
+
   // entityProxy: single proxy for each type family
   implicit def proxyCostModel(p: Rep[CostModel]): CostModel = {
     if (p.rhs.isInstanceOf[CostModel@unchecked]) p.rhs.asInstanceOf[CostModel]
     else
       CostModelAdapter(p)
-//      proxyOps[CostModel](p)(scala.reflect.classTag[CostModel])
   }
 
   // familyElem
@@ -598,7 +597,7 @@ object SigmaProp extends EntityObject("SigmaProp") {
 
   // manual fix
   case class SigmaPropAdapter(source: Rep[SigmaProp]) extends SigmaProp {
-    val selfType: Elem[SigmaProp] = source.elem 
+    val selfType: Elem[SigmaProp] = source.elem
     private val thisClass = classOf[SigmaProp]
 
     // manual fix
@@ -675,7 +674,6 @@ object SigmaProp extends EntityObject("SigmaProp") {
     if (p.rhs.isInstanceOf[SigmaProp@unchecked]) p.rhs.asInstanceOf[SigmaProp]
     else
       SigmaPropAdapter(p) // manual fix
-//      proxyOps[SigmaProp](p)(scala.reflect.classTag[SigmaProp])
   }
 
   // familyElem
@@ -1155,13 +1153,12 @@ object Box extends EntityObject("Box") {
         true, element[Col[(Col[Byte], Long)]]))
     }
   }
-  
+
   // entityProxy: single proxy for each type family
   implicit def proxyBox(p: Rep[Box]): Box = {
     if (p.rhs.isInstanceOf[Box@unchecked]) p.rhs.asInstanceOf[Box]
     else
       BoxAdapter(p)
-//      proxyOps[Box](p)(scala.reflect.classTag[Box])
   }
 
   // familyElem
@@ -1911,13 +1908,12 @@ object Context extends EntityObject("Context") {
         true, element[Long]))
     }
   }
-  
+
   // entityProxy: single proxy for each type family
   implicit def proxyContext(p: Rep[Context]): Context = {
     if (p.rhs.isInstanceOf[Context@unchecked]) p.rhs.asInstanceOf[Context]
     else
       ContextAdapter(p) // manual fix
-//      proxyOps[Context](p)(scala.reflect.classTag[Context])
   }
 
   // familyElem
@@ -2163,7 +2159,7 @@ object SigmaContract extends EntityObject("SigmaContract") {
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++
         Elem.declaredMethods(classOf[SigmaContract], classOf[SSigmaContract], Set(
-        "builder", "Collection", "verifyZK", "atLeast", "allOf", "allZK", "anyOf", "anyZK", "PubKey", "sigmaProp", "blake2b256", "sha256", "byteArrayToBigInt", "longToByteArray", "proveDlog", "proveDHTuple", "isMember", "treeLookup", "treeModifications", "groupGenerator", "canOpen", "asFunction"
+        "builder", "Collection", "verifyZK", "atLeast", "allOf", "allZK", "anyOf", "anyZK", "PubKey", "sigmaProp", "blake2b256", "sha256", "byteArrayToBigInt", "longToByteArray", "proveDlog", "proveDHTuple", "isMember", "treeLookup", "treeModifications", "groupGenerator", "exponentiate", "canOpen", "asFunction"
         ))
     }
 
@@ -2466,6 +2462,19 @@ object SigmaContract extends EntityObject("SigmaContract") {
       }
     }
 
+    object exponentiate {
+      def unapply(d: Def[_]): Nullable[(Rep[SigmaContract], Rep[WECPoint], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[SigmaContractElem[_]] && method.getName == "exponentiate" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[SigmaContract], Rep[WECPoint], Rep[WBigInteger])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[SigmaContract], Rep[WECPoint], Rep[WBigInteger])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
     object canOpen {
       def unapply(d: Def[_]): Nullable[(Rep[SigmaContract], Rep[Context])] = d match {
         case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[SigmaContractElem[_]] && method.getName == "canOpen" =>
@@ -2664,7 +2673,7 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
         true, element[WECPoint]))
     }
 
-    def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint]  = {
+    def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint] = {
       asRep[WECPoint](mkMethodCall(self,
         thisClass.getMethod("exponentiate", classOf[Sym], classOf[Sym]),
         List(base, exponent),
@@ -3025,6 +3034,19 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
         case _ => Nullable.None
       }
       def unapply(exp: Sym): Nullable[Rep[SigmaDslBuilder]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object exponentiate {
+      def unapply(d: Def[_]): Nullable[(Rep[SigmaDslBuilder], Rep[WECPoint], Rep[WBigInteger])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[SigmaDslBuilderElem[_]] && method.getName == "exponentiate" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[SigmaDslBuilder], Rep[WECPoint], Rep[WBigInteger])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[SigmaDslBuilder], Rep[WECPoint], Rep[WBigInteger])] = exp match {
         case Def(d) => unapply(d)
         case _ => Nullable.None
       }

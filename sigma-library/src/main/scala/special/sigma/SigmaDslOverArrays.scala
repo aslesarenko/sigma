@@ -32,11 +32,11 @@ package special.sigma {
       @NeverInline def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke
     };
     trait DefaultContract extends SigmaContract {
-      def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder()
+      def builder: Rep[SigmaDslBuilder] = RTestSigmaDslBuilder()
     };
     abstract class TestBox(val id: Rep[Col[Byte]], val value: Rep[Long], val bytes: Rep[Col[Byte]], val bytesWithoutRef: Rep[Col[Byte]], val propositionBytes: Rep[Col[Byte]], val registers: Rep[Col[AnyValue]]) extends Box {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
-      @NeverInline def getReg[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke;
+      @NeverInline def getReg[T](id: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke;
       @NeverInline def cost: Rep[Int] = delayInvoke;
       @NeverInline def dataSize: Rep[Long] = delayInvoke;
       @NeverInline def deserialize[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke;
@@ -84,7 +84,7 @@ package special.sigma {
       @NeverInline def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean] = delayInvoke;
       @NeverInline def treeLookup(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = delayInvoke;
       @NeverInline def treeModifications(tree: Rep[AvlTree], operations: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = delayInvoke;
-      @NeverInline def groupGenerator: Rep[WECPoint] = delayInvoke
+      @NeverInline def groupGenerator: Rep[WECPoint] = delayInvoke;
       @NeverInline def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint] = delayInvoke
     };
     abstract class TrivialSigma(val _isValid: Rep[Boolean]) extends SigmaProp with DefaultSigma with Product with Serializable {
@@ -107,7 +107,7 @@ package special.sigma {
       @NeverInline override def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke;
       @NeverInline override def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke
     };
-    abstract class ProveDHTEvidence(val value: Rep[WECPoint]) extends SigmaProp with DefaultSigma with Product with Serializable {
+    abstract class ProveDHTEvidence(val gv: Rep[WECPoint], val hv: Rep[WECPoint], val uv: Rep[WECPoint], val vv: Rep[WECPoint]) extends SigmaProp with DefaultSigma with Product with Serializable {
       @NeverInline def propBytes: Rep[Col[Byte]] = delayInvoke;
       @NeverInline def isValid: Rep[Boolean] = delayInvoke;
       @NeverInline @OverloadId(value = "and_sigma") override def &&(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;

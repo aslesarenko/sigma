@@ -87,30 +87,32 @@ package special.sigma {
     abstract class TrivialSigma(val _isValid: Rep[Boolean]) extends SigmaProp with DefaultSigma with Product with Serializable {
       @NeverInline def propBytes: Rep[Col[Byte]] = delayInvoke;
       @NeverInline def isValid: Rep[Boolean] = delayInvoke;
-      @NeverInline override def &&(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
-      @NeverInline override def &&(other: Rep[Boolean]): Rep[SigmaProp] = delayInvoke;
-      @NeverInline override def ||(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
-      @NeverInline override def ||(other: Rep[Boolean]): Rep[SigmaProp] = delayInvoke;
+      @NeverInline @OverloadId(value = "and_sigma") override def &&(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
+      @NeverInline @OverloadId(value = "and_bool") override def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = delayInvoke;
+      @NeverInline @OverloadId(value = "or_sigma") override def ||(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
+      @NeverInline @OverloadId(value = "or_bool") override def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = delayInvoke;
       @NeverInline override def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke;
       @NeverInline override def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke
     };
     abstract class ProveDlogEvidence(val value: Rep[WECPoint]) extends SigmaProp with DefaultSigma with Product with Serializable {
       @NeverInline def propBytes: Rep[Col[Byte]] = delayInvoke;
       @NeverInline def isValid: Rep[Boolean] = delayInvoke;
-      @NeverInline override def &&(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
-      @NeverInline override def &&(other: Rep[Boolean]): Rep[SigmaProp] = delayInvoke;
-      @NeverInline override def ||(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
-      @NeverInline override def ||(other: Rep[Boolean]): Rep[SigmaProp] = delayInvoke;
+      // manual fix
+      @NeverInline @OverloadId(value = "and_sigma") override def &&(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
+      @NeverInline @OverloadId(value = "and_bool") override def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = delayInvoke;
+      @NeverInline @OverloadId(value = "or_sigma") override def ||(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
+      @NeverInline @OverloadId(value = "or_bool") override def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = delayInvoke;
       @NeverInline override def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke;
       @NeverInline override def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke
     };
-    abstract class ProveDHTEvidence(val value: Rep[WECPoint]) extends SigmaProp with DefaultSigma with Product with Serializable {
+    abstract class ProveDHTEvidence(val gv: Rep[WECPoint], val hv: Rep[WECPoint], val uv: Rep[WECPoint], val vv: Rep[WECPoint]) extends SigmaProp with DefaultSigma with Product with Serializable {
       @NeverInline def propBytes: Rep[Col[Byte]] = delayInvoke;
       @NeverInline def isValid: Rep[Boolean] = delayInvoke;
-      @NeverInline override def &&(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
-      @NeverInline override def &&(other: Rep[Boolean]): Rep[SigmaProp] = delayInvoke;
-      @NeverInline override def ||(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
-      @NeverInline override def ||(other: Rep[Boolean]): Rep[SigmaProp] = delayInvoke;
+      // manual fix
+      @NeverInline @OverloadId(value = "and_sigma") override def &&(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
+      @NeverInline @OverloadId(value = "and_bool") override def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = delayInvoke;
+      @NeverInline @OverloadId(value = "or_sigma") override def ||(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
+      @NeverInline @OverloadId(value = "or_bool") override def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = delayInvoke;
       @NeverInline override def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke;
       @NeverInline override def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke
     };

@@ -47,7 +47,7 @@ lazy val testSettings = Seq(
 lazy val commonSettings = buildSettings ++ testSettings
 def libraryDefSettings = commonSettings ++ Seq(
   scalacOptions ++= Seq(
-    s"-Xplugin:${file(".").absolutePath }/scalanizer/target/scala-2.12/scalanizer-assembly-0.3.0-SNAPSHOT.jar"
+//    s"-Xplugin:${file(".").absolutePath }/scalanizer/target/scala-2.12/scalanizer-assembly-0.3.0-SNAPSHOT.jar"
   )
 )
 
@@ -90,7 +90,7 @@ lazy val sigmaapi = Project("sigma-api", file("sigma-api"))
         common % allConfigDependency, meta, libraryapi,
         "org.typelevel" %% "macro-compat" % "1.1.1",
         "org.scorexfoundation" %% "scrypto" % "2.1.2",
-        "org.bouncycastle" % "bcprov-jdk15on" % "1.+"
+        "org.bouncycastle" % "bcprov-jdk15on" % "1.60"
       ))
 
 lazy val sigmaimpl = Project("sigma-impl", file("sigma-impl"))
@@ -99,7 +99,7 @@ lazy val sigmaimpl = Project("sigma-impl", file("sigma-impl"))
       libraryDependencies ++= Seq(
         libraryapi, libraryimpl,
         scripto,
-        "org.bouncycastle" % "bcprov-jdk15on" % "1.+"
+        "org.bouncycastle" % "bcprov-jdk15on" % "1.60"
       ))
 
 lazy val sigmalibrary = Project("sigma-library", file("sigma-library"))
@@ -113,7 +113,7 @@ lazy val sigmalibrary = Project("sigma-library", file("sigma-library"))
         libraryimpl % allConfigDependency,
         library % allConfigDependency,
         "org.scorexfoundation" %% "scrypto" % "2.1.2",
-        "org.bouncycastle" % "bcprov-jdk15on" % "1.+"
+        "org.bouncycastle" % "bcprov-jdk15on" % "1.60"
       ))
 
 lazy val root = Project("sigma", file("."))
