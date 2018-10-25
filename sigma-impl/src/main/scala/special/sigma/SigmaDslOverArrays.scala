@@ -256,12 +256,16 @@ case class ProveDlogEvidence(val value: ECPoint) extends SigmaProp with DefaultS
   @NeverInline
   def isValid: Boolean = true
   @NeverInline
+  @OverloadId("and_sigma")
   override def &&(other: SigmaProp) = super.&&(other)
   @NeverInline
+  @OverloadId("and_bool")
   override def &&(other: Boolean) = super.&&(other)
   @NeverInline
+  @OverloadId("or_sigma")
   override def ||(other: SigmaProp) = super.||(other)
   @NeverInline
+  @OverloadId("or_bool")
   override def ||(other: Boolean) = super.||(other)
   @NeverInline
   override def lazyAnd(other: => SigmaProp) = super.lazyAnd(other)
@@ -269,18 +273,22 @@ case class ProveDlogEvidence(val value: ECPoint) extends SigmaProp with DefaultS
   override def lazyOr(other: => SigmaProp) = super.lazyOr(other)
 }
 
-case class ProveDHTEvidence(val value: ECPoint) extends SigmaProp with DefaultSigma {
+case class ProveDHTEvidence(val gv: ECPoint, val hv: ECPoint, val uv: ECPoint, val vv: ECPoint) extends SigmaProp with DefaultSigma {
   @NeverInline
-  def propBytes: Col[Byte] = new ColOverArray(value.getEncoded(true))
+  def propBytes: Col[Byte] = new ColOverArray(gv.getEncoded(true))
   @NeverInline
   def isValid: Boolean = true
   @NeverInline
+  @OverloadId("and_sigma")
   override def &&(other: SigmaProp) = super.&&(other)
   @NeverInline
+  @OverloadId("and_bool")
   override def &&(other: Boolean) = super.&&(other)
   @NeverInline
+  @OverloadId("or_sigma")
   override def ||(other: SigmaProp) = super.||(other)
   @NeverInline
+  @OverloadId("or_bool")
   override def ||(other: Boolean) = super.||(other)
   @NeverInline
   override def lazyAnd(other: => SigmaProp) = super.lazyAnd(other)
