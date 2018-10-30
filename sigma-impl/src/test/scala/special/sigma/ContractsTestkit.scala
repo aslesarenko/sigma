@@ -24,6 +24,7 @@ trait ContractsTestkit {
   val noBytes = collection[Byte]()
   val noInputs = Array[Box]()
   val noOutputs = Array[Box]()
+  val dummyPubkey: Array[Byte] = Array.fill(32)(0: Byte)
   val emptyAvlTree = new TestAvlTree(noBytes, 0, None, None, None)
 
   def collection[T:ClassTag](items: T*) = Cols.fromArray(items.toArray)
@@ -56,16 +57,16 @@ trait ContractsTestkit {
   )
 
   def newContext(height: Long, self: Box, vars: AnyValue*): TestContext = {
-    new TestContext(noInputs, noOutputs, height, self, emptyAvlTree, vars.toArray)
+    new TestContext(noInputs, noOutputs, height, self, emptyAvlTree, dummyPubkey, vars.toArray)
   }
 
   implicit class TestContextOps(ctx: TestContext) {
     def withInputs(inputs: Box*) =
-      new TestContext(inputs.toArray, ctx.outputs, ctx.height, ctx.selfBox, emptyAvlTree, ctx.vars)
+      new TestContext(inputs.toArray, ctx.outputs, ctx.height, ctx.selfBox, emptyAvlTree, dummyPubkey, ctx.vars)
     def withOutputs(outputs: Box*) =
-      new TestContext(ctx.inputs, outputs.toArray, ctx.height, ctx.selfBox, emptyAvlTree, ctx.vars)
+      new TestContext(ctx.inputs, outputs.toArray, ctx.height, ctx.selfBox, emptyAvlTree, dummyPubkey, ctx.vars)
     def withVariables(vars: Map[Int, Any]) =
-      new TestContext(ctx.inputs, ctx.outputs, ctx.height, ctx.selfBox, emptyAvlTree,
+      new TestContext(ctx.inputs, ctx.outputs, ctx.height, ctx.selfBox, emptyAvlTree, dummyPubkey,
         contextVars(vars.map { case (k, v) => (k.toByte, v) }).arr)
   }
 

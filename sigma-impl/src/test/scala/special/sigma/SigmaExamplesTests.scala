@@ -17,7 +17,7 @@ class SigmaExamplesTests extends FunSuite with ContractsTestkit {
     val self = new TestBox(selfId, 10, noBytes, noBytes, noBytes, noRegisters)
 
     { // when backer can open
-      val ctxForBacker = new TestContext(noInputs, noOutputs, height = 200, self, emptyAvlTree, Array())
+      val ctxForBacker = new TestContext(noInputs, noOutputs, height = 200, self, emptyAvlTree, dummyPubkey, Array())
       val ok = contract.canOpen(ctxForBacker)
       assert(ok)
       assert(self.dataSize == noBytes.length)
@@ -25,7 +25,7 @@ class SigmaExamplesTests extends FunSuite with ContractsTestkit {
 
     { // then project can open
       val out = new TestBox(outId, minToRaise, noBytes, noBytes, project.propBytes, noRegisters)
-      val ctxForProject = new TestContext(Array(), Array(out), height = 50, self, emptyAvlTree, Array())
+      val ctxForProject = new TestContext(Array(), Array(out), height = 50, self, emptyAvlTree, dummyPubkey, Array())
       val ok = contract.canOpen(ctxForProject)
       assert(ok)
     }
@@ -54,6 +54,7 @@ class SigmaExamplesTests extends FunSuite with ContractsTestkit {
           prop,
           regs(Map(R4 -> outHeight))),
         emptyAvlTree,
+        dummyPubkey,
         vars = Array()
       )
       userProof.isValid = true
@@ -76,6 +77,7 @@ class SigmaExamplesTests extends FunSuite with ContractsTestkit {
           prop,
           regs(Map(R4 -> outHeight))),
         emptyAvlTree,
+        dummyPubkey,
         vars = Array()
       )
       userProof.isValid = true
@@ -97,6 +99,7 @@ class SigmaExamplesTests extends FunSuite with ContractsTestkit {
           prop,
           regs(Map(R4 -> outHeight))),
         emptyAvlTree,
+        dummyPubkey,
         vars = Array()
       )
       userProof.isValid = false

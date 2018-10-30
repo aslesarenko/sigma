@@ -78,6 +78,7 @@ class TestContext(
     val height: Long,
     val selfBox: Box,
     val lastBlockUtxoRootHash: AvlTree,
+    val minerPubKey: Array[Byte],
     val vars: Array[AnyValue]
 ) extends Context {
   def builder = new TestSigmaDslBuilder
@@ -94,6 +95,9 @@ class TestContext(
 
   @NeverInline
   def LastBlockUtxoRootHash = lastBlockUtxoRootHash
+
+  @NeverInline
+  def MinerPubKey = builder.Cols.fromArray(minerPubKey)
 
   @NeverInline
   def getVar[T](id: Byte)(implicit cT: RType[T]): Option[T] = {

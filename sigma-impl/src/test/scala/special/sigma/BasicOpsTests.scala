@@ -32,7 +32,7 @@ class BasicOpsTests extends FunSuite with ContractsTestkit with Matchers {
   test("examples from wpaper")  {
     val selfId = collection[Byte](0, 1)
     val self = new TestBox(selfId, 10, noBytes, noBytes, noBytes, noRegisters)
-    val ctx = new TestContext(noInputs, noOutputs, height = 200, self, emptyAvlTree, Array())
+    val ctx = new TestContext(noInputs, noOutputs, height = 200, self, emptyAvlTree, dummyPubkey, Array())
   }
 
 

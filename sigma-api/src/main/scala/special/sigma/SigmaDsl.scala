@@ -111,6 +111,7 @@ trait Context {
   def HEIGHT: Long
   def SELF: Box
   def LastBlockUtxoRootHash: AvlTree
+  def MinerPubKey: Col[Byte]
   def getVar[T](id: Byte)(implicit cT: RType[T]): Option[T]
   def deserialize[T](id: Byte)(implicit cT: RType[T]): Option[T]
   def cost: Int
