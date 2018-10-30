@@ -14,6 +14,10 @@ class BasicOpsTests extends FunSuite with ContractsTestkit with Matchers {
     SigmaDsl.atLeast(3, props).isValid shouldBe false
   }
 
+  test("ByteArrayToBigInt should always produce a positive big int") {
+    SigmaDsl.byteArrayToBigInt(collection[Byte](-1)).signum shouldBe 1
+  }
+
   def test(f: Context => Boolean, ctx: Context, expected: Boolean) = {
     val contr = NoEnvContract(f)
     val res = contr.canOpen(ctx)

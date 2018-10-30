@@ -171,7 +171,7 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
   def PubKey(base64String: String): SigmaProp = ???
 
   @NeverInline
-  def byteArrayToBigInt(bytes: Col[Byte]): BigInteger = new BigInteger(bytes.arr)
+  def byteArrayToBigInt(bytes: Col[Byte]): BigInteger = new BigInteger(1, bytes.arr)
 
   @NeverInline
   def longToByteArray(l: Long): Col[Byte] = Cols.fromArray(Longs.toByteArray(l))
