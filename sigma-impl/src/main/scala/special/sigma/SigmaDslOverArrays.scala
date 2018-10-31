@@ -47,7 +47,9 @@ class TestBox(
   @NeverInline
   def deserialize[T](i: Int)(implicit cT: RType[T]): Option[T] = ???
 
-  def tokens = {
+  def creationInfo: (Long, Col[Byte]) = this.R3[(Long, Col[Byte])].get
+
+  def tokens: Col[(Col[Byte], Long)] = {
     this.R2[Col[(Col[Byte], Long)]].get
   }
 }

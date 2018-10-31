@@ -29,6 +29,8 @@ trait CostModel {
   def CollectionConst: Int // = "Const: () => Array[IV]"
   def AccessKiloByteOfData: Int // = "AccessKiloByteOfData"
   @Reified("T") def dataSize[T](x: T)(implicit cT: ClassTag[T]): Long
+  /** Size of public key in bytes */
+  def PubKeySize: Long = 32
 }
 
 trait DslBuilder {}
@@ -63,6 +65,7 @@ trait Box extends DslObject {
   def cost: Int
   def dataSize: Long
   def registers: Col[AnyValue]
+
   def deserialize[@Reified T](i: Int)(implicit cT: RType[T]): Option[T]
   def getReg[@Reified T](i: Int)(implicit cT: RType[T]): Option[T]
 
@@ -87,7 +90,7 @@ trait Box extends DslObject {
   def R9[@Reified T](implicit cT:RType[T]): Option[T] = this.getReg[T](9)
 
   def tokens: Col[(Col[Byte], Long)]
-
+  def creationInfo: (Long, Col[Byte])
   @Internal
   override def toString = s"Box(id=$id; value=$value; cost=$cost; size=$dataSize; regs=$registers)"
 }

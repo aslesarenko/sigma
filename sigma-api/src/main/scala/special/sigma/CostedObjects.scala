@@ -19,8 +19,7 @@ trait CostedSigmaObject[Val] extends Costed[Val] {
     dsl.Costing.mkCostedCol(bs, costs, sizes, valuesCost)
   }
   /** Cost of collection with static size elements. */
-  def costColWithConstSizedItem[T](xs: Col[T], itemSize: Long): CostedCol[T] = {
-    val len = xs.length
+  def costColWithConstSizedItem[T](xs: Col[T], len: Int, itemSize: Long): CostedCol[T] = {
     val perItemCost = len * itemSize.toInt / Operations.AccessKiloByteOfData
     val costs = dsl.Cols.replicate(len, perItemCost)
     val sizes = dsl.Cols.replicate(len, itemSize)

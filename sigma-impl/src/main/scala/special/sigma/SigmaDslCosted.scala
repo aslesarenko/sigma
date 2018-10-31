@@ -17,7 +17,7 @@ class CCostedContext(val ctx: Context) extends CostedContext {
   }
   def SELF: CostedBox = new CCostedBox(ctx.SELF, Operations.AccessBox)
   def LastBlockUtxoRootHash: CostedAvlTree = new CCostedAvlTree(ctx.LastBlockUtxoRootHash, Operations.AccessAvlTree)
-
+  def MinerPubKey: CostedCol[Byte] = costColWithConstSizedItem(ctx.MinerPubKey, Operations.PubKeySize.toInt, 1)
   def getVar[T](id: Byte)(implicit cT: RType[T]): CostedOption[T] = {
     val opt = ctx.getVar(id)(cT)
     costOption(opt, Operations.GetVar)
@@ -29,14 +29,14 @@ class CCostedContext(val ctx: Context) extends CostedContext {
 
 class CCostedBox(box: Box, val cost: Int) extends CostedBox {
   def dsl: SigmaDslBuilder = new TestSigmaDslBuilder
-  def id: CostedCol[Byte] = costColWithConstSizedItem(box.id, 1)
+  def id: CostedCol[Byte] = costColWithConstSizedItem(box.id, box.id.length, 1)
   def valueCosted: Costed[Long] = {
     val cost = Operations.SelectField
     new CCostedPrim(box.value, cost, 8L)
   }
-  def bytes: CostedCol[Byte] = costColWithConstSizedItem(box.bytes, 1)
-  def bytesWithoutRef: CostedCol[Byte] = costColWithConstSizedItem(box.bytesWithoutRef, 1)
-  def propositionBytes: CostedCol[Byte] = costColWithConstSizedItem(box.propositionBytes, 1)
+  def bytes: CostedCol[Byte] = costColWithConstSizedItem(box.bytes, box.bytes.length, 1)
+  def bytesWithoutRef: CostedCol[Byte] = costColWithConstSizedItem(box.bytesWithoutRef, box.bytesWithoutRef.length, 1)
+  def propositionBytes: CostedCol[Byte] = costColWithConstSizedItem(box.propositionBytes, box.propositionBytes.length, 1)
   def registers: CostedCol[AnyValue] = {
     val len = box.registers.length
     val costs = dsl.Cols.replicate(len, Operations.AccessBox)
@@ -58,7 +58,7 @@ class CCostedBox(box: Box, val cost: Int) extends CostedBox {
 
 class CCostedAvlTree(val tree: AvlTree, val cost: Int) extends CostedAvlTree {
   def dsl: SigmaDslBuilder = new TestSigmaDslBuilder
-  def startingDigest: CostedCol[Byte] = costColWithConstSizedItem(tree.startingDigest, 1)
+  def startingDigest: CostedCol[Byte] = costColWithConstSizedItem(tree.startingDigest, Operations.PubKeySize.toInt, 1)
   def keyLength: Costed[Int] = new CCostedPrim(tree.keyLength, Operations.SelectField, 4)
   def valueLengthOpt: CostedOption[Int] = costOption(tree.valueLengthOpt, Operations.SelectField)
   def maxNumOperations: CostedOption[Int] = costOption(tree.maxNumOperations, Operations.SelectField)
