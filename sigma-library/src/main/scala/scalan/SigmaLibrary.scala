@@ -106,6 +106,9 @@ trait SigmaLibrary extends Library
         case _ => super.rewriteDef(d)
       }
 
+    case SDBM.sigmaProp(_, SM.isValid(p)) => p
+    case SM.isValid(SDBM.sigmaProp(_, bool)) => bool
+
     case _ =>
       if (currentPass.config.constantPropagation) {
         // additional constant propagation rules (see other similar cases)
