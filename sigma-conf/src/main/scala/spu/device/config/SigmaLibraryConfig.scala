@@ -32,6 +32,7 @@ class SigmaLibraryConfig extends LibraryConfig {
       .moduleDependencies(specialLibrary.ApiModule)
       .addUnit("special/sigma/wrappers/WrappersSpec.scala", wrapperConfigs)
       .addUnit("special/sigma/SigmaDsl.scala")
+      .addUnit("special/sigma/CostedObjects.scala")
       .addUnit("special/sigma/SigmaExamples.scala")
 
   val ImplModule = new SourceModuleConf(baseDir, "sigma-impl")

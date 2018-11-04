@@ -128,7 +128,7 @@ class TestContext(
 class TestSigmaDslBuilder extends SigmaDslBuilder {
   def Cols = new ColOverArrayBuilder
   def Monoids = new MonoidBuilderInst
-  def Costing = new ConcreteCostedBuilder
+  def Costing = new CCostedBuilder
 
   @NeverInline
   def CostModel: CostModel = new TestCostModel
@@ -229,7 +229,7 @@ trait DefaultSigma extends SigmaProp {
   * and DefaultSigma is used just to mixin implementations. */
 case class TrivialSigma(val _isValid: Boolean) extends SigmaProp with DefaultSigma {
   @NeverInline
-  def propBytes: Col[Byte] = builder.Cols(if(isValid) 1 else 0)
+  def propBytes: Col[Byte] = builder.Cols.fromItems(if(isValid) 1 else 0)
   @NeverInline
   def isValid: Boolean = _isValid
   @NeverInline

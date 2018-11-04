@@ -6,6 +6,7 @@ import scalan.Internal
 @Internal
 class TestCostModel extends CostModel {
   def AccessBox: Int = CostTable.DefaultCosts("AccessBox: Context => Box")
+  def AccessAvlTree: Int = CostTable.DefaultCosts("AccessAvlTree: Context => AvlTree")
 
   def GetVar: Int = CostTable.DefaultCosts("GetVar: (Context, Byte) => Option[T]")
   def DeserializeVar: Int = CostTable.DefaultCosts("DeserializeVar: (Context, Byte) => Option[T]")

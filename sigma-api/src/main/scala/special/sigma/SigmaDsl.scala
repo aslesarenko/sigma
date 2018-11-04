@@ -17,6 +17,7 @@ import scalan.meta.RType
 @scalan.Liftable
 trait CostModel {
   def AccessBox: Int //= "AccessBox: Context => Box"
+  def AccessAvlTree: Int //= "AccessAvlTree: Context => AvlTree"
 
   def GetVar: Int // = "ContextVar: (Context, Byte) => Option[T]"
   def DeserializeVar: Int // = "DeserializeVar: (Context, Byte) => Option[T]"
@@ -119,8 +120,10 @@ trait Context {
 @scalan.Liftable
 trait SigmaContract {
   def builder: SigmaDslBuilder
+
   @NeverInline
-  def Collection[T](items: T*): Col[T] = this.builder.Cols.apply[T](items:_*)
+  @Reified("T")
+  def Collection[T](items: T*)(implicit cT: ClassTag[T]): Col[T] = this.builder.Cols.fromItems[T](items:_*)
 
   /** !!! all methods should delegate to builder */
 
