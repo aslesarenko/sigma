@@ -9,27 +9,6 @@ import scalan.meta.RType
 trait CostedSigmaObject[Val] extends Costed[Val] {
   def dsl: SigmaDslBuilder
   def builder: CostedBuilder = dsl.Costing
-  def Operations: CostModel = dsl.CostModel
-  def costBoxes(bs: Col[Box]): CostedCol[Box] = {
-    val len = bs.length
-    val perItemCost = Operations.AccessBox
-    val costs = dsl.Cols.replicate(len, perItemCost)
-    val sizes = bs.map(b => b.dataSize)
-    val valuesCost = Operations.CollectionConst
-    dsl.Costing.mkCostedCol(bs, costs, sizes, valuesCost)
-  }
-  /** Cost of collection with static size elements. */
-  def costColWithConstSizedItem[T](xs: Col[T], len: Int, itemSize: Long): CostedCol[T] = {
-    val perItemCost = len * itemSize.toInt / Operations.AccessKiloByteOfData
-    val costs = dsl.Cols.replicate(len, perItemCost)
-    val sizes = dsl.Cols.replicate(len, itemSize)
-    val valueCost = Operations.CollectionConst
-    dsl.Costing.mkCostedCol(xs, costs, sizes, valueCost)
-  }
-  def costOption[T](opt: Option[T], opCost: Int)(implicit cT: RType[T]): CostedOption[T] = {
-    val none = dsl.Costing.mkCostedNone(opCost)
-    opt.fold[CostedOption[T]](none)(x => dsl.Costing.mkCostedSome(dsl.Costing.costedValue(x, SpecialPredef.some(opCost))))
-  }
 }
 
 trait CostedContext extends CostedSigmaObject[Context] {
@@ -38,10 +17,9 @@ trait CostedContext extends CostedSigmaObject[Context] {
   def HEIGHT: Costed[Long]
   def SELF: CostedBox
   def LastBlockUtxoRootHash: CostedAvlTree
+  def MinerPubKey: CostedCol[Byte]
   def getVar[T](id: Byte)(implicit cT: RType[T]): CostedOption[T]
-  def value: Context
-  def cost: Int
-  def dataSize: Long
+  def getConstant[T](id: Byte)(implicit cT: RType[T]): Costed[T]
 }
 
 trait CostedBox extends CostedSigmaObject[Box] {

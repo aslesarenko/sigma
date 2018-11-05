@@ -3,14 +3,13 @@ package special.sigma
 import java.math.BigInteger
 
 import org.bouncycastle.math.ec.ECPoint
+import special.SpecialPredef
 
 import scala.reflect.ClassTag
-import special.collection.{CostedBuilder, ColBuilder, Col, MonoidBuilder}
+import special.collection._
 
 import scalan._
 import scalan.meta.RType
-import special.collection.Col
-
 import scalan.Internal
 import scalan.meta.RType
 
@@ -66,7 +65,6 @@ trait Box extends DslObject {
   def dataSize: Long
   def registers: Col[AnyValue]
 
-  def deserialize[@Reified T](i: Int)(implicit cT: RType[T]): Option[T]
   def getReg[@Reified T](i: Int)(implicit cT: RType[T]): Option[T]
 
   /** Mandatory: Monetary value, in Ergo tokens */
@@ -116,7 +114,7 @@ trait Context {
   def LastBlockUtxoRootHash: AvlTree
   def MinerPubKey: Col[Byte]
   def getVar[T](id: Byte)(implicit cT: RType[T]): Option[T]
-  def deserialize[T](id: Byte)(implicit cT: RType[T]): Option[T]
+  def getConstant[T](id: Byte)(implicit cT: RType[T]): T
   def cost: Int
   def dataSize: Long
 }
@@ -171,6 +169,14 @@ trait SigmaDslBuilder extends DslBuilder {
   def Monoids: MonoidBuilder
   def Costing: CostedBuilder
   def CostModel: CostModel
+
+  def costBoxes(bs: Col[Box]): CostedCol[Box]
+
+  /** Cost of collection with static size elements. */
+  def costColWithConstSizedItem[T](xs: Col[T], len: Int, itemSize: Long): CostedCol[T]
+
+  def costOption[T](opt: Option[T], opCost: Int)(implicit cT: RType[T]): CostedOption[T]
+
   def verifyZK(cond: => SigmaProp): Boolean
 
   def atLeast(bound: Int, props: Col[SigmaProp]): SigmaProp

@@ -44,8 +44,6 @@ class TestBox(
   def cost = (dataSize / builder.CostModel.AccessKiloByteOfData.toLong).toInt
   @NeverInline
   def dataSize = bytes.length
-  @NeverInline
-  def deserialize[T](i: Int)(implicit cT: RType[T]): Option[T] = ???
 
   def creationInfo: (Long, Col[Byte]) = this.R3[(Long, Col[Byte])].get
 
@@ -117,8 +115,8 @@ class TestContext(
     } else None
   }
 
-  @NeverInline
-  def deserialize[T](id: Byte)(implicit cT: RType[T]): Option[T] = ???
+  def getConstant[T](id: Byte)(implicit cT: RType[T]) =
+    sys.error(s"Method getConstant is not defined in TestContext. Should be overriden in real context.")
 
   @NeverInline
   def cost = (dataSize / builder.CostModel.AccessKiloByteOfData.toLong).toInt
@@ -135,9 +133,31 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
   def Cols = new ColOverArrayBuilder
   def Monoids = new MonoidBuilderInst
   def Costing = new CCostedBuilder
-
   @NeverInline
   def CostModel: CostModel = new TestCostModel
+
+  def costBoxes(bs: Col[Box]): CostedCol[Box] = {
+    val len = bs.length
+    val perItemCost = this.CostModel.AccessBox
+    val costs = this.Cols.replicate(len, perItemCost)
+    val sizes = bs.map(b => b.dataSize)
+    val valuesCost = this.CostModel.CollectionConst
+    this.Costing.mkCostedCol(bs, costs, sizes, valuesCost)
+  }
+
+  /** Cost of collection with static size elements. */
+  def costColWithConstSizedItem[T](xs: Col[T], len: Int, itemSize: Long): CostedCol[T] = {
+    val perItemCost = (len.toLong * itemSize / 1024L + 1) * this.CostModel.AccessKiloByteOfData
+    val costs = this.Cols.replicate(len, perItemCost.toInt)
+    val sizes = this.Cols.replicate(len, itemSize)
+    val valueCost = this.CostModel.CollectionConst
+    this.Costing.mkCostedCol(xs, costs, sizes, valueCost)
+  }
+
+  def costOption[T](opt: Option[T], opCost: Int)(implicit cT: RType[T]): CostedOption[T] = {
+    val none = this.Costing.mkCostedNone[T](opCost)
+    opt.fold[CostedOption[T]](none)(x => this.Costing.mkCostedSome(this.Costing.costedValue(x, SpecialPredef.some(opCost))))
+  }
 
   @NeverInline
   def verifyZK(proof: => SigmaProp): Boolean = proof.isValid
