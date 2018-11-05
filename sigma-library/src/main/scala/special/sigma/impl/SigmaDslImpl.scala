@@ -12,23 +12,25 @@ trait SigmaDslDefs extends scalan.Scalan with SigmaDsl {
   self: SigmaLibrary =>
 import IsoUR._
 import Converter._
-import CostModel._
-import DslBuilder._
-import SigmaDslBuilder._
-import DslObject._
-import Col._
-import SigmaProp._
 import AnyValue._
-import WOption._
-import Box._
 import AvlTree._
+import Box._
+import Col._
+import ColBuilder._
 import Context._
+import CostModel._
+import CostedBuilder._
+import CostedCol._
+import CostedOption._
+import DslBuilder._
+import DslObject._
+import MonoidBuilder._
+import SigmaContract._
+import SigmaDslBuilder._
+import SigmaProp._
 import WBigInteger._
 import WECPoint._
-import SigmaContract._
-import ColBuilder._
-import MonoidBuilder._
-import CostedBuilder._
+import WOption._
 
 object CostModel extends EntityObject("CostModel") {
   // entityConst: single const for each entity
@@ -45,6 +47,13 @@ object CostModel extends EntityObject("CostModel") {
     def AccessBox: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
         thisClass.getMethod("AccessBox"),
+        List(),
+        true, element[Int]))
+    }
+
+    def AccessAvlTree: Rep[Int] = {
+      asRep[Int](mkMethodCall(self,
+        thisClass.getMethod("AccessAvlTree"),
         List(),
         true, element[Int]))
     }
@@ -98,7 +107,6 @@ object CostModel extends EntityObject("CostModel") {
         true, element[Int]))
     }
 
-    // manual fix (elems)
     def dataSize[T](x: Rep[T])(implicit cT: Elem[T]): Rep[Long] = {
       implicit val eT = x.elem
       asRep[Long](mkMethodCall(self,
@@ -122,14 +130,22 @@ object CostModel extends EntityObject("CostModel") {
     }
   }
 
-  case class CostModelAdapter(source: Rep[CostModel]) extends CostModel {
-    val liftable: Liftable[SCostModel, CostModel] = LiftableCostModel
-    val selfType: Elem[CostModel] = source.elem
+  // entityAdapter for CostModel trait
+  case class CostModelAdapter(source: Rep[CostModel])
+      extends CostModel with Def[CostModel] {
+    val selfType: Elem[CostModel] = element[CostModel]
     private val thisClass = classOf[CostModel]
 
     def AccessBox: Rep[Int] = {
       asRep[Int](mkMethodCall(source,
         thisClass.getMethod("AccessBox"),
+        List(),
+        true, element[Int]))
+    }
+
+    def AccessAvlTree: Rep[Int] = {
+      asRep[Int](mkMethodCall(source,
+        thisClass.getMethod("AccessAvlTree"),
         List(),
         true, element[Int]))
     }
@@ -183,7 +199,6 @@ object CostModel extends EntityObject("CostModel") {
         true, element[Int]))
     }
 
-    // manual fix (elems)
     def dataSize[T](x: Rep[T])(implicit cT: Elem[T]): Rep[Long] = {
       implicit val eT = x.elem
       asRep[Long](mkMethodCall(source,
@@ -208,7 +223,7 @@ object CostModel extends EntityObject("CostModel") {
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++
         Elem.declaredMethods(classOf[CostModel], classOf[SCostModel], Set(
-        "AccessBox", "GetVar", "DeserializeVar", "GetRegister", "DeserializeRegister", "SelectField", "CollectionConst", "AccessKiloByteOfData", "dataSize"
+        "AccessBox", "AccessAvlTree", "GetVar", "DeserializeVar", "GetRegister", "DeserializeRegister", "SelectField", "CollectionConst", "AccessKiloByteOfData", "dataSize", "PubKeySize"
         ))
     }
 
@@ -254,6 +269,19 @@ object CostModel extends EntityObject("CostModel") {
     object AccessBox {
       def unapply(d: Def[_]): Nullable[Rep[CostModel]] = d match {
         case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CostModelElem[_]] && method.getName == "AccessBox" =>
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[CostModel]]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[Rep[CostModel]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object AccessAvlTree {
+      def unapply(d: Def[_]): Nullable[Rep[CostModel]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CostModelElem[_]] && method.getName == "AccessAvlTree" =>
           val res = receiver
           Nullable(res).asInstanceOf[Nullable[Rep[CostModel]]]
         case _ => Nullable.None
@@ -356,13 +384,26 @@ object CostModel extends EntityObject("CostModel") {
     }
 
     object dataSize {
-      def unapply(d: Def[_]): Nullable[(Rep[CostModel], Rep[T], Elem[T], Elem[T]) forSome {type T}] = d match {
+      def unapply(d: Def[_]): Nullable[(Rep[CostModel], Rep[T], Elem[T]) forSome {type T}] = d match {
         case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[CostModelElem[_]] && method.getName == "dataSize" =>
-          val res = (receiver, args(0), args(1), args(2))
-          Nullable(res).asInstanceOf[Nullable[(Rep[CostModel], Rep[T], Elem[T], Elem[T]) forSome {type T}]]
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[CostModel], Rep[T], Elem[T]) forSome {type T}]]
         case _ => Nullable.None
       }
-      def unapply(exp: Sym): Nullable[(Rep[CostModel], Rep[T], Elem[T], Elem[T]) forSome {type T}] = exp match {
+      def unapply(exp: Sym): Nullable[(Rep[CostModel], Rep[T], Elem[T]) forSome {type T}] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object PubKeySize {
+      def unapply(d: Def[_]): Nullable[Rep[CostModel]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[CostModelElem[_]] && method.getName == "PubKeySize" =>
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[CostModel]]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[Rep[CostModel]] = exp match {
         case Def(d) => unapply(d)
         case _ => Nullable.None
       }
@@ -375,11 +416,17 @@ object CostModel extends EntityObject("CostModel") {
   registerEntityObject("CostModel", CostModel)
 
 object DslBuilder extends EntityObject("DslBuilder") {
+  // entityAdapter for DslBuilder trait
+  case class DslBuilderAdapter(source: Rep[DslBuilder])
+      extends DslBuilder with Def[DslBuilder] {
+    val selfType: Elem[DslBuilder] = element[DslBuilder]
+  }
+
   // entityProxy: single proxy for each type family
   implicit def proxyDslBuilder(p: Rep[DslBuilder]): DslBuilder = {
     if (p.rhs.isInstanceOf[DslBuilder@unchecked]) p.rhs.asInstanceOf[DslBuilder]
     else
-      proxyOps[DslBuilder](p)(scala.reflect.classTag[DslBuilder])
+      DslBuilderAdapter(p)
   }
 
   // familyElem
@@ -432,11 +479,25 @@ object DslBuilder extends EntityObject("DslBuilder") {
   registerEntityObject("DslBuilder", DslBuilder)
 
 object DslObject extends EntityObject("DslObject") {
+  // entityAdapter for DslObject trait
+  case class DslObjectAdapter(source: Rep[DslObject])
+      extends DslObject with Def[DslObject] {
+    val selfType: Elem[DslObject] = element[DslObject]
+    private val thisClass = classOf[DslObject]
+
+    def builder: Rep[SigmaDslBuilder] = {
+      asRep[SigmaDslBuilder](mkMethodCall(source,
+        thisClass.getMethod("builder"),
+        List(),
+        true, element[SigmaDslBuilder]))
+    }
+  }
+
   // entityProxy: single proxy for each type family
   implicit def proxyDslObject(p: Rep[DslObject]): DslObject = {
     if (p.rhs.isInstanceOf[DslObject@unchecked]) p.rhs.asInstanceOf[DslObject]
     else
-      proxyOps[DslObject](p)(scala.reflect.classTag[DslObject])
+      DslObjectAdapter(p)
   }
 
   // familyElem
@@ -512,7 +573,7 @@ object SigmaProp extends EntityObject("SigmaProp") {
     val selfType: Elem[SigmaProp] = liftable.eW
     private val thisClass = classOf[SigmaProp]
 
-    // manual fix
+    // manual fix (builder is inherited)
     def builder: Rep[SigmaDslBuilder] = {
       asRep[SigmaDslBuilder](mkMethodCall(self,
         thisClass.getMethod("builder"),
@@ -595,18 +656,11 @@ object SigmaProp extends EntityObject("SigmaProp") {
     }
   }
 
-  // manual fix
-  case class SigmaPropAdapter(source: Rep[SigmaProp]) extends SigmaProp {
-    val selfType: Elem[SigmaProp] = source.elem
+  // entityAdapter for SigmaProp trait
+  case class SigmaPropAdapter(source: Rep[SigmaProp])
+      extends SigmaProp with Def[SigmaProp] {
+    val selfType: Elem[SigmaProp] = element[SigmaProp]
     private val thisClass = classOf[SigmaProp]
-
-    // manual fix
-    def builder: Rep[SigmaDslBuilder] = {
-      asRep[SigmaDslBuilder](mkMethodCall(source,
-        thisClass.getMethod("builder"),
-        List(),
-        true, element[SigmaDslBuilder]))
-    }
 
     def isValid: Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(source,
@@ -667,13 +721,20 @@ object SigmaProp extends EntityObject("SigmaProp") {
         List(other),
         true, element[SigmaProp]))
     }
+
+    def builder: Rep[SigmaDslBuilder] = {
+      asRep[SigmaDslBuilder](mkMethodCall(source,
+        thisClass.getMethod("builder"),
+        List(),
+        true, element[SigmaDslBuilder]))
+    }
   }
 
   // entityProxy: single proxy for each type family
   implicit def proxySigmaProp(p: Rep[SigmaProp]): SigmaProp = {
     if (p.rhs.isInstanceOf[SigmaProp@unchecked]) p.rhs.asInstanceOf[SigmaProp]
     else
-      SigmaPropAdapter(p) // manual fix
+      SigmaPropAdapter(p)
   }
 
   // familyElem
@@ -871,11 +932,25 @@ object AnyValue extends EntityObject("AnyValue") {
     }
   }
 
+  // entityAdapter for AnyValue trait
+  case class AnyValueAdapter(source: Rep[AnyValue])
+      extends AnyValue with Def[AnyValue] {
+    val selfType: Elem[AnyValue] = element[AnyValue]
+    private val thisClass = classOf[AnyValue]
+
+    def dataSize: Rep[Long] = {
+      asRep[Long](mkMethodCall(source,
+        thisClass.getMethod("dataSize"),
+        List(),
+        true, element[Long]))
+    }
+  }
+
   // entityProxy: single proxy for each type family
   implicit def proxyAnyValue(p: Rep[AnyValue]): AnyValue = {
     if (p.rhs.isInstanceOf[AnyValue@unchecked]) p.rhs.asInstanceOf[AnyValue]
     else
-      proxyOps[AnyValue](p)(scala.reflect.classTag[AnyValue])
+      AnyValueAdapter(p)
   }
 
   // familyElem
@@ -1024,15 +1099,6 @@ object Box extends EntityObject("Box") {
         true, element[Col[AnyValue]]))
     }
 
-    // manual fix (elems)
-    def deserialize[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = {
-      asRep[WOption[T]](mkMethodCall(self,
-        thisClass.getMethod("deserialize", classOf[Sym], classOf[Elem[_]]),
-        List(i, cT),
-        true, element[WOption[T]]))
-    }
-
-    // manual fix (elems)
     def getReg[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = {
       asRep[WOption[T]](mkMethodCall(self,
         thisClass.getMethod("getReg", classOf[Sym], classOf[Elem[_]]),
@@ -1045,6 +1111,13 @@ object Box extends EntityObject("Box") {
         thisClass.getMethod("tokens"),
         List(),
         true, element[Col[(Col[Byte], Long)]]))
+    }
+
+    def creationInfo: Rep[(Long, Col[Byte])] = {
+      asRep[(Long, Col[Byte])](mkMethodCall(self,
+        thisClass.getMethod("creationInfo"),
+        List(),
+        true, element[(Long, Col[Byte])]))
     }
   }
 
@@ -1062,17 +1135,11 @@ object Box extends EntityObject("Box") {
     }
   }
 
-  case class BoxAdapter(source: Rep[Box]) extends Box {
-    val selfType: Elem[Box] = source.elem
+  // entityAdapter for Box trait
+  case class BoxAdapter(source: Rep[Box])
+      extends Box with Def[Box] {
+    val selfType: Elem[Box] = element[Box]
     private val thisClass = classOf[Box]
-
-    // manual fix
-    def builder: Rep[SigmaDslBuilder] = {
-      asRep[SigmaDslBuilder](mkMethodCall(source,
-        thisClass.getMethod("builder"),
-        List(),
-        true, element[SigmaDslBuilder]))
-    }
 
     def id: Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(source,
@@ -1130,15 +1197,6 @@ object Box extends EntityObject("Box") {
         true, element[Col[AnyValue]]))
     }
 
-    // manual fix (elems)
-    def deserialize[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = {
-      asRep[WOption[T]](mkMethodCall(source,
-        thisClass.getMethod("deserialize", classOf[Sym], classOf[Elem[_]]),
-        List(i, cT),
-        true, element[WOption[T]]))
-    }
-
-    // manual fix (elems)
     def getReg[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = {
       asRep[WOption[T]](mkMethodCall(source,
         thisClass.getMethod("getReg", classOf[Sym], classOf[Elem[_]]),
@@ -1151,6 +1209,20 @@ object Box extends EntityObject("Box") {
         thisClass.getMethod("tokens"),
         List(),
         true, element[Col[(Col[Byte], Long)]]))
+    }
+
+    def creationInfo: Rep[(Long, Col[Byte])] = {
+      asRep[(Long, Col[Byte])](mkMethodCall(source,
+        thisClass.getMethod("creationInfo"),
+        List(),
+        true, element[(Long, Col[Byte])]))
+    }
+
+    def builder: Rep[SigmaDslBuilder] = {
+      asRep[SigmaDslBuilder](mkMethodCall(source,
+        thisClass.getMethod("builder"),
+        List(),
+        true, element[SigmaDslBuilder]))
     }
   }
 
@@ -1169,7 +1241,7 @@ object Box extends EntityObject("Box") {
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++
         Elem.declaredMethods(classOf[Box], classOf[SBox], Set(
-        "id", "value", "bytes", "bytesWithoutRef", "propositionBytes", "cost", "dataSize", "registers", "deserialize", "getReg", "R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "tokens"
+        "id", "value", "bytes", "bytesWithoutRef", "propositionBytes", "cost", "dataSize", "registers", "getReg", "R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "tokens", "creationInfo"
         ))
     }
 
@@ -1315,21 +1387,7 @@ object Box extends EntityObject("Box") {
         case _ => Nullable.None
       }
     }
-    // manual fix
-    object deserialize {
-      def unapply(d: Def[_]): Nullable[(Rep[Box], Rep[Int], Elem[T]) forSome {type T}] = d match {
-        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "deserialize" =>
-          val res = (receiver, args(0), args(1))
-          Nullable(res).asInstanceOf[Nullable[(Rep[Box], Rep[Int], Elem[T]) forSome {type T}]]
-        case _ => Nullable.None
-      }
-      def unapply(exp: Sym): Nullable[(Rep[Box], Rep[Int], Elem[T]) forSome {type T}] = exp match {
-        case Def(d) => unapply(d)
-        case _ => Nullable.None
-      }
-    }
 
-    // manual fix
     object getReg {
       def unapply(d: Def[_]): Nullable[(Rep[Box], Rep[Int], Elem[T]) forSome {type T}] = d match {
         case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "getReg" =>
@@ -1343,7 +1401,6 @@ object Box extends EntityObject("Box") {
       }
     }
 
-    // manual fix
     object R0 {
       def unapply(d: Def[_]): Nullable[(Rep[Box], Elem[T]) forSome {type T}] = d match {
         case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "R0" =>
@@ -1486,6 +1543,19 @@ object Box extends EntityObject("Box") {
         case _ => Nullable.None
       }
     }
+
+    object creationInfo {
+      def unapply(d: Def[_]): Nullable[Rep[Box]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[BoxElem[_]] && method.getName == "creationInfo" =>
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[Box]]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[Rep[Box]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
   }
 
   object BoxCompanionMethods {
@@ -1577,11 +1647,74 @@ object AvlTree extends EntityObject("AvlTree") {
     }
   }
 
+  // entityAdapter for AvlTree trait
+  case class AvlTreeAdapter(source: Rep[AvlTree])
+      extends AvlTree with Def[AvlTree] {
+    val selfType: Elem[AvlTree] = element[AvlTree]
+    private val thisClass = classOf[AvlTree]
+
+    def startingDigest: Rep[Col[Byte]] = {
+      asRep[Col[Byte]](mkMethodCall(source,
+        thisClass.getMethod("startingDigest"),
+        List(),
+        true, element[Col[Byte]]))
+    }
+
+    def keyLength: Rep[Int] = {
+      asRep[Int](mkMethodCall(source,
+        thisClass.getMethod("keyLength"),
+        List(),
+        true, element[Int]))
+    }
+
+    def valueLengthOpt: Rep[WOption[Int]] = {
+      asRep[WOption[Int]](mkMethodCall(source,
+        thisClass.getMethod("valueLengthOpt"),
+        List(),
+        true, element[WOption[Int]]))
+    }
+
+    def maxNumOperations: Rep[WOption[Int]] = {
+      asRep[WOption[Int]](mkMethodCall(source,
+        thisClass.getMethod("maxNumOperations"),
+        List(),
+        true, element[WOption[Int]]))
+    }
+
+    def maxDeletes: Rep[WOption[Int]] = {
+      asRep[WOption[Int]](mkMethodCall(source,
+        thisClass.getMethod("maxDeletes"),
+        List(),
+        true, element[WOption[Int]]))
+    }
+
+    def cost: Rep[Int] = {
+      asRep[Int](mkMethodCall(source,
+        thisClass.getMethod("cost"),
+        List(),
+        true, element[Int]))
+    }
+
+    def dataSize: Rep[Long] = {
+      asRep[Long](mkMethodCall(source,
+        thisClass.getMethod("dataSize"),
+        List(),
+        true, element[Long]))
+    }
+
+    def builder: Rep[SigmaDslBuilder] = {
+      asRep[SigmaDslBuilder](mkMethodCall(source,
+        thisClass.getMethod("builder"),
+        List(),
+        true, element[SigmaDslBuilder]))
+    }
+  }
+
   // entityProxy: single proxy for each type family
   implicit def proxyAvlTree(p: Rep[AvlTree]): AvlTree = {
     if (p.rhs.isInstanceOf[AvlTree@unchecked]) p.rhs.asInstanceOf[AvlTree]
     else
-      proxyOps[AvlTree](p)(scala.reflect.classTag[AvlTree])
+      AvlTreeAdapter(p)
   }
 
   // familyElem
@@ -1786,7 +1919,13 @@ object Context extends EntityObject("Context") {
         true, element[AvlTree]))
     }
 
-    // manual fix (elems)
+    def MinerPubKey: Rep[Col[Byte]] = {
+      asRep[Col[Byte]](mkMethodCall(self,
+        thisClass.getMethod("MinerPubKey"),
+        List(),
+        true, element[Col[Byte]]))
+    }
+
     def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = {
       asRep[WOption[T]](mkMethodCall(self,
         thisClass.getMethod("getVar", classOf[Sym], classOf[Elem[_]]),
@@ -1794,12 +1933,11 @@ object Context extends EntityObject("Context") {
         true, element[WOption[T]]))
     }
 
-    // manual fix (elems)
-    def deserialize[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = {
-      asRep[WOption[T]](mkMethodCall(self,
-        thisClass.getMethod("deserialize", classOf[Sym], classOf[Elem[_]]),
+    def getConstant[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[T] = {
+      asRep[T](mkMethodCall(self,
+        thisClass.getMethod("getConstant", classOf[Sym], classOf[Elem[_]]),
         List(id, cT),
-        true, element[WOption[T]]))
+        true, element[T]))
     }
 
     def cost: Rep[Int] = {
@@ -1831,9 +1969,10 @@ object Context extends EntityObject("Context") {
     }
   }
 
-  // manual fix
-  case class ContextAdapter(source: Rep[Context]) extends Context {
-    val selfType: Elem[Context] = source.elem
+  // entityAdapter for Context trait
+  case class ContextAdapter(source: Rep[Context])
+      extends Context with Def[Context] {
+    val selfType: Elem[Context] = element[Context]
     private val thisClass = classOf[Context]
 
     def builder: Rep[SigmaDslBuilder] = {
@@ -1878,7 +2017,13 @@ object Context extends EntityObject("Context") {
         true, element[AvlTree]))
     }
 
-    // manual fix (elems)
+    def MinerPubKey: Rep[Col[Byte]] = {
+      asRep[Col[Byte]](mkMethodCall(source,
+        thisClass.getMethod("MinerPubKey"),
+        List(),
+        true, element[Col[Byte]]))
+    }
+
     def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = {
       asRep[WOption[T]](mkMethodCall(source,
         thisClass.getMethod("getVar", classOf[Sym], classOf[Elem[_]]),
@@ -1886,12 +2031,11 @@ object Context extends EntityObject("Context") {
         true, element[WOption[T]]))
     }
 
-    // manual fix (elems)
-    def deserialize[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = {
-      asRep[WOption[T]](mkMethodCall(source,
-        thisClass.getMethod("deserialize", classOf[Sym], classOf[Elem[_]]),
+    def getConstant[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[T] = {
+      asRep[T](mkMethodCall(source,
+        thisClass.getMethod("getConstant", classOf[Sym], classOf[Elem[_]]),
         List(id, cT),
-        true, element[WOption[T]]))
+        true, element[T]))
     }
 
     def cost: Rep[Int] = {
@@ -1913,7 +2057,7 @@ object Context extends EntityObject("Context") {
   implicit def proxyContext(p: Rep[Context]): Context = {
     if (p.rhs.isInstanceOf[Context@unchecked]) p.rhs.asInstanceOf[Context]
     else
-      ContextAdapter(p) // manual fix
+      ContextAdapter(p)
   }
 
   // familyElem
@@ -1924,7 +2068,7 @@ object Context extends EntityObject("Context") {
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++
         Elem.declaredMethods(classOf[Context], classOf[SContext], Set(
-        "builder", "OUTPUTS", "INPUTS", "HEIGHT", "SELF", "LastBlockUtxoRootHash", "getVar", "deserialize", "cost", "dataSize"
+        "builder", "OUTPUTS", "INPUTS", "HEIGHT", "SELF", "LastBlockUtxoRootHash", "MinerPubKey", "getVar", "getConstant", "cost", "dataSize"
         ))
     }
 
@@ -2044,7 +2188,20 @@ object Context extends EntityObject("Context") {
         case _ => Nullable.None
       }
     }
-    // manual fix
+
+    object MinerPubKey {
+      def unapply(d: Def[_]): Nullable[Rep[Context]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[ContextElem[_]] && method.getName == "MinerPubKey" =>
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[Context]]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[Rep[Context]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
     object getVar {
       def unapply(d: Def[_]): Nullable[(Rep[Context], Rep[Byte], Elem[T]) forSome {type T}] = d match {
         case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ContextElem[_]] && method.getName == "getVar" =>
@@ -2057,10 +2214,10 @@ object Context extends EntityObject("Context") {
         case _ => Nullable.None
       }
     }
-    // manual fix
-    object deserialize {
+
+    object getConstant {
       def unapply(d: Def[_]): Nullable[(Rep[Context], Rep[Byte], Elem[T]) forSome {type T}] = d match {
-        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ContextElem[_]] && method.getName == "deserialize" =>
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[ContextElem[_]] && method.getName == "getConstant" =>
           val res = (receiver, args(0), args(1))
           Nullable(res).asInstanceOf[Nullable[(Rep[Context], Rep[Byte], Elem[T]) forSome {type T}]]
         case _ => Nullable.None
@@ -2144,11 +2301,32 @@ object SigmaContract extends EntityObject("SigmaContract") {
     }
   }
 
+  // entityAdapter for SigmaContract trait
+  case class SigmaContractAdapter(source: Rep[SigmaContract])
+      extends SigmaContract with Def[SigmaContract] {
+    val selfType: Elem[SigmaContract] = element[SigmaContract]
+    private val thisClass = classOf[SigmaContract]
+
+    def builder: Rep[SigmaDslBuilder] = {
+      asRep[SigmaDslBuilder](mkMethodCall(source,
+        thisClass.getMethod("builder"),
+        List(),
+        true, element[SigmaDslBuilder]))
+    }
+
+    def canOpen(ctx: Rep[Context]): Rep[Boolean] = {
+      asRep[Boolean](mkMethodCall(source,
+        thisClass.getMethod("canOpen", classOf[Sym]),
+        List(ctx),
+        true, element[Boolean]))
+    }
+  }
+
   // entityProxy: single proxy for each type family
   implicit def proxySigmaContract(p: Rep[SigmaContract]): SigmaContract = {
     if (p.rhs.isInstanceOf[SigmaContract@unchecked]) p.rhs.asInstanceOf[SigmaContract]
     else
-      proxyOps[SigmaContract](p)(scala.reflect.classTag[SigmaContract])
+      SigmaContractAdapter(p)
   }
 
   // familyElem
@@ -2547,6 +2725,29 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
         true, element[CostModel]))
     }
 
+    def costBoxes(bs: Rep[Col[Box]]): Rep[CostedCol[Box]] = {
+      asRep[CostedCol[Box]](mkMethodCall(self,
+        thisClass.getMethod("costBoxes", classOf[Sym]),
+        List(bs),
+        true, element[CostedCol[Box]]))
+    }
+
+    def costColWithConstSizedItem[T](xs: Rep[Col[T]], len: Rep[Int], itemSize: Rep[Long]): Rep[CostedCol[T]] = {
+      implicit val eT = xs.eA
+      asRep[CostedCol[T]](mkMethodCall(self,
+        thisClass.getMethod("costColWithConstSizedItem", classOf[Sym], classOf[Sym], classOf[Sym]),
+        List(xs, len, itemSize),
+        true, element[CostedCol[T]]))
+    }
+
+    def costOption[T](opt: Rep[WOption[T]], opCost: Rep[Int]): Rep[CostedOption[T]] = {
+      implicit val eT = opt.eA
+      asRep[CostedOption[T]](mkMethodCall(self,
+        thisClass.getMethod("costOption", classOf[Sym], classOf[Sym]),
+        List(opt, opCost),
+        true, element[CostedOption[T]]))
+    }
+
     def verifyZK(cond: Rep[Thunk[SigmaProp]]): Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(self,
         thisClass.getMethod("verifyZK", classOf[Sym]),
@@ -2695,11 +2896,202 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
     }
   }
 
+  // entityAdapter for SigmaDslBuilder trait
+  case class SigmaDslBuilderAdapter(source: Rep[SigmaDslBuilder])
+      extends SigmaDslBuilder with Def[SigmaDslBuilder] {
+    val selfType: Elem[SigmaDslBuilder] = element[SigmaDslBuilder]
+    private val thisClass = classOf[SigmaDslBuilder]
+
+    def Cols: Rep[ColBuilder] = {
+      asRep[ColBuilder](mkMethodCall(source,
+        thisClass.getMethod("Cols"),
+        List(),
+        true, element[ColBuilder]))
+    }
+
+    def Monoids: Rep[MonoidBuilder] = {
+      asRep[MonoidBuilder](mkMethodCall(source,
+        thisClass.getMethod("Monoids"),
+        List(),
+        true, element[MonoidBuilder]))
+    }
+
+    def Costing: Rep[CostedBuilder] = {
+      asRep[CostedBuilder](mkMethodCall(source,
+        thisClass.getMethod("Costing"),
+        List(),
+        true, element[CostedBuilder]))
+    }
+
+    def CostModel: Rep[CostModel] = {
+      asRep[CostModel](mkMethodCall(source,
+        thisClass.getMethod("CostModel"),
+        List(),
+        true, element[CostModel]))
+    }
+
+    def costBoxes(bs: Rep[Col[Box]]): Rep[CostedCol[Box]] = {
+      asRep[CostedCol[Box]](mkMethodCall(source,
+        thisClass.getMethod("costBoxes", classOf[Sym]),
+        List(bs),
+        true, element[CostedCol[Box]]))
+    }
+
+    def costColWithConstSizedItem[T](xs: Rep[Col[T]], len: Rep[Int], itemSize: Rep[Long]): Rep[CostedCol[T]] = {
+      implicit val eT = xs.eA
+      asRep[CostedCol[T]](mkMethodCall(source,
+        thisClass.getMethod("costColWithConstSizedItem", classOf[Sym], classOf[Sym], classOf[Sym]),
+        List(xs, len, itemSize),
+        true, element[CostedCol[T]]))
+    }
+
+    def costOption[T](opt: Rep[WOption[T]], opCost: Rep[Int]): Rep[CostedOption[T]] = {
+      implicit val eT = opt.eA
+      asRep[CostedOption[T]](mkMethodCall(source,
+        thisClass.getMethod("costOption", classOf[Sym], classOf[Sym]),
+        List(opt, opCost),
+        true, element[CostedOption[T]]))
+    }
+
+    def verifyZK(cond: Rep[Thunk[SigmaProp]]): Rep[Boolean] = {
+      asRep[Boolean](mkMethodCall(source,
+        thisClass.getMethod("verifyZK", classOf[Sym]),
+        List(cond),
+        true, element[Boolean]))
+    }
+
+    def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(source,
+        thisClass.getMethod("atLeast", classOf[Sym], classOf[Sym]),
+        List(bound, props),
+        true, element[SigmaProp]))
+    }
+
+    def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = {
+      asRep[Boolean](mkMethodCall(source,
+        thisClass.getMethod("allOf", classOf[Sym]),
+        List(conditions),
+        true, element[Boolean]))
+    }
+
+    def allZK(conditions: Rep[Col[SigmaProp]]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(source,
+        thisClass.getMethod("allZK", classOf[Sym]),
+        List(conditions),
+        true, element[SigmaProp]))
+    }
+
+    def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = {
+      asRep[Boolean](mkMethodCall(source,
+        thisClass.getMethod("anyOf", classOf[Sym]),
+        List(conditions),
+        true, element[Boolean]))
+    }
+
+    def anyZK(conditions: Rep[Col[SigmaProp]]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(source,
+        thisClass.getMethod("anyZK", classOf[Sym]),
+        List(conditions),
+        true, element[SigmaProp]))
+    }
+
+    def PubKey(base64String: Rep[String]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(source,
+        thisClass.getMethod("PubKey", classOf[Sym]),
+        List(base64String),
+        true, element[SigmaProp]))
+    }
+
+    def sigmaProp(b: Rep[Boolean]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(source,
+        thisClass.getMethod("sigmaProp", classOf[Sym]),
+        List(b),
+        true, element[SigmaProp]))
+    }
+
+    def blake2b256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = {
+      asRep[Col[Byte]](mkMethodCall(source,
+        thisClass.getMethod("blake2b256", classOf[Sym]),
+        List(bytes),
+        true, element[Col[Byte]]))
+    }
+
+    def sha256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = {
+      asRep[Col[Byte]](mkMethodCall(source,
+        thisClass.getMethod("sha256", classOf[Sym]),
+        List(bytes),
+        true, element[Col[Byte]]))
+    }
+
+    def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[WBigInteger] = {
+      asRep[WBigInteger](mkMethodCall(source,
+        thisClass.getMethod("byteArrayToBigInt", classOf[Sym]),
+        List(bytes),
+        true, element[WBigInteger]))
+    }
+
+    def longToByteArray(l: Rep[Long]): Rep[Col[Byte]] = {
+      asRep[Col[Byte]](mkMethodCall(source,
+        thisClass.getMethod("longToByteArray", classOf[Sym]),
+        List(l),
+        true, element[Col[Byte]]))
+    }
+
+    def proveDlog(g: Rep[WECPoint]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(source,
+        thisClass.getMethod("proveDlog", classOf[Sym]),
+        List(g),
+        true, element[SigmaProp]))
+    }
+
+    def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[SigmaProp] = {
+      asRep[SigmaProp](mkMethodCall(source,
+        thisClass.getMethod("proveDHTuple", classOf[Sym], classOf[Sym], classOf[Sym], classOf[Sym]),
+        List(g, h, u, v),
+        true, element[SigmaProp]))
+    }
+
+    def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean] = {
+      asRep[Boolean](mkMethodCall(source,
+        thisClass.getMethod("isMember", classOf[Sym], classOf[Sym], classOf[Sym]),
+        List(tree, key, proof),
+        true, element[Boolean]))
+    }
+
+    def treeLookup(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = {
+      asRep[WOption[Col[Byte]]](mkMethodCall(source,
+        thisClass.getMethod("treeLookup", classOf[Sym], classOf[Sym], classOf[Sym]),
+        List(tree, key, proof),
+        true, element[WOption[Col[Byte]]]))
+    }
+
+    def treeModifications(tree: Rep[AvlTree], operations: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = {
+      asRep[WOption[Col[Byte]]](mkMethodCall(source,
+        thisClass.getMethod("treeModifications", classOf[Sym], classOf[Sym], classOf[Sym]),
+        List(tree, operations, proof),
+        true, element[WOption[Col[Byte]]]))
+    }
+
+    def groupGenerator: Rep[WECPoint] = {
+      asRep[WECPoint](mkMethodCall(source,
+        thisClass.getMethod("groupGenerator"),
+        List(),
+        true, element[WECPoint]))
+    }
+
+    def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint] = {
+      asRep[WECPoint](mkMethodCall(source,
+        thisClass.getMethod("exponentiate", classOf[Sym], classOf[Sym]),
+        List(base, exponent),
+        true, element[WECPoint]))
+    }
+  }
+
   // entityProxy: single proxy for each type family
   implicit def proxySigmaDslBuilder(p: Rep[SigmaDslBuilder]): SigmaDslBuilder = {
     if (p.rhs.isInstanceOf[SigmaDslBuilder@unchecked]) p.rhs.asInstanceOf[SigmaDslBuilder]
     else
-      proxyOps[SigmaDslBuilder](p)(scala.reflect.classTag[SigmaDslBuilder])
+      SigmaDslBuilderAdapter(p)
   }
 
   // familyElem
@@ -2710,7 +3102,7 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++
         Elem.declaredMethods(classOf[SigmaDslBuilder], classOf[SSigmaDslBuilder], Set(
-        "Cols", "Monoids", "Costing", "CostModel", "verifyZK", "atLeast", "allOf", "allZK", "anyOf", "anyZK", "PubKey", "sigmaProp", "blake2b256", "sha256", "byteArrayToBigInt", "longToByteArray", "proveDlog", "proveDHTuple", "isMember", "treeLookup", "treeModifications", "groupGenerator", "exponentiate"
+        "Cols", "Monoids", "Costing", "CostModel", "costBoxes", "costColWithConstSizedItem", "costOption", "verifyZK", "atLeast", "allOf", "allZK", "anyOf", "anyZK", "PubKey", "sigmaProp", "blake2b256", "sha256", "byteArrayToBigInt", "longToByteArray", "proveDlog", "proveDHTuple", "isMember", "treeLookup", "treeModifications", "groupGenerator", "exponentiate"
         ))
     }
 
@@ -2800,6 +3192,45 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
         case _ => Nullable.None
       }
       def unapply(exp: Sym): Nullable[Rep[SigmaDslBuilder]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object costBoxes {
+      def unapply(d: Def[_]): Nullable[(Rep[SigmaDslBuilder], Rep[Col[Box]])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[SigmaDslBuilderElem[_]] && method.getName == "costBoxes" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[SigmaDslBuilder], Rep[Col[Box]])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[SigmaDslBuilder], Rep[Col[Box]])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object costColWithConstSizedItem {
+      def unapply(d: Def[_]): Nullable[(Rep[SigmaDslBuilder], Rep[Col[T]], Rep[Int], Rep[Long]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[SigmaDslBuilderElem[_]] && method.getName == "costColWithConstSizedItem" =>
+          val res = (receiver, args(0), args(1), args(2))
+          Nullable(res).asInstanceOf[Nullable[(Rep[SigmaDslBuilder], Rep[Col[T]], Rep[Int], Rep[Long]) forSome {type T}]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[SigmaDslBuilder], Rep[Col[T]], Rep[Int], Rep[Long]) forSome {type T}] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object costOption {
+      def unapply(d: Def[_]): Nullable[(Rep[SigmaDslBuilder], Rep[WOption[T]], Rep[Int]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[SigmaDslBuilderElem[_]] && method.getName == "costOption" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[SigmaDslBuilder], Rep[WOption[T]], Rep[Int]) forSome {type T}]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[SigmaDslBuilder], Rep[WOption[T]], Rep[Int]) forSome {type T}] = exp match {
         case Def(d) => unapply(d)
         case _ => Nullable.None
       }

@@ -13,40 +13,62 @@ trait SigmaDslOverArraysDefs extends scalan.Scalan with SigmaDslOverArrays {
   self: SigmaLibrary =>
 import IsoUR._
 import Converter._
-import TestSigmaDslBuilder._
-import SigmaProp._
-import SigmaContract._
-import WArray._ // manual fix
-import CostModel._ // manual fix
-import WOption._
-import Col._
-import Box._
-import AvlTree._
 import AnyValue._
-import Context._
+import AvlTree._
+import Box._
+import CCostedBuilder._
+import Col._
 import ColOverArrayBuilder._
-import MonoidBuilderInst._
-import ConcreteCostedBuilder._
+import Context._
 import CostModel._
+import CostedCol._
+import CostedOption._
+import DefaultSigma._
+import MonoidBuilderInst._
+import SigmaContract._
+import SigmaDslBuilder._
+import SigmaProp._
+import TestSigmaDslBuilder._
+import WArray._ // manual fix
 import WBigInteger._
 import WECPoint._
-import SigmaDslBuilder._
-import DefaultSigma._
+import WOption._
 import DefaultContract._
-import TestBox._
-import TestAvlTree._
-import TestValue._
-import TestContext._
-import TrivialSigma._
-import ProveDlogEvidence._
 import ProveDHTEvidence._
+import ProveDlogEvidence._
+import TestAvlTree._
+import TestBox._
+import TestContext._
+import TestValue._
+import TrivialSigma._
 
 object DefaultSigma extends EntityObject("DefaultSigma") {
+  // entityAdapter for DefaultSigma trait
+  case class DefaultSigmaAdapter(source: Rep[DefaultSigma])
+      extends DefaultSigma with Def[DefaultSigma] {
+    val selfType: Elem[DefaultSigma] = element[DefaultSigma]
+    private val thisClass = classOf[DefaultSigma]
+
+    def isValid: Rep[Boolean] = {
+      asRep[Boolean](mkMethodCall(source,
+        thisClass.getMethod("isValid"),
+        List(),
+        true, element[Boolean]))
+    }
+
+    def propBytes: Rep[Col[Byte]] = {
+      asRep[Col[Byte]](mkMethodCall(source,
+        thisClass.getMethod("propBytes"),
+        List(),
+        true, element[Col[Byte]]))
+    }
+  }
+
   // entityProxy: single proxy for each type family
   implicit def proxyDefaultSigma(p: Rep[DefaultSigma]): DefaultSigma = {
     if (p.rhs.isInstanceOf[DefaultSigma@unchecked]) p.rhs.asInstanceOf[DefaultSigma]
     else
-      proxyOps[DefaultSigma](p)(scala.reflect.classTag[DefaultSigma])
+      DefaultSigmaAdapter(p)
   }
 
   // familyElem
@@ -189,11 +211,25 @@ object DefaultSigma extends EntityObject("DefaultSigma") {
   registerEntityObject("DefaultSigma", DefaultSigma)
 
 object DefaultContract extends EntityObject("DefaultContract") {
+  // entityAdapter for DefaultContract trait
+  case class DefaultContractAdapter(source: Rep[DefaultContract])
+      extends DefaultContract with Def[DefaultContract] {
+    val selfType: Elem[DefaultContract] = element[DefaultContract]
+    private val thisClass = classOf[DefaultContract]
+
+    def canOpen(ctx: Rep[Context]): Rep[Boolean] = {
+      asRep[Boolean](mkMethodCall(source,
+        thisClass.getMethod("canOpen", classOf[Sym]),
+        List(ctx),
+        true, element[Boolean]))
+    }
+  }
+
   // entityProxy: single proxy for each type family
   implicit def proxyDefaultContract(p: Rep[DefaultContract]): DefaultContract = {
     if (p.rhs.isInstanceOf[DefaultContract@unchecked]) p.rhs.asInstanceOf[DefaultContract]
     else
-      proxyOps[DefaultContract](p)(scala.reflect.classTag[DefaultContract])
+      DefaultContractAdapter(p)
   }
 
   // familyElem
@@ -265,11 +301,10 @@ object TestBox extends EntityObject("TestBox") {
     // manual fix
     private val thisClass = classOf[Box]
 
-    // manual fix (elems)
-    override def getReg[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = {
+    override def getReg[T](id: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = {
       asRep[WOption[T]](mkMethodCall(self,
         thisClass.getMethod("getReg", classOf[Sym], classOf[Elem[_]]),
-        List(i, cT),
+        List(id, cT),
         true, element[WOption[T]]))
     }
 
@@ -285,14 +320,6 @@ object TestBox extends EntityObject("TestBox") {
         thisClass.getMethod("dataSize"),
         List(),
         true, element[Long]))
-    }
-
-    // manual fix (elems)
-    override def deserialize[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = {
-      asRep[WOption[T]](mkMethodCall(self,
-        thisClass.getMethod("deserialize", classOf[Sym], classOf[Elem[_]]),
-        List(i, cT),
-        true, element[WOption[T]]))
     }
   }
   // elem for concrete class
@@ -401,7 +428,6 @@ object TestBox extends EntityObject("TestBox") {
       }
     }
 
-    // manual fix (elems)
     object getReg {
       def unapply(d: Def[_]): Nullable[(Rep[TestBox], Rep[Int], Elem[T]) forSome {type T}] = d match {
         case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[TestBoxElem] && method.getName == "getReg" =>
@@ -441,15 +467,14 @@ object TestBox extends EntityObject("TestBox") {
       }
     }
 
-      // manual fix (elems)
-    object deserialize {
-      def unapply(d: Def[_]): Nullable[(Rep[TestBox], Rep[Int], Elem[T]) forSome {type T}] = d match {
-        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[TestBoxElem] && method.getName == "deserialize" =>
-          val res = (receiver, args(0), args(1))
-          Nullable(res).asInstanceOf[Nullable[(Rep[TestBox], Rep[Int], Elem[T]) forSome {type T}]]
+    object creationInfo {
+      def unapply(d: Def[_]): Nullable[Rep[TestBox]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[TestBoxElem] && method.getName == "creationInfo" =>
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[TestBox]]]
         case _ => Nullable.None
       }
-      def unapply(exp: Sym): Nullable[(Rep[TestBox], Rep[Int], Elem[T]) forSome {type T}] = exp match {
+      def unapply(exp: Sym): Nullable[Rep[TestBox]] = exp match {
         case Def(d) => unapply(d)
         case _ => Nullable.None
       }
@@ -765,8 +790,8 @@ object TestValue extends EntityObject("TestValue") {
 
 object TestContext extends EntityObject("TestContext") {
   case class TestContextCtor
-      (override val inputs: Rep[WArray[Box]], override val outputs: Rep[WArray[Box]], override val height: Rep[Long], override val selfBox: Rep[Box], override val lastBlockUtxoRootHash: Rep[AvlTree], override val vars: Rep[WArray[AnyValue]])
-    extends TestContext(inputs, outputs, height, selfBox, lastBlockUtxoRootHash, vars) with Def[TestContext] {
+      (override val inputs: Rep[WArray[Box]], override val outputs: Rep[WArray[Box]], override val height: Rep[Long], override val selfBox: Rep[Box], override val lastBlockUtxoRootHash: Rep[AvlTree], override val minerPubKey: Rep[WArray[Byte]], override val vars: Rep[WArray[AnyValue]])
+    extends TestContext(inputs, outputs, height, selfBox, lastBlockUtxoRootHash, minerPubKey, vars) with Def[TestContext] {
     lazy val selfType = element[TestContext]
     // manual fix
     private val thisClass = classOf[Context]
@@ -806,18 +831,16 @@ object TestContext extends EntityObject("TestContext") {
         true, element[AvlTree]))
     }
 
-    // manual fix (elems)
+    override def MinerPubKey: Rep[Col[Byte]] = {
+      asRep[Col[Byte]](mkMethodCall(self,
+        thisClass.getMethod("MinerPubKey"),
+        List(),
+        true, element[Col[Byte]]))
+    }
+
     override def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = {
       asRep[WOption[T]](mkMethodCall(self,
         thisClass.getMethod("getVar", classOf[Sym], classOf[Elem[_]]),
-        List(id, cT),
-        true, element[WOption[T]]))
-    }
-
-    // manual fix (elems)
-    override def deserialize[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = {
-      asRep[WOption[T]](mkMethodCall(self,
-        thisClass.getMethod("deserialize", classOf[Sym], classOf[Elem[_]]),
         List(id, cT),
         true, element[WOption[T]]))
     }
@@ -843,27 +866,27 @@ object TestContext extends EntityObject("TestContext") {
     override lazy val parent: Option[Elem[_]] = Some(contextElement)
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
     override def convertContext(x: Rep[Context]) = // Converter is not generated by meta
-!!!("Cannot convert from Context to TestContext: missing fields List(inputs, outputs, height, selfBox, lastBlockUtxoRootHash, vars)")
-    override def getDefaultRep = RTestContext(element[WArray[Box]].defaultRepValue, element[WArray[Box]].defaultRepValue, 0l, element[Box].defaultRepValue, element[AvlTree].defaultRepValue, element[WArray[AnyValue]].defaultRepValue)
+!!!("Cannot convert from Context to TestContext: missing fields List(inputs, outputs, height, selfBox, lastBlockUtxoRootHash, minerPubKey, vars)")
+    override def getDefaultRep = RTestContext(element[WArray[Box]].defaultRepValue, element[WArray[Box]].defaultRepValue, 0l, element[Box].defaultRepValue, element[AvlTree].defaultRepValue, element[WArray[Byte]].defaultRepValue, element[WArray[AnyValue]].defaultRepValue)
     override lazy val tag = {
       weakTypeTag[TestContext]
     }
   }
 
   // state representation type
-  type TestContextData = (WArray[Box], (WArray[Box], (Long, (Box, (AvlTree, WArray[AnyValue])))))
+  type TestContextData = (WArray[Box], (WArray[Box], (Long, (Box, (AvlTree, (WArray[Byte], WArray[AnyValue]))))))
 
   // 3) Iso for concrete class
   class TestContextIso
     extends EntityIso[TestContextData, TestContext] with Def[TestContextIso] {
-    private lazy val _safeFrom = fun { p: Rep[TestContext] => (p.inputs, p.outputs, p.height, p.selfBox, p.lastBlockUtxoRootHash, p.vars) }
+    private lazy val _safeFrom = fun { p: Rep[TestContext] => (p.inputs, p.outputs, p.height, p.selfBox, p.lastBlockUtxoRootHash, p.minerPubKey, p.vars) }
     override def from(p: Rep[TestContext]) =
-      tryConvert[TestContext, (WArray[Box], (WArray[Box], (Long, (Box, (AvlTree, WArray[AnyValue])))))](eTo, eFrom, p, _safeFrom)
-    override def to(p: Rep[(WArray[Box], (WArray[Box], (Long, (Box, (AvlTree, WArray[AnyValue])))))]) = {
-      val Pair(inputs, Pair(outputs, Pair(height, Pair(selfBox, Pair(lastBlockUtxoRootHash, vars))))) = p
-      RTestContext(inputs, outputs, height, selfBox, lastBlockUtxoRootHash, vars)
+      tryConvert[TestContext, (WArray[Box], (WArray[Box], (Long, (Box, (AvlTree, (WArray[Byte], WArray[AnyValue]))))))](eTo, eFrom, p, _safeFrom)
+    override def to(p: Rep[(WArray[Box], (WArray[Box], (Long, (Box, (AvlTree, (WArray[Byte], WArray[AnyValue]))))))]) = {
+      val Pair(inputs, Pair(outputs, Pair(height, Pair(selfBox, Pair(lastBlockUtxoRootHash, Pair(minerPubKey, vars)))))) = p
+      RTestContext(inputs, outputs, height, selfBox, lastBlockUtxoRootHash, minerPubKey, vars)
     }
-    lazy val eFrom = pairElement(element[WArray[Box]], pairElement(element[WArray[Box]], pairElement(element[Long], pairElement(element[Box], pairElement(element[AvlTree], element[WArray[AnyValue]])))))
+    lazy val eFrom = pairElement(element[WArray[Box]], pairElement(element[WArray[Box]], pairElement(element[Long], pairElement(element[Box], pairElement(element[AvlTree], pairElement(element[WArray[Byte]], element[WArray[AnyValue]]))))))
     lazy val eTo = new TestContextElem(self)
     lazy val selfType = new TestContextIsoElem
     def productArity = 0
@@ -886,8 +909,8 @@ object TestContext extends EntityObject("TestContext") {
     }
 
     @scalan.OverloadId("fromFields")
-    def apply(inputs: Rep[WArray[Box]], outputs: Rep[WArray[Box]], height: Rep[Long], selfBox: Rep[Box], lastBlockUtxoRootHash: Rep[AvlTree], vars: Rep[WArray[AnyValue]]): Rep[TestContext] =
-      mkTestContext(inputs, outputs, height, selfBox, lastBlockUtxoRootHash, vars)
+    def apply(inputs: Rep[WArray[Box]], outputs: Rep[WArray[Box]], height: Rep[Long], selfBox: Rep[Box], lastBlockUtxoRootHash: Rep[AvlTree], minerPubKey: Rep[WArray[Byte]], vars: Rep[WArray[AnyValue]]): Rep[TestContext] =
+      mkTestContext(inputs, outputs, height, selfBox, lastBlockUtxoRootHash, minerPubKey, vars)
 
     def unapply(p: Rep[Context]) = unmkTestContext(p)
   }
@@ -919,12 +942,12 @@ object TestContext extends EntityObject("TestContext") {
     reifyObject(new TestContextIso())
 
   def mkTestContext
-    (inputs: Rep[WArray[Box]], outputs: Rep[WArray[Box]], height: Rep[Long], selfBox: Rep[Box], lastBlockUtxoRootHash: Rep[AvlTree], vars: Rep[WArray[AnyValue]]): Rep[TestContext] = {
-    new TestContextCtor(inputs, outputs, height, selfBox, lastBlockUtxoRootHash, vars)
+    (inputs: Rep[WArray[Box]], outputs: Rep[WArray[Box]], height: Rep[Long], selfBox: Rep[Box], lastBlockUtxoRootHash: Rep[AvlTree], minerPubKey: Rep[WArray[Byte]], vars: Rep[WArray[AnyValue]]): Rep[TestContext] = {
+    new TestContextCtor(inputs, outputs, height, selfBox, lastBlockUtxoRootHash, minerPubKey, vars)
   }
   def unmkTestContext(p: Rep[Context]) = p.elem.asInstanceOf[Elem[_]] match {
     case _: TestContextElem @unchecked =>
-      Some((asRep[TestContext](p).inputs, asRep[TestContext](p).outputs, asRep[TestContext](p).height, asRep[TestContext](p).selfBox, asRep[TestContext](p).lastBlockUtxoRootHash, asRep[TestContext](p).vars))
+      Some((asRep[TestContext](p).inputs, asRep[TestContext](p).outputs, asRep[TestContext](p).height, asRep[TestContext](p).selfBox, asRep[TestContext](p).lastBlockUtxoRootHash, asRep[TestContext](p).minerPubKey, asRep[TestContext](p).vars))
     case _ =>
       None
   }
@@ -1008,7 +1031,19 @@ object TestContext extends EntityObject("TestContext") {
       }
     }
 
-    // manual fix (elems)
+    object MinerPubKey {
+      def unapply(d: Def[_]): Nullable[Rep[TestContext]] = d match {
+        case MethodCall(receiver, method, _, _) if receiver.elem.isInstanceOf[TestContextElem] && method.getName == "MinerPubKey" =>
+          val res = receiver
+          Nullable(res).asInstanceOf[Nullable[Rep[TestContext]]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[Rep[TestContext]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
     object getVar {
       def unapply(d: Def[_]): Nullable[(Rep[TestContext], Rep[Byte], Elem[T]) forSome {type T}] = d match {
         case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[TestContextElem] && method.getName == "getVar" =>
@@ -1022,10 +1057,9 @@ object TestContext extends EntityObject("TestContext") {
       }
     }
 
-    // manual fix (elems)
-    object deserialize {
+    object getConstant {
       def unapply(d: Def[_]): Nullable[(Rep[TestContext], Rep[Byte], Elem[T]) forSome {type T}] = d match {
-        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[TestContextElem] && method.getName == "deserialize" =>
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[TestContextElem] && method.getName == "getConstant" =>
           val res = (receiver, args(0), args(1))
           Nullable(res).asInstanceOf[Nullable[(Rep[TestContext], Rep[Byte], Elem[T]) forSome {type T}]]
         case _ => Nullable.None
@@ -1076,7 +1110,6 @@ object TestSigmaDslBuilder extends EntityObject("TestSigmaDslBuilder") {
     // manual fix
     private val thisClass = classOf[SigmaDslBuilder]
 
-   // manual fix
     override def CostModel: Rep[CostModel] = {
       asRep[CostModel](mkMethodCall(self,
         thisClass.getMethod("CostModel"),
@@ -1210,7 +1243,7 @@ object TestSigmaDslBuilder extends EntityObject("TestSigmaDslBuilder") {
         true, element[WECPoint]))
     }
 
-    override def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint]  = {
+    override def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint] = {
       asRep[WECPoint](mkMethodCall(self,
         thisClass.getMethod("exponentiate", classOf[Sym], classOf[Sym]),
         List(base, exponent),
@@ -1357,6 +1390,45 @@ object TestSigmaDslBuilder extends EntityObject("TestSigmaDslBuilder") {
         case _ => Nullable.None
       }
       def unapply(exp: Sym): Nullable[Rep[TestSigmaDslBuilder]] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object costBoxes {
+      def unapply(d: Def[_]): Nullable[(Rep[TestSigmaDslBuilder], Rep[Col[Box]])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[TestSigmaDslBuilderElem] && method.getName == "costBoxes" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[TestSigmaDslBuilder], Rep[Col[Box]])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[TestSigmaDslBuilder], Rep[Col[Box]])] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object costColWithConstSizedItem {
+      def unapply(d: Def[_]): Nullable[(Rep[TestSigmaDslBuilder], Rep[Col[T]], Rep[Int], Rep[Long]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[TestSigmaDslBuilderElem] && method.getName == "costColWithConstSizedItem" =>
+          val res = (receiver, args(0), args(1), args(2))
+          Nullable(res).asInstanceOf[Nullable[(Rep[TestSigmaDslBuilder], Rep[Col[T]], Rep[Int], Rep[Long]) forSome {type T}]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[TestSigmaDslBuilder], Rep[Col[T]], Rep[Int], Rep[Long]) forSome {type T}] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object costOption {
+      def unapply(d: Def[_]): Nullable[(Rep[TestSigmaDslBuilder], Rep[WOption[T]], Rep[Int]) forSome {type T}] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[TestSigmaDslBuilderElem] && method.getName == "costOption" =>
+          val res = (receiver, args(0), args(1))
+          Nullable(res).asInstanceOf[Nullable[(Rep[TestSigmaDslBuilder], Rep[WOption[T]], Rep[Int]) forSome {type T}]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[TestSigmaDslBuilder], Rep[WOption[T]], Rep[Int]) forSome {type T}] = exp match {
         case Def(d) => unapply(d)
         case _ => Nullable.None
       }
@@ -1644,9 +1716,10 @@ object TrivialSigma extends EntityObject("TrivialSigma") {
         true, element[SigmaProp]))
     }
 
-    override def $amp$amp(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
+    // manual fix
+    override def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
-        thisClass.getMethod("$amp$amp", classOf[Sym], classOf[Sym]),
+        thisClass.getMethod("$amp$amp", classOf[Sym], classOf[Overloaded1]),
         List(other, o),
         true, element[SigmaProp]))
     }
@@ -1658,9 +1731,9 @@ object TrivialSigma extends EntityObject("TrivialSigma") {
         true, element[SigmaProp]))
     }
 
-    override def $bar$bar(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
+    override def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
-        thisClass.getMethod("$bar$bar", classOf[Sym], classOf[Sym]),
+        thisClass.getMethod("$bar$bar", classOf[Sym], classOf[Overloaded1]),
         List(other, o),
         true, element[SigmaProp]))
     }
