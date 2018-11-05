@@ -3,25 +3,28 @@ package special.sigma {
   import scalan._
 
   trait SigmaDsl extends Base { self: SigmaLibrary =>
-    import CostModel._;
-    import DslBuilder._;
-    import SigmaDslBuilder._;
-    import DslObject._;
-    import Col._;
-    import SigmaProp._;
     import AnyValue._;
-    import WOption._;
-    import Box._;
     import AvlTree._;
+    import Box._;
+    import Col._;
+    import ColBuilder._;
     import Context._;
+    import CostModel._;
+    import CostedBuilder._;
+    import CostedCol._;
+    import CostedOption._;
+    import DslBuilder._;
+    import DslObject._;
+    import MonoidBuilder._;
+    import SigmaContract._;
+    import SigmaDslBuilder._;
+    import SigmaProp._;
     import WBigInteger._;
     import WECPoint._;
-    import SigmaContract._;
-    import ColBuilder._;
-    import MonoidBuilder._;
-    import CostedBuilder._;
+    import WOption._;
     @Liftable trait CostModel extends Def[CostModel] {
       def AccessBox: Rep[Int];
+      def AccessAvlTree: Rep[Int];
       def GetVar: Rep[Int];
       def DeserializeVar: Rep[Int];
       def GetRegister: Rep[Int];
@@ -29,7 +32,8 @@ package special.sigma {
       def SelectField: Rep[Int];
       def CollectionConst: Rep[Int];
       def AccessKiloByteOfData: Rep[Int];
-      @Reified(value = "T") def dataSize[T](x: Rep[T])(implicit cT: Elem[T]): Rep[Long]
+      @Reified(value = "T") def dataSize[T](x: Rep[T])(implicit cT: Elem[T]): Rep[Long];
+      def PubKeySize: Rep[Long] = toRep(32L.asInstanceOf[Long])
     };
     trait DslBuilder extends Def[DslBuilder];
     trait DslObject { // manual fix
@@ -61,7 +65,6 @@ package special.sigma {
       def cost: Rep[Int];
       def dataSize: Rep[Long];
       def registers: Rep[Col[AnyValue]];
-      def deserialize[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]];
       def getReg[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]];
       def R0[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(0.asInstanceOf[Int]));
       def R1[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(1.asInstanceOf[Int]));
@@ -73,7 +76,8 @@ package special.sigma {
       def R7[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(7.asInstanceOf[Int]));
       def R8[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(8.asInstanceOf[Int]));
       def R9[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(9.asInstanceOf[Int]));
-      def tokens: Rep[Col[scala.Tuple2[Col[Byte], Long]]]
+      def tokens: Rep[Col[scala.Tuple2[Col[Byte], Long]]];
+      def creationInfo: Rep[scala.Tuple2[Long, Col[Byte]]]
     };
     // manual fix (Def)
     @Liftable trait AvlTree extends Def[AvlTree] with DslObject {
@@ -92,14 +96,15 @@ package special.sigma {
       def HEIGHT: Rep[Long];
       def SELF: Rep[Box];
       def LastBlockUtxoRootHash: Rep[AvlTree];
+      def MinerPubKey: Rep[Col[Byte]];
       def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]];
-      def deserialize[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]];
+      def getConstant[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[T];
       def cost: Rep[Int];
       def dataSize: Rep[Long]
     };
     @Liftable trait SigmaContract extends Def[SigmaContract] {
       def builder: Rep[SigmaDslBuilder];
-      @NeverInline def Collection[T](items: Rep[T]*): Rep[Col[T]] = delayInvoke;
+      @NeverInline @Reified(value = "T") def Collection[T](items: Rep[T]*)(implicit cT: Elem[T]): Rep[Col[T]] = delayInvoke;
       def verifyZK(cond: Rep[Thunk[SigmaProp]]): Rep[Boolean] = this.builder.verifyZK(cond);
       def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp] = this.builder.atLeast(bound, props);
       def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = this.builder.allOf(conditions);
@@ -128,6 +133,9 @@ package special.sigma {
       def Monoids: Rep[MonoidBuilder];
       def Costing: Rep[CostedBuilder];
       def CostModel: Rep[CostModel];
+      def costBoxes(bs: Rep[Col[Box]]): Rep[CostedCol[Box]];
+      def costColWithConstSizedItem[T](xs: Rep[Col[T]], len: Rep[Int], itemSize: Rep[Long]): Rep[CostedCol[T]];
+      def costOption[T](opt: Rep[WOption[T]], opCost: Rep[Int]): Rep[CostedOption[T]];
       def verifyZK(cond: Rep[Thunk[SigmaProp]]): Rep[Boolean];
       def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp];
       def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean];

@@ -6,8 +6,8 @@ package wrappers.java.math {
   import special.sigma.wrappers.WrappersModule
 
   trait WBigIntegers extends Base { self: WrappersModule =>
-    import WBigInteger._;
     import WArray._;
+    import WBigInteger._;
     @External("BigInteger") @Liftable trait WBigInteger extends Def[WBigInteger] {
       @External def longValueExact: Rep[Long];
       @External def intValueExact: Rep[Int];

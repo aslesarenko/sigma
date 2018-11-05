@@ -15,11 +15,17 @@ import Converter._
 import WSigmaPredef._
 
 object WSigmaPredef extends EntityObject("WSigmaPredef") {
+  // entityAdapter for WSigmaPredef trait
+  case class WSigmaPredefAdapter(source: Rep[WSigmaPredef])
+      extends WSigmaPredef with Def[WSigmaPredef] {
+    val selfType: Elem[WSigmaPredef] = element[WSigmaPredef]
+  }
+
   // entityProxy: single proxy for each type family
   implicit def proxyWSigmaPredef(p: Rep[WSigmaPredef]): WSigmaPredef = {
     if (p.rhs.isInstanceOf[WSigmaPredef@unchecked]) p.rhs.asInstanceOf[WSigmaPredef]
     else
-      proxyOps[WSigmaPredef](p)(scala.reflect.classTag[WSigmaPredef])
+      WSigmaPredefAdapter(p)
   }
 
   // familyElem

@@ -3,23 +3,25 @@ package special.sigma {
   import scalan._
 
   trait SigmaDslOverArrays extends Base { self: SigmaLibrary =>
-    import TestSigmaDslBuilder._;
-    import SigmaProp._;
-    import SigmaDslBuilder._;
-    import SigmaContract._;
-    import WOption._;
-    import Col._;
-    import Box._;
-    import AvlTree._;
     import AnyValue._;
-    import Context._;
+    import AvlTree._;
+    import Box._;
+    import CCostedBuilder._;
+    import Col._;
     import ColOverArrayBuilder._;
-    import MonoidBuilderInst._;
-    import ConcreteCostedBuilder._;
+    import Context._;
     import CostModel._;
+    import CostedCol._;
+    import CostedOption._;
+    import DefaultSigma._;
+    import MonoidBuilderInst._;
+    import SigmaContract._;
+    import SigmaDslBuilder._;
+    import SigmaProp._;
+    import TestSigmaDslBuilder._;
     import WBigInteger._;
     import WECPoint._;
-    import DefaultSigma._;
+    import WOption._;
     trait DefaultSigma extends SigmaProp {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
       @NeverInline @OverloadId(value = "and_sigma") def &&(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
@@ -39,7 +41,7 @@ package special.sigma {
       @NeverInline def getReg[T](id: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke;
       @NeverInline def cost: Rep[Int] = delayInvoke;
       @NeverInline def dataSize: Rep[Long] = delayInvoke;
-      @NeverInline def deserialize[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke;
+      def creationInfo: Rep[scala.Tuple2[Long, Col[Byte]]] = this.R3[scala.Tuple2[Long, Col[Byte]]].get;
       def tokens: Rep[Col[scala.Tuple2[Col[Byte], Long]]] = this.R2[Col[scala.Tuple2[Col[Byte], Long]]].get
     };
     abstract class TestAvlTree(val startingDigest: Rep[Col[Byte]], val keyLength: Rep[Int], val valueLengthOpt: Rep[WOption[Int]], val maxNumOperations: Rep[WOption[Int]], val maxDeletes: Rep[WOption[Int]]) extends AvlTree with Product with Serializable {
@@ -50,23 +52,44 @@ package special.sigma {
     abstract class TestValue[T](val value: Rep[T]) extends AnyValue {
       @NeverInline def dataSize: Rep[Long] = delayInvoke
     };
-    abstract class TestContext(val inputs: Rep[WArray[Box]], val outputs: Rep[WArray[Box]], val height: Rep[Long], val selfBox: Rep[Box], val lastBlockUtxoRootHash: Rep[AvlTree], val vars: Rep[WArray[AnyValue]]) extends Context {
+    abstract class TestContext(val inputs: Rep[WArray[Box]], val outputs: Rep[WArray[Box]], val height: Rep[Long], val selfBox: Rep[Box], val lastBlockUtxoRootHash: Rep[AvlTree], val minerPubKey: Rep[WArray[Byte]], val vars: Rep[WArray[AnyValue]]) extends Context {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
       @NeverInline def HEIGHT: Rep[Long] = delayInvoke;
       @NeverInline def SELF: Rep[Box] = delayInvoke;
       @NeverInline def INPUTS: Rep[Col[Box]] = delayInvoke;
       @NeverInline def OUTPUTS: Rep[Col[Box]] = delayInvoke;
       @NeverInline def LastBlockUtxoRootHash: Rep[AvlTree] = delayInvoke;
+      @NeverInline def MinerPubKey: Rep[Col[Byte]] = delayInvoke;
       @NeverInline def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke;
-      @NeverInline def deserialize[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke;
+      def getConstant[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[Nothing] = scala.sys.`package`.error(toRep("Method getConstant is not defined in TestContext. Should be overriden in real context.".asInstanceOf[String]));
       @NeverInline def cost: Rep[Int] = delayInvoke;
       @NeverInline def dataSize: Rep[Long] = delayInvoke
     };
     abstract class TestSigmaDslBuilder extends SigmaDslBuilder {
       def Cols: Rep[ColOverArrayBuilder] = RColOverArrayBuilder();
       def Monoids: Rep[MonoidBuilderInst] = RMonoidBuilderInst();
-      def Costing: Rep[ConcreteCostedBuilder] = RConcreteCostedBuilder();
+      def Costing: Rep[CCostedBuilder] = RCCostedBuilder();
       @NeverInline def CostModel: Rep[CostModel] = delayInvoke;
+      def costBoxes(bs: Rep[Col[Box]]): Rep[CostedCol[Box]] = {
+        val len: Rep[Int] = bs.length;
+        val perItemCost: Rep[Int] = this.CostModel.AccessBox;
+        val costs: Rep[Col[Int]] = this.Cols.replicate[Int](len, perItemCost);
+        val sizes: Rep[Col[Long]] = bs.map[Long](fun(((b: Rep[Box]) => b.dataSize)));
+        val valuesCost: Rep[Int] = this.CostModel.CollectionConst;
+        this.Costing.mkCostedCol[Box](bs, costs, sizes, valuesCost)
+      };
+      def costColWithConstSizedItem[T](xs: Rep[Col[T]], len: Rep[Int], itemSize: Rep[Long]): Rep[CostedCol[T]] = {
+        // manual fix (div)
+        val perItemCost: Rep[Long] = len.toLong.*(itemSize).div(toRep(1024L.asInstanceOf[Long])).+(toRep(1.asInstanceOf[Int])).*(this.CostModel.AccessKiloByteOfData);
+        val costs: Rep[Col[Int]] = this.Cols.replicate[Int](len, perItemCost.toInt);
+        val sizes: Rep[Col[Long]] = this.Cols.replicate[Long](len, itemSize);
+        val valueCost: Rep[Int] = this.CostModel.CollectionConst;
+        this.Costing.mkCostedCol[T](xs, costs, sizes, valueCost)
+      };
+      def costOption[T](opt: Rep[WOption[T]], opCost: Rep[Int]): Rep[CostedOption[T]] = {
+        val none: Rep[CostedOption[T]] = this.Costing.mkCostedNone[T](opCost);
+        opt.fold[CostedOption[T]](none)(fun(((x: Rep[T]) => this.Costing.mkCostedSome[T](this.Costing.costedValue[T](x, RWSpecialPredef.some[Int](opCost))(cT)))))
+      };
       @NeverInline def verifyZK(proof: Rep[Thunk[SigmaProp]]): Rep[Boolean] = delayInvoke;
       @NeverInline def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp] = delayInvoke;
       @NeverInline def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = delayInvoke;
@@ -91,8 +114,10 @@ package special.sigma {
       @NeverInline def propBytes: Rep[Col[Byte]] = delayInvoke;
       @NeverInline def isValid: Rep[Boolean] = delayInvoke;
       @NeverInline @OverloadId(value = "and_sigma") override def &&(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
+      // manual fix (implicit Overloaded)
       @NeverInline @OverloadId(value = "and_bool") override def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = delayInvoke;
       @NeverInline @OverloadId(value = "or_sigma") override def ||(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
+      // manual fix (implicit Overloaded)
       @NeverInline @OverloadId(value = "or_bool") override def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = delayInvoke;
       @NeverInline override def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke;
       @NeverInline override def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke
@@ -101,8 +126,10 @@ package special.sigma {
       @NeverInline def propBytes: Rep[Col[Byte]] = delayInvoke;
       @NeverInline def isValid: Rep[Boolean] = delayInvoke;
       @NeverInline @OverloadId(value = "and_sigma") override def &&(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
+      // manual fix (implicit Overloaded)
       @NeverInline @OverloadId(value = "and_bool") override def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = delayInvoke;
       @NeverInline @OverloadId(value = "or_sigma") override def ||(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
+      // manual fix (implicit Overloaded)
       @NeverInline @OverloadId(value = "or_bool") override def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = delayInvoke;
       @NeverInline override def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke;
       @NeverInline override def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke
@@ -111,8 +138,10 @@ package special.sigma {
       @NeverInline def propBytes: Rep[Col[Byte]] = delayInvoke;
       @NeverInline def isValid: Rep[Boolean] = delayInvoke;
       @NeverInline @OverloadId(value = "and_sigma") override def &&(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
+      // manual fix (implicit Overloaded)
       @NeverInline @OverloadId(value = "and_bool") override def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = delayInvoke;
       @NeverInline @OverloadId(value = "or_sigma") override def ||(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
+      // manual fix (implicit Overloaded)
       @NeverInline @OverloadId(value = "or_bool") override def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = delayInvoke;
       @NeverInline override def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke;
       @NeverInline override def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = delayInvoke

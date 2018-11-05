@@ -18,8 +18,8 @@ trait WECPointsDefs extends scalan.Scalan with WECPoints {
   self: WrappersModule =>
 import IsoUR._
 import Converter._
-import WECPoint._
 import WArray._
+import WECPoint._
 
 object WECPoint extends EntityObject("WECPoint") {
   // entityConst: single const for each entity
@@ -70,11 +70,39 @@ object WECPoint extends EntityObject("WECPoint") {
   }
 
   private val _ECPointWrapSpec = new ECPointWrapSpec
+  // entityAdapter for WECPoint trait
+  case class WECPointAdapter(source: Rep[WECPoint])
+      extends WECPoint with Def[WECPoint] {
+    val selfType: Elem[WECPoint] = element[WECPoint]
+    private val thisClass = classOf[WECPoint]
+
+    def add(x$1: Rep[WECPoint]): Rep[WECPoint] = {
+      asRep[WECPoint](mkMethodCall(source,
+        thisClass.getMethod("add", classOf[Sym]),
+        List(x$1),
+        true, element[WECPoint]))
+    }
+
+    def multiply(x$1: Rep[WBigInteger]): Rep[WECPoint] = {
+      asRep[WECPoint](mkMethodCall(source,
+        thisClass.getMethod("multiply", classOf[Sym]),
+        List(x$1),
+        true, element[WECPoint]))
+    }
+
+    def getEncoded(x$1: Rep[Boolean]): Rep[WArray[Byte]] = {
+      asRep[WArray[Byte]](mkMethodCall(source,
+        thisClass.getMethod("getEncoded", classOf[Sym]),
+        List(x$1),
+        true, element[WArray[Byte]]))
+    }
+  }
+
   // entityProxy: single proxy for each type family
   implicit def proxyWECPoint(p: Rep[WECPoint]): WECPoint = {
     if (p.rhs.isInstanceOf[WECPoint@unchecked]) p.rhs.asInstanceOf[WECPoint]
     else
-      proxyOps[WECPoint](p)(scala.reflect.classTag[WECPoint])
+      WECPointAdapter(p)
   }
 
   // familyElem
