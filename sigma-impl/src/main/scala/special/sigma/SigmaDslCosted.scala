@@ -1,7 +1,7 @@
 package special.sigma
 
 import special.SpecialPredef
-import special.collection._
+import special.collection.{Col, _}
 
 import scala.reflect.ClassTag
 import scalan.meta.RType
@@ -52,8 +52,11 @@ class CCostedBox(val box: Box, val cost: Int) extends CostedBox {
     dsl.costOption(opt, dsl.CostModel.GetRegister)
   }
 
-  def value = box
-  def dataSize = box.dataSize
+  @NeverInline
+  def creationInfo: Costed[(Long, Col[Byte])] = SpecialPredef.rewritableMethod
+
+  def value: Box = box
+  def dataSize: Long = box.dataSize
 }
 
 class CCostedAvlTree(val tree: AvlTree, val cost: Int) extends CostedAvlTree {

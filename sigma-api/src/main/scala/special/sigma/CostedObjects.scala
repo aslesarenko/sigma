@@ -1,8 +1,6 @@
 package special.sigma
 
-import special.SpecialPredef
-import special.collection._
-
+import special.collection.{Col, _}
 import scalan.Reified
 import scalan.meta.RType
 
@@ -30,6 +28,7 @@ trait CostedBox extends CostedSigmaObject[Box] {
   def propositionBytes: CostedCol[Byte]
   def registers: CostedCol[AnyValue]
   def getReg[@Reified T](id: Int)(implicit cT:RType[T]): CostedOption[T]
+  def creationInfo: Costed[(Long, Col[Byte])]
 }
 
 trait CostedAvlTree extends CostedSigmaObject[AvlTree] {
