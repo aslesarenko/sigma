@@ -22,6 +22,9 @@ package special.sigma {
     import WBigInteger._;
     import WECPoint._;
     import WOption._;
+    import CostedNone._; // manual fix
+    import CostedSome._; // manuaf fix
+    import WSpecialPredef._; // manuaf fix
     trait DefaultSigma extends SigmaProp {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
       @NeverInline @OverloadId(value = "and_sigma") def &&(other: Rep[SigmaProp]): Rep[SigmaProp] = delayInvoke;
@@ -61,7 +64,7 @@ package special.sigma {
       @NeverInline def LastBlockUtxoRootHash: Rep[AvlTree] = delayInvoke;
       @NeverInline def MinerPubKey: Rep[Col[Byte]] = delayInvoke;
       @NeverInline def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke;
-      def getConstant[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[Nothing] = scala.sys.`package`.error(toRep("Method getConstant is not defined in TestContext. Should be overriden in real context.".asInstanceOf[String]));
+      @NeverInline def getConstant[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[T] = delayInvoke ;
       @NeverInline def cost: Rep[Int] = delayInvoke;
       @NeverInline def dataSize: Rep[Long] = delayInvoke
     };
@@ -80,15 +83,17 @@ package special.sigma {
       };
       def costColWithConstSizedItem[T](xs: Rep[Col[T]], len: Rep[Int], itemSize: Rep[Long]): Rep[CostedCol[T]] = {
         // manual fix (div)
-        val perItemCost: Rep[Long] = len.toLong.*(itemSize).div(toRep(1024L.asInstanceOf[Long])).+(toRep(1.asInstanceOf[Int])).*(this.CostModel.AccessKiloByteOfData);
+        val perItemCost: Rep[Long] = len.toLong.*(itemSize).div(toRep(1024L.asInstanceOf[Long])).+(toRep(1.asInstanceOf[Long])).*(this.CostModel.AccessKiloByteOfData.toLong);
         val costs: Rep[Col[Int]] = this.Cols.replicate[Int](len, perItemCost.toInt);
         val sizes: Rep[Col[Long]] = this.Cols.replicate[Long](len, itemSize);
         val valueCost: Rep[Int] = this.CostModel.CollectionConst;
         this.Costing.mkCostedCol[T](xs, costs, sizes, valueCost)
       };
       def costOption[T](opt: Rep[WOption[T]], opCost: Rep[Int]): Rep[CostedOption[T]] = {
-        val none: Rep[CostedOption[T]] = this.Costing.mkCostedNone[T](opCost);
-        opt.fold[CostedOption[T]](none)(fun(((x: Rep[T]) => this.Costing.mkCostedSome[T](this.Costing.costedValue[T](x, RWSpecialPredef.some[Int](opCost))(cT)))))
+        implicit val eT = opt.elem.eItem
+        val none = Thunk(RCostedNone[T](opCost));
+        opt.fold[CostedOption[T]](none,
+          fun(((x: Rep[T]) => this.Costing.mkCostedSome[T](this.Costing.costedValue[T](x, RWSpecialPredef.some[Int](opCost))))))
       };
       @NeverInline def verifyZK(proof: Rep[Thunk[SigmaProp]]): Rep[Boolean] = delayInvoke;
       @NeverInline def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp] = delayInvoke;

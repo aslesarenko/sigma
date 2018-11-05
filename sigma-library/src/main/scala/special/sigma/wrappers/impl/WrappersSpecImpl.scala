@@ -11,11 +11,11 @@ trait WrappersSpecDefs extends scalan.Scalan with WrappersSpec {
 import IsoUR._
 import Converter._
 import WArray._
+import WBigInteger._
 import WECPoint._
 import WrapSpecBase._
-import WBigInteger._
-import ECPointWrapSpec._
 import BigIntegerWrapSpec._
+import ECPointWrapSpec._
 import SigmaPredefWrapSpec._
 
 object ECPointWrapSpec extends EntityObject("ECPointWrapSpec") {

@@ -17,6 +17,7 @@ package special.sigma {
     import CostedCol._;
     import CostedContext._;
     import CostedOption._;
+    import CostModel._;  // manual fix
     import SigmaDslBuilder._;
     import TestSigmaDslBuilder._;
     import WOption._;  // manual fix

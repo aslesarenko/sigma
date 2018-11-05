@@ -3,10 +3,11 @@ package special.sigma.wrappers {
 
   trait WrappersSpec extends Base { self: SigmaLibrary =>
     import WArray._;
-    import WSigmaPredef._; // manual fix
+    import WBigInteger._;
     import WECPoint._;
     import WrapSpecBase._;
-    import WBigInteger._;
+    import WSigmaPredef._;  // manual fix
+
     abstract class ECPointWrapSpec extends WrapSpecBase {
       def getEncoded[A](g: Rep[WECPoint], compressed: Rep[Boolean]): Rep[WArray[Byte]] = g.getEncoded(compressed);
       def multiply(l: Rep[WECPoint], r: Rep[WBigInteger]): Rep[WECPoint] = l.multiply(r);

@@ -115,6 +115,7 @@ class TestContext(
     } else None
   }
 
+  @NeverInline
   def getConstant[T](id: Byte)(implicit cT: RType[T]) =
     sys.error(s"Method getConstant is not defined in TestContext. Should be overriden in real context.")
 
@@ -147,7 +148,7 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
 
   /** Cost of collection with static size elements. */
   def costColWithConstSizedItem[T](xs: Col[T], len: Int, itemSize: Long): CostedCol[T] = {
-    val perItemCost = (len.toLong * itemSize / 1024L + 1) * this.CostModel.AccessKiloByteOfData
+    val perItemCost = (len.toLong * itemSize / 1024L + 1L) * this.CostModel.AccessKiloByteOfData.toLong
     val costs = this.Cols.replicate(len, perItemCost.toInt)
     val sizes = this.Cols.replicate(len, itemSize)
     val valueCost = this.CostModel.CollectionConst
