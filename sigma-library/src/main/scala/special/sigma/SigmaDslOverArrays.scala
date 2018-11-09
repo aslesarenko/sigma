@@ -6,8 +6,10 @@ package special.sigma {
     import AnyValue._;
     import AvlTree._;
     import Box._;
+    import CostedBuilder._  // manual fix
     import CCostedBuilder._;
     import Col._;
+    import ColBuilder._ // manual fix
     import ColOverArrayBuilder._;
     import Context._;
     import CostModel._;
@@ -69,9 +71,11 @@ package special.sigma {
       @NeverInline def dataSize: Rep[Long] = delayInvoke
     };
     abstract class TestSigmaDslBuilder extends SigmaDslBuilder {
-      def Cols: Rep[ColOverArrayBuilder] = RColOverArrayBuilder();
+      // manual fix
+      def Cols: Rep[ColBuilder] = RColOverArrayBuilder();
       def Monoids: Rep[MonoidBuilderInst] = RMonoidBuilderInst();
-      def Costing: Rep[CCostedBuilder] = RCCostedBuilder();
+      // manual fix
+      def Costing: Rep[CostedBuilder] = RCCostedBuilder();
       @NeverInline def CostModel: Rep[CostModel] = delayInvoke;
       def costBoxes(bs: Rep[Col[Box]]): Rep[CostedCol[Box]] = {
         val len: Rep[Int] = bs.length;

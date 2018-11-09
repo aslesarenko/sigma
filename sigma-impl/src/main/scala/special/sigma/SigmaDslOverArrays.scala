@@ -131,9 +131,10 @@ class TestContext(
 }
 
 class TestSigmaDslBuilder extends SigmaDslBuilder {
-  def Cols = new ColOverArrayBuilder
-  def Monoids = new MonoidBuilderInst
-  def Costing = new CCostedBuilder
+  // manual fix
+  def Cols: ColBuilder = new ColOverArrayBuilder
+  def Monoids: MonoidBuilder = new MonoidBuilderInst
+  def Costing: CostedBuilder = new CCostedBuilder
   @NeverInline
   def CostModel: CostModel = new TestCostModel
 
