@@ -54,16 +54,18 @@ def libraryDefSettings = commonSettings ++ Seq(
 lazy val allConfigDependency = "compile->compile;test->test"
 cancelable in Global := true
 
+val specialVersion = "snapshot-publish-2fddb156-SNAPSHOT"
+
 val scripto     = "org.scorexfoundation" %% "scrypto" % "2.1.0"
 val paradise    = "org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full
-val common      = "special" %% "common" % "0.3.0-SNAPSHOT"
-val meta        = "special" %% "meta" % "0.3.0-SNAPSHOT"
-val core        = "special" %% "core" % "0.3.0-SNAPSHOT"
-val plugin      = "special" %% "plugin" % "0.3.0-SNAPSHOT"
-val libraryapi  = "special" %% "library-api" % "0.3.0-SNAPSHOT"
-val libraryimpl = "special" %% "library-impl" % "0.3.0-SNAPSHOT"
-val library     = "special" %% "library" % "0.3.0-SNAPSHOT"
-val libraryconf = "special" %% "library-conf" % "0.3.0-SNAPSHOT"
+val common      = "io.github.scalan" %% "common" % specialVersion
+val meta        = "io.github.scalan" %% "meta" % specialVersion
+val core        = "io.github.scalan" %% "core" % specialVersion
+val plugin      = "io.github.scalan" %% "plugin" % specialVersion
+val libraryapi  = "io.github.scalan" %% "library-api" % specialVersion
+val libraryimpl = "io.github.scalan" %% "library-impl" % specialVersion
+val library     = "io.github.scalan" %% "library" % specialVersion
+val libraryconf = "io.github.scalan" %% "library-conf" % specialVersion
 
 lazy val sigmaconf = Project("sigma-conf", file("sigma-conf"))
     .settings(commonSettings,
