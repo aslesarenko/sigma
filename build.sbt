@@ -23,7 +23,8 @@ lazy val buildSettings = Seq(
     "-language:existentials",
     "-language:experimental.macros"),
   publishTo := {
-    val nexus = "http://10.122.85.37:9081/nexus/"
+    //    val nexus = "http://10.122.85.37:9081/nexus/"
+    val nexus = "https://oss.sonatype.org/"
     if (version.value.trim.endsWith("SNAPSHOT"))
       Some("snapshots" at (nexus + "content/repositories/snapshots"))
     else
