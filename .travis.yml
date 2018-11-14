@@ -1,0 +1,32 @@
+sudo: required
+dist: trusty
+
+branches:
+  only:
+    - master
+    - /^\d\.\d+$/
+
+# Tricks to avoid unnecessary cache updates
+before_cache:
+  - find $HOME/.sbt -name "*.lock" | xargs rm
+  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
+
+# These directories are cached to S3 at the end of the build
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+
+language: scala
+
+jdk:
+  - oraclejdk8
+
+script:
+  - sbt -jvm-opts .travis.jvmopts test
+
+#after_success:
+#  - sbt -jvm-opts .travis.jvmopts publish
+#
+#env:
+#  global:
+
