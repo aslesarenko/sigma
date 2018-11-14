@@ -1,3 +1,4 @@
+import scala.util.Try
 
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
@@ -5,7 +6,7 @@ unmanagedBase := baseDirectory.value / "libs"
 
 lazy val buildSettings = Seq(
   scalaVersion := "2.12.6",
-  organization := "special.sigma",
+  organization := "io.github.scalan",
   resolvers += Resolver.sonatypeRepo("public"),
   javacOptions ++= Seq("-source", "1.7", "-target", "1.7"),
   scalacOptions ++= Seq(
@@ -22,7 +23,8 @@ lazy val buildSettings = Seq(
     "-language:existentials",
     "-language:experimental.macros"),
   publishTo := {
-    val nexus = "http://10.122.85.37:9081/nexus/"
+    //    val nexus = "http://10.122.85.37:9081/nexus/"
+    val nexus = "https://oss.sonatype.org/"
     if (version.value.trim.endsWith("SNAPSHOT"))
       Some("snapshots" at (nexus + "content/repositories/snapshots"))
     else
@@ -54,16 +56,18 @@ def libraryDefSettings = commonSettings ++ Seq(
 lazy val allConfigDependency = "compile->compile;test->test"
 cancelable in Global := true
 
+val specialVersion = "snapshot-publish-b32356d5-SNAPSHOT"
+
 val scripto     = "org.scorexfoundation" %% "scrypto" % "2.1.0"
 val paradise    = "org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full
-val common      = "special" %% "common" % "0.3.0-SNAPSHOT"
-val meta        = "special" %% "meta" % "0.3.0-SNAPSHOT"
-val core        = "special" %% "core" % "0.3.0-SNAPSHOT"
-val plugin      = "special" %% "plugin" % "0.3.0-SNAPSHOT"
-val libraryapi  = "special" %% "library-api" % "0.3.0-SNAPSHOT"
-val libraryimpl = "special" %% "library-impl" % "0.3.0-SNAPSHOT"
-val library     = "special" %% "library" % "0.3.0-SNAPSHOT"
-val libraryconf = "special" %% "library-conf" % "0.3.0-SNAPSHOT"
+val common      = "io.github.scalan" %% "common" % specialVersion
+val meta        = "io.github.scalan" %% "meta" % specialVersion
+val core        = "io.github.scalan" %% "core" % specialVersion
+val plugin      = "io.github.scalan" %% "plugin" % specialVersion
+val libraryapi  = "io.github.scalan" %% "library-api" % specialVersion
+val libraryimpl = "io.github.scalan" %% "library-impl" % specialVersion
+val library     = "io.github.scalan" %% "library" % specialVersion
+val libraryconf = "io.github.scalan" %% "library-conf" % specialVersion
 
 lazy val sigmaconf = Project("sigma-conf", file("sigma-conf"))
     .settings(commonSettings,
@@ -79,7 +83,7 @@ lazy val scalanizer = Project("scalanizer", file("scalanizer"))
       assemblyOption in assembly ~= { _.copy(includeScala = false, includeDependency = true) },
       artifact in(Compile, assembly) := {
         val art = (artifact in(Compile, assembly)).value
-        art.copy(classifier = Some("assembly"))
+        art.withClassifier(Some("assembly"))
       },
       addArtifact(artifact in(Compile, assembly), assembly)
     )
@@ -87,7 +91,7 @@ lazy val scalanizer = Project("scalanizer", file("scalanizer"))
 lazy val sigmaapi = Project("sigma-api", file("sigma-api"))
     .settings(libraryDefSettings :+ addCompilerPlugin(paradise),
       libraryDependencies ++= Seq(
-        common % allConfigDependency, meta, libraryapi,
+        common, meta, libraryapi,
         "org.typelevel" %% "macro-compat" % "1.1.1",
         "org.scorexfoundation" %% "scrypto" % "2.1.2",
         "org.bouncycastle" % "bcprov-jdk15on" % "1.60"
@@ -107,11 +111,11 @@ lazy val sigmalibrary = Project("sigma-library", file("sigma-library"))
     .settings(//commonSettings,
       libraryDefSettings,
       libraryDependencies ++= Seq(
-        common % allConfigDependency,
-        core % allConfigDependency,
-        libraryapi % allConfigDependency,
-        libraryimpl % allConfigDependency,
-        library % allConfigDependency,
+        common, (common % Test).classifier("tests"),
+        core, (core % Test).classifier("tests"),
+        libraryapi, (libraryapi % Test).classifier("tests"),
+        libraryimpl, (libraryimpl % Test).classifier("tests"),
+        library, (library % Test).classifier("tests"),
         "org.scorexfoundation" %% "scrypto" % "2.1.2",
         "org.bouncycastle" % "bcprov-jdk15on" % "1.60"
       ))
@@ -120,5 +124,41 @@ lazy val root = Project("sigma", file("."))
     .aggregate(sigmaapi, sigmaimpl, sigmalibrary, sigmaconf, scalanizer)
     .settings(buildSettings, publishArtifact := false)
 
+enablePlugins(GitVersioning)
 
+version in ThisBuild := {
+  if (git.gitCurrentTags.value.nonEmpty) {
+    git.gitDescribedVersion.value.get
+  } else {
+    if (git.gitHeadCommit.value.contains(git.gitCurrentBranch.value)) {
+      // see https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
+      if (Try(sys.env("TRAVIS")).getOrElse("false") == "true") {
+        // pull request number, "false" if not a pull request
+        if (Try(sys.env("TRAVIS_PULL_REQUEST")).getOrElse("false") != "false") {
+          // build is triggered by a pull request
+          val prBranchName = Try(sys.env("TRAVIS_PULL_REQUEST_BRANCH")).get
+          val prHeadCommitSha = Try(sys.env("TRAVIS_PULL_REQUEST_SHA")).get
+          prBranchName + "-" + prHeadCommitSha.take(8) + "-SNAPSHOT"
+        } else {
+          // build is triggered by a push
+          val branchName = Try(sys.env("TRAVIS_BRANCH")).get
+          branchName + "-" + git.gitHeadCommit.value.get.take(8) + "-SNAPSHOT"
+        }
+      } else {
+        git.gitHeadCommit.value.get.take(8) + "-SNAPSHOT"
+      }
+    } else {
+      git.gitCurrentBranch.value + "-" + git.gitHeadCommit.value.get.take(8) + "-SNAPSHOT"
+    }
+  }
+}
+
+git.gitUncommittedChanges in ThisBuild := true
+
+credentials += Credentials(Path.userHome / ".sbt" / ".specialsigma-sonatype-credentials")
+
+credentials ++= (for {
+  username <- Option(System.getenv().get("SONATYPE_USERNAME"))
+  password <- Option(System.getenv().get("SONATYPE_PASSWORD"))
+} yield Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", username, password)).toSeq
 
