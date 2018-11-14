@@ -1,3 +1,4 @@
+import scala.util.Try
 
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
@@ -5,7 +6,7 @@ unmanagedBase := baseDirectory.value / "libs"
 
 lazy val buildSettings = Seq(
   scalaVersion := "2.12.6",
-  organization := "special.sigma",
+  organization := "io.github.scalan",
   resolvers += Resolver.sonatypeRepo("public"),
   javacOptions ++= Seq("-source", "1.7", "-target", "1.7"),
   scalacOptions ++= Seq(
@@ -122,5 +123,41 @@ lazy val root = Project("sigma", file("."))
     .aggregate(sigmaapi, sigmaimpl, sigmalibrary, sigmaconf, scalanizer)
     .settings(buildSettings, publishArtifact := false)
 
+enablePlugins(GitVersioning)
 
+version in ThisBuild := {
+  if (git.gitCurrentTags.value.nonEmpty) {
+    git.gitDescribedVersion.value.get
+  } else {
+    if (git.gitHeadCommit.value.contains(git.gitCurrentBranch.value)) {
+      // see https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
+      if (Try(sys.env("TRAVIS")).getOrElse("false") == "true") {
+        // pull request number, "false" if not a pull request
+        if (Try(sys.env("TRAVIS_PULL_REQUEST")).getOrElse("false") != "false") {
+          // build is triggered by a pull request
+          val prBranchName = Try(sys.env("TRAVIS_PULL_REQUEST_BRANCH")).get
+          val prHeadCommitSha = Try(sys.env("TRAVIS_PULL_REQUEST_SHA")).get
+          prBranchName + "-" + prHeadCommitSha.take(8) + "-SNAPSHOT"
+        } else {
+          // build is triggered by a push
+          val branchName = Try(sys.env("TRAVIS_BRANCH")).get
+          branchName + "-" + git.gitHeadCommit.value.get.take(8) + "-SNAPSHOT"
+        }
+      } else {
+        git.gitHeadCommit.value.get.take(8) + "-SNAPSHOT"
+      }
+    } else {
+      git.gitCurrentBranch.value + "-" + git.gitHeadCommit.value.get.take(8) + "-SNAPSHOT"
+    }
+  }
+}
+
+git.gitUncommittedChanges in ThisBuild := true
+
+credentials += Credentials(Path.userHome / ".sbt" / ".specialsigma-sonatype-credentials")
+
+credentials ++= (for {
+  username <- Option(System.getenv().get("SONATYPE_USERNAME"))
+  password <- Option(System.getenv().get("SONATYPE_PASSWORD"))
+} yield Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", username, password)).toSeq
 
