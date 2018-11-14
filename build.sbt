@@ -81,7 +81,7 @@ lazy val scalanizer = Project("scalanizer", file("scalanizer"))
       assemblyOption in assembly ~= { _.copy(includeScala = false, includeDependency = true) },
       artifact in(Compile, assembly) := {
         val art = (artifact in(Compile, assembly)).value
-        art.copy(classifier = Some("assembly"))
+        art.withClassifier(Some("assembly"))
       },
       addArtifact(artifact in(Compile, assembly), assembly)
     )
@@ -89,7 +89,7 @@ lazy val scalanizer = Project("scalanizer", file("scalanizer"))
 lazy val sigmaapi = Project("sigma-api", file("sigma-api"))
     .settings(libraryDefSettings :+ addCompilerPlugin(paradise),
       libraryDependencies ++= Seq(
-        common % allConfigDependency, meta, libraryapi,
+        common, meta, libraryapi,
         "org.typelevel" %% "macro-compat" % "1.1.1",
         "org.scorexfoundation" %% "scrypto" % "2.1.2",
         "org.bouncycastle" % "bcprov-jdk15on" % "1.60"
@@ -109,11 +109,11 @@ lazy val sigmalibrary = Project("sigma-library", file("sigma-library"))
     .settings(//commonSettings,
       libraryDefSettings,
       libraryDependencies ++= Seq(
-        common % allConfigDependency,
-        core % allConfigDependency,
-        libraryapi % allConfigDependency,
-        libraryimpl % allConfigDependency,
-        library % allConfigDependency,
+        common, (common % Test).classifier("tests"),
+        core, (core % Test).classifier("tests"),
+        libraryapi, (libraryapi % Test).classifier("tests"),
+        libraryimpl, (libraryimpl % Test).classifier("tests"),
+        library, (library % Test).classifier("tests"),
         "org.scorexfoundation" %% "scrypto" % "2.1.2",
         "org.bouncycastle" % "bcprov-jdk15on" % "1.60"
       ))
