@@ -56,7 +56,7 @@ def libraryDefSettings = commonSettings ++ Seq(
 lazy val allConfigDependency = "compile->compile;test->test"
 cancelable in Global := true
 
-val specialVersion = "snapshot-publish-b32356d5-SNAPSHOT"
+val specialVersion = "master-c1654f39-SNAPSHOT"
 
 val scripto     = "org.scorexfoundation" %% "scrypto" % "2.1.0"
 val paradise    = "org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full
