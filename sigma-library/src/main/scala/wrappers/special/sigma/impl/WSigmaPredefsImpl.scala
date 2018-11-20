@@ -73,7 +73,7 @@ object WSigmaPredef extends EntityObject("WSigmaPredef") {
       asRep[Long](mkMethodCall(self,
         thisClass.getMethod("dataSize", classOf[Sym]),
         List(v),
-        true, element[Long]))
+        true, isAdapterCall = false, element[Long]))
     }
   }
 

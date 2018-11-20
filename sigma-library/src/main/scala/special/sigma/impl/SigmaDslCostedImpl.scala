@@ -41,7 +41,7 @@ object CCostedContext extends EntityObject("CCostedContext") {
       asRep[Costed[T]](mkMethodCall(self,
         thisClass.getMethod("getConstant", classOf[Sym], classOf[Elem[_]]),
         List(id, cT),
-        true, element[Costed[T]]))
+        true, isAdapterCall = false, element[Costed[T]]))
     }
   }
   // elem for concrete class
@@ -308,7 +308,7 @@ object CCostedBox extends EntityObject("CCostedBox") {
       asRep[Costed[(Long, Col[Byte])]](mkMethodCall(self,
         thisClass.getMethod("creationInfo"),
         List(),
-        true, element[Costed[(Long, Col[Byte])]]))
+        true, isAdapterCall = false, element[Costed[(Long, Col[Byte])]]))
     }
   }
   // elem for concrete class

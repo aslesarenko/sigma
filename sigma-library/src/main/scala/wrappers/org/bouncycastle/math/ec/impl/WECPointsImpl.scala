@@ -37,21 +37,21 @@ object WECPoint extends EntityObject("WECPoint") {
       asRep[WECPoint](mkMethodCall(self,
         thisClass.getMethod("add", classOf[Sym]),
         List(x$1),
-        true, element[WECPoint]))
+        true, isAdapterCall = false, element[WECPoint]))
     }
 
     def multiply(x$1: Rep[WBigInteger]): Rep[WECPoint] = {
       asRep[WECPoint](mkMethodCall(self,
         thisClass.getMethod("multiply", classOf[Sym]),
         List(x$1),
-        true, element[WECPoint]))
+        true, isAdapterCall = false, element[WECPoint]))
     }
 
     def getEncoded(x$1: Rep[Boolean]): Rep[WArray[Byte]] = {
       asRep[WArray[Byte]](mkMethodCall(self,
         thisClass.getMethod("getEncoded", classOf[Sym]),
         List(x$1),
-        true, element[WArray[Byte]]))
+        true, isAdapterCall = false, element[WArray[Byte]]))
     }
   }
 
@@ -80,21 +80,21 @@ object WECPoint extends EntityObject("WECPoint") {
       asRep[WECPoint](mkMethodCall(source,
         thisClass.getMethod("add", classOf[Sym]),
         List(x$1),
-        true, element[WECPoint]))
+        true, isAdapterCall = true, element[WECPoint]))
     }
 
     def multiply(x$1: Rep[WBigInteger]): Rep[WECPoint] = {
       asRep[WECPoint](mkMethodCall(source,
         thisClass.getMethod("multiply", classOf[Sym]),
         List(x$1),
-        true, element[WECPoint]))
+        true, isAdapterCall = true, element[WECPoint]))
     }
 
     def getEncoded(x$1: Rep[Boolean]): Rep[WArray[Byte]] = {
       asRep[WArray[Byte]](mkMethodCall(source,
         thisClass.getMethod("getEncoded", classOf[Sym]),
         List(x$1),
-        true, element[WArray[Byte]]))
+        true, isAdapterCall = true, element[WArray[Byte]]))
     }
   }
 

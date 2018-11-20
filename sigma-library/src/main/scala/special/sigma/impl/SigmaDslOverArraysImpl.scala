@@ -53,14 +53,14 @@ object DefaultSigma extends EntityObject("DefaultSigma") {
       asRep[Boolean](mkMethodCall(source,
         thisClass.getMethod("isValid"),
         List(),
-        true, element[Boolean]))
+        true, isAdapterCall = true, element[Boolean]))
     }
 
     def propBytes: Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(source,
         thisClass.getMethod("propBytes"),
         List(),
-        true, element[Col[Byte]]))
+        true, isAdapterCall = true, element[Col[Byte]]))
     }
   }
 
@@ -221,7 +221,7 @@ object DefaultContract extends EntityObject("DefaultContract") {
       asRep[Boolean](mkMethodCall(source,
         thisClass.getMethod("canOpen", classOf[Sym]),
         List(ctx),
-        true, element[Boolean]))
+        true, isAdapterCall = true, element[Boolean]))
     }
   }
 
@@ -305,21 +305,21 @@ object TestBox extends EntityObject("TestBox") {
       asRep[WOption[T]](mkMethodCall(self,
         thisClass.getMethod("getReg", classOf[Sym], classOf[Elem[_]]),
         List(id, cT),
-        true, element[WOption[T]]))
+        true, isAdapterCall = false, element[WOption[T]]))
     }
 
     override def cost: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
         thisClass.getMethod("cost"),
         List(),
-        true, element[Int]))
+        true, isAdapterCall = false, element[Int]))
     }
 
     override def dataSize: Rep[Long] = {
       asRep[Long](mkMethodCall(self,
         thisClass.getMethod("dataSize"),
         List(),
-        true, element[Long]))
+        true, isAdapterCall = false, element[Long]))
     }
   }
   // elem for concrete class
@@ -511,14 +511,14 @@ object TestAvlTree extends EntityObject("TestAvlTree") {
       asRep[Long](mkMethodCall(self,
         thisClass.getMethod("dataSize"),
         List(),
-        true, element[Long]))
+        true, isAdapterCall = false, element[Long]))
     }
 
     override def cost: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
         thisClass.getMethod("cost"),
         List(),
-        true, element[Int]))
+        true, isAdapterCall = false, element[Int]))
     }
   }
   // elem for concrete class
@@ -673,7 +673,7 @@ object TestValue extends EntityObject("TestValue") {
       asRep[Long](mkMethodCall(self,
         thisClass.getMethod("dataSize"),
         List(),
-        true, element[Long]))
+        true, isAdapterCall = false, element[Long]))
     }
   }
   // elem for concrete class
@@ -800,63 +800,63 @@ object TestContext extends EntityObject("TestContext") {
       asRep[Long](mkMethodCall(self,
         thisClass.getMethod("HEIGHT"),
         List(),
-        true, element[Long]))
+        true, isAdapterCall = false, element[Long]))
     }
 
     override def SELF: Rep[Box] = {
       asRep[Box](mkMethodCall(self,
         thisClass.getMethod("SELF"),
         List(),
-        true, element[Box]))
+        true, isAdapterCall = false, element[Box]))
     }
 
     override def INPUTS: Rep[Col[Box]] = {
       asRep[Col[Box]](mkMethodCall(self,
         thisClass.getMethod("INPUTS"),
         List(),
-        true, element[Col[Box]]))
+        true, isAdapterCall = false, element[Col[Box]]))
     }
 
     override def OUTPUTS: Rep[Col[Box]] = {
       asRep[Col[Box]](mkMethodCall(self,
         thisClass.getMethod("OUTPUTS"),
         List(),
-        true, element[Col[Box]]))
+        true, isAdapterCall = false, element[Col[Box]]))
     }
 
     override def LastBlockUtxoRootHash: Rep[AvlTree] = {
       asRep[AvlTree](mkMethodCall(self,
         thisClass.getMethod("LastBlockUtxoRootHash"),
         List(),
-        true, element[AvlTree]))
+        true, isAdapterCall = false, element[AvlTree]))
     }
 
     override def MinerPubKey: Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(self,
         thisClass.getMethod("MinerPubKey"),
         List(),
-        true, element[Col[Byte]]))
+        true, isAdapterCall = false, element[Col[Byte]]))
     }
 
     override def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = {
       asRep[WOption[T]](mkMethodCall(self,
         thisClass.getMethod("getVar", classOf[Sym], classOf[Elem[_]]),
         List(id, cT),
-        true, element[WOption[T]]))
+        true, isAdapterCall = false, element[WOption[T]]))
     }
 
     override def cost: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
         thisClass.getMethod("cost"),
         List(),
-        true, element[Int]))
+        true, isAdapterCall = false, element[Int]))
     }
 
     override def dataSize: Rep[Long] = {
       asRep[Long](mkMethodCall(self,
         thisClass.getMethod("dataSize"),
         List(),
-        true, element[Long]))
+        true, isAdapterCall = false, element[Long]))
     }
   }
   // elem for concrete class
@@ -1114,140 +1114,140 @@ object TestSigmaDslBuilder extends EntityObject("TestSigmaDslBuilder") {
       asRep[CostModel](mkMethodCall(self,
         thisClass.getMethod("CostModel"),
         List(),
-        true, element[CostModel]))
+        true, isAdapterCall = false, element[CostModel]))
     }
 
     override def verifyZK(proof: Rep[Thunk[SigmaProp]]): Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(self,
         thisClass.getMethod("verifyZK", classOf[Sym]),
         List(proof),
-        true, element[Boolean]))
+        true, isAdapterCall = false, element[Boolean]))
     }
 
     override def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("atLeast", classOf[Sym], classOf[Sym]),
         List(bound, props),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(self,
         thisClass.getMethod("allOf", classOf[Sym]),
         List(conditions),
-        true, element[Boolean]))
+        true, isAdapterCall = false, element[Boolean]))
     }
 
     override def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(self,
         thisClass.getMethod("anyOf", classOf[Sym]),
         List(conditions),
-        true, element[Boolean]))
+        true, isAdapterCall = false, element[Boolean]))
     }
 
     override def allZK(proofs: Rep[Col[SigmaProp]]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("allZK", classOf[Sym]),
         List(proofs),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def anyZK(proofs: Rep[Col[SigmaProp]]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("anyZK", classOf[Sym]),
         List(proofs),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def sigmaProp(b: Rep[Boolean]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("sigmaProp", classOf[Sym]),
         List(b),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def blake2b256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(self,
         thisClass.getMethod("blake2b256", classOf[Sym]),
         List(bytes),
-        true, element[Col[Byte]]))
+        true, isAdapterCall = false, element[Col[Byte]]))
     }
 
     override def sha256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(self,
         thisClass.getMethod("sha256", classOf[Sym]),
         List(bytes),
-        true, element[Col[Byte]]))
+        true, isAdapterCall = false, element[Col[Byte]]))
     }
 
     override def PubKey(base64String: Rep[String]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("PubKey", classOf[Sym]),
         List(base64String),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("byteArrayToBigInt", classOf[Sym]),
         List(bytes),
-        true, element[WBigInteger]))
+        true, isAdapterCall = false, element[WBigInteger]))
     }
 
     override def longToByteArray(l: Rep[Long]): Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(self,
         thisClass.getMethod("longToByteArray", classOf[Sym]),
         List(l),
-        true, element[Col[Byte]]))
+        true, isAdapterCall = false, element[Col[Byte]]))
     }
 
     override def proveDlog(g: Rep[WECPoint]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("proveDlog", classOf[Sym]),
         List(g),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("proveDHTuple", classOf[Sym], classOf[Sym], classOf[Sym], classOf[Sym]),
         List(g, h, u, v),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(self,
         thisClass.getMethod("isMember", classOf[Sym], classOf[Sym], classOf[Sym]),
         List(tree, key, proof),
-        true, element[Boolean]))
+        true, isAdapterCall = false, element[Boolean]))
     }
 
     override def treeLookup(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = {
       asRep[WOption[Col[Byte]]](mkMethodCall(self,
         thisClass.getMethod("treeLookup", classOf[Sym], classOf[Sym], classOf[Sym]),
         List(tree, key, proof),
-        true, element[WOption[Col[Byte]]]))
+        true, isAdapterCall = false, element[WOption[Col[Byte]]]))
     }
 
     override def treeModifications(tree: Rep[AvlTree], operations: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = {
       asRep[WOption[Col[Byte]]](mkMethodCall(self,
         thisClass.getMethod("treeModifications", classOf[Sym], classOf[Sym], classOf[Sym]),
         List(tree, operations, proof),
-        true, element[WOption[Col[Byte]]]))
+        true, isAdapterCall = false, element[WOption[Col[Byte]]]))
     }
 
     override def groupGenerator: Rep[WECPoint] = {
       asRep[WECPoint](mkMethodCall(self,
         thisClass.getMethod("groupGenerator"),
         List(),
-        true, element[WECPoint]))
+        true, isAdapterCall = false, element[WECPoint]))
     }
 
     override def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint] = {
       asRep[WECPoint](mkMethodCall(self,
         thisClass.getMethod("exponentiate", classOf[Sym], classOf[Sym]),
         List(base, exponent),
-        true, element[WECPoint]))
+        true, isAdapterCall = false, element[WECPoint]))
     }
   }
   // elem for concrete class
@@ -1699,21 +1699,21 @@ object TrivialSigma extends EntityObject("TrivialSigma") {
       asRep[Col[Byte]](mkMethodCall(self,
         thisClass.getMethod("propBytes"),
         List(),
-        true, element[Col[Byte]]))
+        true, isAdapterCall = false, element[Col[Byte]]))
     }
 
     override def isValid: Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(self,
         thisClass.getMethod("isValid"),
         List(),
-        true, element[Boolean]))
+        true, isAdapterCall = false, element[Boolean]))
     }
 
     override def $amp$amp(other: Rep[SigmaProp]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("$amp$amp", classOf[Sym]),
         List(other),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     // manual fix
@@ -1721,35 +1721,35 @@ object TrivialSigma extends EntityObject("TrivialSigma") {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("$amp$amp", classOf[Sym], classOf[Overloaded1]),
         List(other, o),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def $bar$bar(other: Rep[SigmaProp]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("$bar$bar", classOf[Sym]),
         List(other),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("$bar$bar", classOf[Sym], classOf[Overloaded1]),
         List(other, o),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("lazyAnd", classOf[Sym]),
         List(other),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("lazyOr", classOf[Sym]),
         List(other),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
   }
   // elem for concrete class
@@ -1964,56 +1964,56 @@ object ProveDlogEvidence extends EntityObject("ProveDlogEvidence") {
       asRep[Col[Byte]](mkMethodCall(self,
         thisClass.getMethod("propBytes"),
         List(),
-        true, element[Col[Byte]]))
+        true, isAdapterCall = false, element[Col[Byte]]))
     }
 
     override def isValid: Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(self,
         thisClass.getMethod("isValid"),
         List(),
-        true, element[Boolean]))
+        true, isAdapterCall = false, element[Boolean]))
     }
 
     override def $amp$amp(other: Rep[SigmaProp]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("$amp$amp", classOf[Sym]),
         List(other),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def $amp$amp(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("$amp$amp", classOf[Sym], classOf[Sym]),
         List(other, o),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def $bar$bar(other: Rep[SigmaProp]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("$bar$bar", classOf[Sym]),
         List(other),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def $bar$bar(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("$bar$bar", classOf[Sym], classOf[Sym]),
         List(other, o),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("lazyAnd", classOf[Sym]),
         List(other),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("lazyOr", classOf[Sym]),
         List(other),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
   }
   // elem for concrete class
@@ -2228,56 +2228,56 @@ object ProveDHTEvidence extends EntityObject("ProveDHTEvidence") {
       asRep[Col[Byte]](mkMethodCall(self,
         thisClass.getMethod("propBytes"),
         List(),
-        true, element[Col[Byte]]))
+        true, isAdapterCall = false, element[Col[Byte]]))
     }
 
     override def isValid: Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(self,
         thisClass.getMethod("isValid"),
         List(),
-        true, element[Boolean]))
+        true, isAdapterCall = false, element[Boolean]))
     }
 
     override def $amp$amp(other: Rep[SigmaProp]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("$amp$amp", classOf[Sym]),
         List(other),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def $amp$amp(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("$amp$amp", classOf[Sym], classOf[Sym]),
         List(other, o),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def $bar$bar(other: Rep[SigmaProp]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("$bar$bar", classOf[Sym]),
         List(other),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def $bar$bar(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("$bar$bar", classOf[Sym], classOf[Sym]),
         List(other, o),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("lazyAnd", classOf[Sym]),
         List(other),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
 
     override def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
         thisClass.getMethod("lazyOr", classOf[Sym]),
         List(other),
-        true, element[SigmaProp]))
+        true, isAdapterCall = false, element[SigmaProp]))
     }
   }
   // elem for concrete class

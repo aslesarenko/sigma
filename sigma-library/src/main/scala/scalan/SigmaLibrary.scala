@@ -30,7 +30,7 @@ trait SigmaLibrary extends Library
   private val SCM = SigmaContractMethods
   private val SDBM = SigmaDslBuilderMethods
 
-  val sigmaDslBuilder: Rep[SigmaDslBuilder]
+  def sigmaDslBuilder: Rep[SigmaDslBuilder]
 
   object AnyOf {
     def unapply(d: Def[_]): Option[(Rep[ColBuilder], Seq[Rep[A]], Elem[A]) forSome {type A}] = d match {
