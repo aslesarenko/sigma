@@ -18,6 +18,11 @@ class BasicOpsTests extends FunSuite with ContractsTestkit with Matchers {
     SigmaDsl.byteArrayToBigInt(collection[Byte](-1)).signum shouldBe 1
   }
 
+  test("ByteArrayToBigInt should always produce big int less than dlog group order") {
+    an [RuntimeException] should be thrownBy
+      SigmaDsl.byteArrayToBigInt(Cols.fromArray(Array.fill[Byte](500)(1)))
+  }
+
   def test(f: Context => Boolean, ctx: Context, expected: Boolean) = {
     val contr = NoEnvContract(f)
     val res = contr.canOpen(ctx)
