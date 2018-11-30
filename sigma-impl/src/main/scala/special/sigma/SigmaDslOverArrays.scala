@@ -5,16 +5,15 @@ import java.math.BigInteger
 import com.google.common.primitives.Longs
 import org.bouncycastle.crypto.ec.CustomNamedCurves
 import org.bouncycastle.math.ec.ECPoint
+import scalan.meta.RType
+import scalan.meta.RType._
+import scalan.{Internal, NeverInline, OverloadId}
+import scorex.crypto.hash.{Blake2b256, Sha256}
+import special.SpecialPredef
+import special.collection.Types._
+import special.collection._
 
 import scala.reflect.ClassTag
-import special.SpecialPredef
-import special.collection._
-import Types._
-import scorex.crypto.hash.{Sha256, Blake2b256}
-
-import scalan.meta.RType
-import RType._
-import scalan.{NeverInline, Internal, OverloadId}
 
 class TestBox(
   val id: Col[Byte],
@@ -199,7 +198,14 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
   def PubKey(base64String: String): SigmaProp = ???
 
   @NeverInline
-  def byteArrayToBigInt(bytes: Col[Byte]): BigInteger = new BigInteger(1, bytes.arr)
+  def byteArrayToBigInt(bytes: Col[Byte]): BigInteger = {
+    val dlogGroupOrder = __curve__.getN
+    val bi = new BigInteger(1, bytes.arr)
+    if (bi.compareTo(dlogGroupOrder) == 1) {
+      throw new RuntimeException(s"BigInt value exceeds the order of the dlog group (${__curve__}). Expected to be less than: $dlogGroupOrder, actual: $bi")
+    }
+    bi
+  }
 
   @NeverInline
   def longToByteArray(l: Long): Col[Byte] = Cols.fromArray(Longs.toByteArray(l))

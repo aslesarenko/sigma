@@ -1,6 +1,9 @@
 package special.sigma
 
-import org.scalatest.{Matchers, FunSuite}
+import java.math.BigInteger
+
+import org.bouncycastle.crypto.ec.CustomNamedCurves
+import org.scalatest.{FunSuite, Matchers}
 
 class BasicOpsTests extends FunSuite with ContractsTestkit with Matchers {
   test("atLeast") {
@@ -16,6 +19,24 @@ class BasicOpsTests extends FunSuite with ContractsTestkit with Matchers {
 
   test("ByteArrayToBigInt should always produce a positive big int") {
     SigmaDsl.byteArrayToBigInt(collection[Byte](-1)).signum shouldBe 1
+  }
+
+  test("ByteArrayToBigInt should always produce big int less than dlog group order") {
+    val groupOrder = CustomNamedCurves.getByName("curve25519").getN
+
+    SigmaDsl.byteArrayToBigInt(
+      Cols.fromArray(groupOrder.subtract(BigInteger.ONE).toByteArray)
+    ).compareTo(BigInteger.ONE) shouldBe 1
+
+    SigmaDsl.byteArrayToBigInt(
+      Cols.fromArray(groupOrder.toByteArray)
+    ).compareTo(BigInteger.ONE) shouldBe 1
+
+    an [RuntimeException] should be thrownBy
+      SigmaDsl.byteArrayToBigInt(Cols.fromArray(groupOrder.add(BigInteger.ONE).toByteArray))
+
+    an [RuntimeException] should be thrownBy
+      SigmaDsl.byteArrayToBigInt(Cols.fromArray(Array.fill[Byte](500)(1)))
   }
 
   def test(f: Context => Boolean, ctx: Context, expected: Boolean) = {
