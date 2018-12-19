@@ -1268,6 +1268,13 @@ object TestSigmaDslBuilder extends EntityObject("TestSigmaDslBuilder") {
         List(scriptBytes, positions, newValues, cT),
         true, false, element[Col[Byte]]))
     }
+
+    override def decodePoint(encoded: Rep[Col[Byte]]): Rep[WECPoint] = {
+      asRep[WECPoint](mkMethodCall(self,
+        thisClass.getMethod("decodePoint", classOf[Sym]),
+        List(encoded),
+        true, false, element[WECPoint]))
+    }
   }
   // elem for concrete class
   class TestSigmaDslBuilderElem(val iso: Iso[TestSigmaDslBuilderData, TestSigmaDslBuilder])
@@ -1708,6 +1715,19 @@ object TestSigmaDslBuilder extends EntityObject("TestSigmaDslBuilder") {
         case _ => Nullable.None
       }
       def unapply(exp: Sym): Nullable[(Rep[TestSigmaDslBuilder], Rep[Col[Byte]], Rep[Col[Int]], Rep[Col[T]], Elem[T]) forSome {type T}] = exp match {
+        case Def(d) => unapply(d)
+        case _ => Nullable.None
+      }
+    }
+
+    object decodePoint {
+      def unapply(d: Def[_]): Nullable[(Rep[TestSigmaDslBuilder], Rep[Col[Byte]])] = d match {
+        case MethodCall(receiver, method, args, _) if receiver.elem.isInstanceOf[TestSigmaDslBuilderElem] && method.getName == "decodePoint" =>
+          val res = (receiver, args(0))
+          Nullable(res).asInstanceOf[Nullable[(Rep[TestSigmaDslBuilder], Rep[Col[Byte]])]]
+        case _ => Nullable.None
+      }
+      def unapply(exp: Sym): Nullable[(Rep[TestSigmaDslBuilder], Rep[Col[Byte]])] = exp match {
         case Def(d) => unapply(d)
         case _ => Nullable.None
       }
