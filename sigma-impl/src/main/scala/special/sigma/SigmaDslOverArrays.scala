@@ -7,8 +7,8 @@ import org.bouncycastle.crypto.ec.CustomNamedCurves
 import org.bouncycastle.math.ec.ECPoint
 import scalan.meta.RType
 import scalan.meta.RType._
-import scalan.{Internal, NeverInline, OverloadId}
-import scorex.crypto.hash.{Blake2b256, Sha256}
+import scalan.{Internal, NeverInline, OverloadId, Reified}
+import scorex.crypto.hash.{Sha256, Blake2b256}
 import special.SpecialPredef
 import special.collection.Types._
 import special.collection._
@@ -234,6 +234,7 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
   @NeverInline
   def exponentiate(base: ECPoint, exponent: BigInteger): ECPoint = ???
 
+  @Reified("T")
   @NeverInline
   override def substConstants[T](scriptBytes: Col[Byte],
       positions: Col[Int],
