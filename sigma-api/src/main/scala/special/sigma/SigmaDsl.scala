@@ -206,5 +206,7 @@ trait SigmaDslBuilder extends DslBuilder {
 
   def groupGenerator: ECPoint
   def exponentiate(base: ECPoint, exponent: BigInteger): ECPoint
+  @Reified("T")
+  def substConstants[T](scriptBytes: Col[Byte], positions: Col[Int], newValues: Col[T])(implicit cT: RType[T]): Col[Byte]
 }
 

@@ -233,6 +233,12 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
 
   @NeverInline
   def exponentiate(base: ECPoint, exponent: BigInteger): ECPoint = ???
+
+  @NeverInline
+  override def substConstants[T](scriptBytes: Col[Byte],
+      positions: Col[Int],
+      newValues: Col[T])
+      (implicit cT: RType[T]): Col[Byte] = ???
 }
 
 trait DefaultSigma extends SigmaProp {
