@@ -37,28 +37,28 @@ object CostedSigmaObject extends EntityObject("CostedSigmaObject") {
       asRep[SigmaDslBuilder](mkMethodCall(source,
         thisClass.getMethod("dsl"),
         List(),
-        true, isAdapterCall = true, element[SigmaDslBuilder]))
+        true, true, element[SigmaDslBuilder]))
     }
 
     def value: Rep[Val] = {
       asRep[Val](mkMethodCall(source,
         thisClass.getMethod("value"),
         List(),
-        true, isAdapterCall = true, element[Val]))
+        true, true, element[Val]))
     }
 
     def cost: Rep[Int] = {
       asRep[Int](mkMethodCall(source,
         thisClass.getMethod("cost"),
         List(),
-        true, isAdapterCall = true, element[Int]))
+        true, true, element[Int]))
     }
 
     def dataSize: Rep[Long] = {
       asRep[Long](mkMethodCall(source,
         thisClass.getMethod("dataSize"),
         List(),
-        true, isAdapterCall = true, element[Long]))
+        true, true, element[Long]))
     }
   }
 
@@ -159,84 +159,84 @@ object CostedContext extends EntityObject("CostedContext") {
       asRep[CostedCol[Box]](mkMethodCall(source,
         thisClass.getMethod("OUTPUTS"),
         List(),
-        true, isAdapterCall = true, element[CostedCol[Box]]))
+        true, true, element[CostedCol[Box]]))
     }
 
     def INPUTS: Rep[CostedCol[Box]] = {
       asRep[CostedCol[Box]](mkMethodCall(source,
         thisClass.getMethod("INPUTS"),
         List(),
-        true, isAdapterCall = true, element[CostedCol[Box]]))
+        true, true, element[CostedCol[Box]]))
     }
 
     def HEIGHT: Rep[Costed[Long]] = {
       asRep[Costed[Long]](mkMethodCall(source,
         thisClass.getMethod("HEIGHT"),
         List(),
-        true, isAdapterCall = true, element[Costed[Long]]))
+        true, true, element[Costed[Long]]))
     }
 
     def SELF: Rep[CostedBox] = {
       asRep[CostedBox](mkMethodCall(source,
         thisClass.getMethod("SELF"),
         List(),
-        true, isAdapterCall = true, element[CostedBox]))
+        true, true, element[CostedBox]))
     }
 
     def LastBlockUtxoRootHash: Rep[CostedAvlTree] = {
       asRep[CostedAvlTree](mkMethodCall(source,
         thisClass.getMethod("LastBlockUtxoRootHash"),
         List(),
-        true, isAdapterCall = true, element[CostedAvlTree]))
+        true, true, element[CostedAvlTree]))
     }
 
     def MinerPubKey: Rep[CostedCol[Byte]] = {
       asRep[CostedCol[Byte]](mkMethodCall(source,
         thisClass.getMethod("MinerPubKey"),
         List(),
-        true, isAdapterCall = true, element[CostedCol[Byte]]))
+        true, true, element[CostedCol[Byte]]))
     }
 
     def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[CostedOption[T]] = {
       asRep[CostedOption[T]](mkMethodCall(source,
         thisClass.getMethod("getVar", classOf[Sym], classOf[Elem[_]]),
         List(id, cT),
-        true, isAdapterCall = true, element[CostedOption[T]]))
+        true, true, element[CostedOption[T]]))
     }
 
     def getConstant[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[Costed[T]] = {
       asRep[Costed[T]](mkMethodCall(source,
         thisClass.getMethod("getConstant", classOf[Sym], classOf[Elem[_]]),
         List(id, cT),
-        true, isAdapterCall = true, element[Costed[T]]))
+        true, true, element[Costed[T]]))
     }
 
     def dsl: Rep[SigmaDslBuilder] = {
       asRep[SigmaDslBuilder](mkMethodCall(source,
         thisClass.getMethod("dsl"),
         List(),
-        true, isAdapterCall = true, element[SigmaDslBuilder]))
+        true, true, element[SigmaDslBuilder]))
     }
 
     def value: Rep[Context] = {
       asRep[Context](mkMethodCall(source,
         thisClass.getMethod("value"),
         List(),
-        true, isAdapterCall = true, element[Context]))
+        true, true, element[Context]))
     }
 
     def cost: Rep[Int] = {
       asRep[Int](mkMethodCall(source,
         thisClass.getMethod("cost"),
         List(),
-        true, isAdapterCall = true, element[Int]))
+        true, true, element[Int]))
     }
 
     def dataSize: Rep[Long] = {
       asRep[Long](mkMethodCall(source,
         thisClass.getMethod("dataSize"),
         List(),
-        true, isAdapterCall = true, element[Long]))
+        true, true, element[Long]))
     }
   }
 
@@ -411,84 +411,84 @@ object CostedBox extends EntityObject("CostedBox") {
       asRep[CostedCol[Byte]](mkMethodCall(source,
         thisClass.getMethod("id"),
         List(),
-        true, isAdapterCall = true, element[CostedCol[Byte]]))
+        true, true, element[CostedCol[Byte]]))
     }
 
     def valueCosted: Rep[Costed[Long]] = {
       asRep[Costed[Long]](mkMethodCall(source,
         thisClass.getMethod("valueCosted"),
         List(),
-        true, isAdapterCall = true, element[Costed[Long]]))
+        true, true, element[Costed[Long]]))
     }
 
     def bytes: Rep[CostedCol[Byte]] = {
       asRep[CostedCol[Byte]](mkMethodCall(source,
         thisClass.getMethod("bytes"),
         List(),
-        true, isAdapterCall = true, element[CostedCol[Byte]]))
+        true, true, element[CostedCol[Byte]]))
     }
 
     def bytesWithoutRef: Rep[CostedCol[Byte]] = {
       asRep[CostedCol[Byte]](mkMethodCall(source,
         thisClass.getMethod("bytesWithoutRef"),
         List(),
-        true, isAdapterCall = true, element[CostedCol[Byte]]))
+        true, true, element[CostedCol[Byte]]))
     }
 
     def propositionBytes: Rep[CostedCol[Byte]] = {
       asRep[CostedCol[Byte]](mkMethodCall(source,
         thisClass.getMethod("propositionBytes"),
         List(),
-        true, isAdapterCall = true, element[CostedCol[Byte]]))
+        true, true, element[CostedCol[Byte]]))
     }
 
     def registers: Rep[CostedCol[AnyValue]] = {
       asRep[CostedCol[AnyValue]](mkMethodCall(source,
         thisClass.getMethod("registers"),
         List(),
-        true, isAdapterCall = true, element[CostedCol[AnyValue]]))
+        true, true, element[CostedCol[AnyValue]]))
     }
 
     def getReg[T](id: Rep[Int])(implicit cT: Elem[T]): Rep[CostedOption[T]] = {
       asRep[CostedOption[T]](mkMethodCall(source,
         thisClass.getMethod("getReg", classOf[Sym], classOf[Elem[_]]),
         List(id, cT),
-        true, isAdapterCall = true, element[CostedOption[T]]))
+        true, true, element[CostedOption[T]]))
     }
 
     def creationInfo: Rep[Costed[(Long, Col[Byte])]] = {
       asRep[Costed[(Long, Col[Byte])]](mkMethodCall(source,
         thisClass.getMethod("creationInfo"),
         List(),
-        true, isAdapterCall = true, element[Costed[(Long, Col[Byte])]]))
+        true, true, element[Costed[(Long, Col[Byte])]]))
     }
 
     def dsl: Rep[SigmaDslBuilder] = {
       asRep[SigmaDslBuilder](mkMethodCall(source,
         thisClass.getMethod("dsl"),
         List(),
-        true, isAdapterCall = true, element[SigmaDslBuilder]))
+        true, true, element[SigmaDslBuilder]))
     }
 
     def value: Rep[Box] = {
       asRep[Box](mkMethodCall(source,
         thisClass.getMethod("value"),
         List(),
-        true, isAdapterCall = true, element[Box]))
+        true, true, element[Box]))
     }
 
     def cost: Rep[Int] = {
       asRep[Int](mkMethodCall(source,
         thisClass.getMethod("cost"),
         List(),
-        true, isAdapterCall = true, element[Int]))
+        true, true, element[Int]))
     }
 
     def dataSize: Rep[Long] = {
       asRep[Long](mkMethodCall(source,
         thisClass.getMethod("dataSize"),
         List(),
-        true, isAdapterCall = true, element[Long]))
+        true, true, element[Long]))
     }
   }
 
@@ -663,63 +663,63 @@ object CostedAvlTree extends EntityObject("CostedAvlTree") {
       asRep[CostedCol[Byte]](mkMethodCall(source,
         thisClass.getMethod("startingDigest"),
         List(),
-        true, isAdapterCall = true, element[CostedCol[Byte]]))
+        true, true, element[CostedCol[Byte]]))
     }
 
     def keyLength: Rep[Costed[Int]] = {
       asRep[Costed[Int]](mkMethodCall(source,
         thisClass.getMethod("keyLength"),
         List(),
-        true, isAdapterCall = true, element[Costed[Int]]))
+        true, true, element[Costed[Int]]))
     }
 
     def valueLengthOpt: Rep[CostedOption[Int]] = {
       asRep[CostedOption[Int]](mkMethodCall(source,
         thisClass.getMethod("valueLengthOpt"),
         List(),
-        true, isAdapterCall = true, element[CostedOption[Int]]))
+        true, true, element[CostedOption[Int]]))
     }
 
     def maxNumOperations: Rep[CostedOption[Int]] = {
       asRep[CostedOption[Int]](mkMethodCall(source,
         thisClass.getMethod("maxNumOperations"),
         List(),
-        true, isAdapterCall = true, element[CostedOption[Int]]))
+        true, true, element[CostedOption[Int]]))
     }
 
     def maxDeletes: Rep[CostedOption[Int]] = {
       asRep[CostedOption[Int]](mkMethodCall(source,
         thisClass.getMethod("maxDeletes"),
         List(),
-        true, isAdapterCall = true, element[CostedOption[Int]]))
+        true, true, element[CostedOption[Int]]))
     }
 
     def dsl: Rep[SigmaDslBuilder] = {
       asRep[SigmaDslBuilder](mkMethodCall(source,
         thisClass.getMethod("dsl"),
         List(),
-        true, isAdapterCall = true, element[SigmaDslBuilder]))
+        true, true, element[SigmaDslBuilder]))
     }
 
     def value: Rep[AvlTree] = {
       asRep[AvlTree](mkMethodCall(source,
         thisClass.getMethod("value"),
         List(),
-        true, isAdapterCall = true, element[AvlTree]))
+        true, true, element[AvlTree]))
     }
 
     def cost: Rep[Int] = {
       asRep[Int](mkMethodCall(source,
         thisClass.getMethod("cost"),
         List(),
-        true, isAdapterCall = true, element[Int]))
+        true, true, element[Int]))
     }
 
     def dataSize: Rep[Long] = {
       asRep[Long](mkMethodCall(source,
         thisClass.getMethod("dataSize"),
         List(),
-        true, isAdapterCall = true, element[Long]))
+        true, true, element[Long]))
     }
   }
 

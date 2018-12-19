@@ -13,6 +13,8 @@ package special.sigma {
     import ColBuilder._; // manual fix
     import Context._;
     import Costed._;
+    import CostedAvlTree._; // manual fix
+    import CostedBox._; // manual fix
     import CostedBuilder._;  // manual fix
     import CostedCol._;
     import CostedContext._;

@@ -38,287 +38,287 @@ object WBigInteger extends EntityObject("WBigInteger") {
       asRep[Long](mkMethodCall(self,
         thisClass.getMethod("longValueExact"),
         List(),
-        true, isAdapterCall = false, element[Long]))
+        true, false, element[Long]))
     }
 
     def intValueExact: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
         thisClass.getMethod("intValueExact"),
         List(),
-        true, isAdapterCall = false, element[Int]))
+        true, false, element[Int]))
     }
 
     def shortValueExact: Rep[Short] = {
       asRep[Short](mkMethodCall(self,
         thisClass.getMethod("shortValueExact"),
         List(),
-        true, isAdapterCall = false, element[Short]))
+        true, false, element[Short]))
     }
 
     def byteValueExact: Rep[Byte] = {
       asRep[Byte](mkMethodCall(self,
         thisClass.getMethod("byteValueExact"),
         List(),
-        true, isAdapterCall = false, element[Byte]))
+        true, false, element[Byte]))
     }
 
     def longValue: Rep[Long] = {
       asRep[Long](mkMethodCall(self,
         thisClass.getMethod("longValue"),
         List(),
-        true, isAdapterCall = false, element[Long]))
+        true, false, element[Long]))
     }
 
     def intValue: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
         thisClass.getMethod("intValue"),
         List(),
-        true, isAdapterCall = false, element[Int]))
+        true, false, element[Int]))
     }
 
     def shortValue: Rep[Short] = {
       asRep[Short](mkMethodCall(self,
         thisClass.getMethod("shortValue"),
         List(),
-        true, isAdapterCall = false, element[Short]))
+        true, false, element[Short]))
     }
 
     def byteValue: Rep[Byte] = {
       asRep[Byte](mkMethodCall(self,
         thisClass.getMethod("byteValue"),
         List(),
-        true, isAdapterCall = false, element[Byte]))
+        true, false, element[Byte]))
     }
 
     def signum: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
         thisClass.getMethod("signum"),
         List(),
-        true, isAdapterCall = false, element[Int]))
+        true, false, element[Int]))
     }
 
     def negate: Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("negate"),
         List(),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def abs: Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("abs"),
         List(),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def shiftRight(x$1: Rep[Int]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("shiftRight", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def shiftLeft(x$1: Rep[Int]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("shiftLeft", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def isProbablePrime(x$1: Rep[Int]): Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(self,
         thisClass.getMethod("isProbablePrime", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[Boolean]))
+        true, false, element[Boolean]))
     }
 
     def bitLength: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
         thisClass.getMethod("bitLength"),
         List(),
-        true, isAdapterCall = false, element[Int]))
+        true, false, element[Int]))
     }
 
     def bitCount: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
         thisClass.getMethod("bitCount"),
         List(),
-        true, isAdapterCall = false, element[Int]))
+        true, false, element[Int]))
     }
 
     def getLowestSetBit: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
         thisClass.getMethod("getLowestSetBit"),
         List(),
-        true, isAdapterCall = false, element[Int]))
+        true, false, element[Int]))
     }
 
     def flipBit(x$1: Rep[Int]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("flipBit", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def clearBit(x$1: Rep[Int]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("clearBit", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def setBit(x$1: Rep[Int]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("setBit", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def testBit(x$1: Rep[Int]): Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(self,
         thisClass.getMethod("testBit", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[Boolean]))
+        true, false, element[Boolean]))
     }
 
     def pow(x$1: Rep[Int]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("pow", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def andNot(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("andNot", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def not: Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("not"),
         List(),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def xor(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("xor", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def or(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("or", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def and(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("and", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def gcd(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("gcd", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def max(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("max", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def min(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("min", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def compareTo(x$1: Rep[WBigInteger]): Rep[Int] = {
       asRep[Int](mkMethodCall(self,
         thisClass.getMethod("compareTo", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[Int]))
+        true, false, element[Int]))
     }
 
     def divide(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("divide", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def remainder(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("remainder", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def modPow(x$1: Rep[WBigInteger], x$2: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("modPow", classOf[Sym], classOf[Sym]),
         List(x$1, x$2),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def modInverse(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("modInverse", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def mod(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("mod", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def multiply(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("multiply", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def subtract(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("subtract", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def add(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("add", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def toByteArray: Rep[WArray[Byte]] = {
       asRep[WArray[Byte]](mkMethodCall(self,
         thisClass.getMethod("toByteArray"),
         List(),
-        true, isAdapterCall = false, element[WArray[Byte]]))
+        true, false, element[WArray[Byte]]))
     }
 
     def toString(x$1: Rep[Int]): Rep[String] = {
       asRep[String](mkMethodCall(self,
         thisClass.getMethod("toString", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[String]))
+        true, false, element[String]))
     }
   }
 
@@ -347,287 +347,287 @@ object WBigInteger extends EntityObject("WBigInteger") {
       asRep[Long](mkMethodCall(source,
         thisClass.getMethod("longValueExact"),
         List(),
-        true, isAdapterCall = true, element[Long]))
+        true, true, element[Long]))
     }
 
     def intValueExact: Rep[Int] = {
       asRep[Int](mkMethodCall(source,
         thisClass.getMethod("intValueExact"),
         List(),
-        true, isAdapterCall = true, element[Int]))
+        true, true, element[Int]))
     }
 
     def shortValueExact: Rep[Short] = {
       asRep[Short](mkMethodCall(source,
         thisClass.getMethod("shortValueExact"),
         List(),
-        true, isAdapterCall = true, element[Short]))
+        true, true, element[Short]))
     }
 
     def byteValueExact: Rep[Byte] = {
       asRep[Byte](mkMethodCall(source,
         thisClass.getMethod("byteValueExact"),
         List(),
-        true, isAdapterCall = true, element[Byte]))
+        true, true, element[Byte]))
     }
 
     def longValue: Rep[Long] = {
       asRep[Long](mkMethodCall(source,
         thisClass.getMethod("longValue"),
         List(),
-        true, isAdapterCall = true, element[Long]))
+        true, true, element[Long]))
     }
 
     def intValue: Rep[Int] = {
       asRep[Int](mkMethodCall(source,
         thisClass.getMethod("intValue"),
         List(),
-        true, isAdapterCall = true, element[Int]))
+        true, true, element[Int]))
     }
 
     def shortValue: Rep[Short] = {
       asRep[Short](mkMethodCall(source,
         thisClass.getMethod("shortValue"),
         List(),
-        true, isAdapterCall = true, element[Short]))
+        true, true, element[Short]))
     }
 
     def byteValue: Rep[Byte] = {
       asRep[Byte](mkMethodCall(source,
         thisClass.getMethod("byteValue"),
         List(),
-        true, isAdapterCall = true, element[Byte]))
+        true, true, element[Byte]))
     }
 
     def signum: Rep[Int] = {
       asRep[Int](mkMethodCall(source,
         thisClass.getMethod("signum"),
         List(),
-        true, isAdapterCall = true, element[Int]))
+        true, true, element[Int]))
     }
 
     def negate: Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("negate"),
         List(),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def abs: Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("abs"),
         List(),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def shiftRight(x$1: Rep[Int]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("shiftRight", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def shiftLeft(x$1: Rep[Int]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("shiftLeft", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def isProbablePrime(x$1: Rep[Int]): Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(source,
         thisClass.getMethod("isProbablePrime", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[Boolean]))
+        true, true, element[Boolean]))
     }
 
     def bitLength: Rep[Int] = {
       asRep[Int](mkMethodCall(source,
         thisClass.getMethod("bitLength"),
         List(),
-        true, isAdapterCall = true, element[Int]))
+        true, true, element[Int]))
     }
 
     def bitCount: Rep[Int] = {
       asRep[Int](mkMethodCall(source,
         thisClass.getMethod("bitCount"),
         List(),
-        true, isAdapterCall = true, element[Int]))
+        true, true, element[Int]))
     }
 
     def getLowestSetBit: Rep[Int] = {
       asRep[Int](mkMethodCall(source,
         thisClass.getMethod("getLowestSetBit"),
         List(),
-        true, isAdapterCall = true, element[Int]))
+        true, true, element[Int]))
     }
 
     def flipBit(x$1: Rep[Int]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("flipBit", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def clearBit(x$1: Rep[Int]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("clearBit", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def setBit(x$1: Rep[Int]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("setBit", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def testBit(x$1: Rep[Int]): Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(source,
         thisClass.getMethod("testBit", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[Boolean]))
+        true, true, element[Boolean]))
     }
 
     def pow(x$1: Rep[Int]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("pow", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def andNot(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("andNot", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def not: Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("not"),
         List(),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def xor(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("xor", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def or(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("or", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def and(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("and", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def gcd(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("gcd", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def max(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("max", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def min(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("min", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def compareTo(x$1: Rep[WBigInteger]): Rep[Int] = {
       asRep[Int](mkMethodCall(source,
         thisClass.getMethod("compareTo", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[Int]))
+        true, true, element[Int]))
     }
 
     def divide(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("divide", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def remainder(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("remainder", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def modPow(x$1: Rep[WBigInteger], x$2: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("modPow", classOf[Sym], classOf[Sym]),
         List(x$1, x$2),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def modInverse(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("modInverse", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def mod(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("mod", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def multiply(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("multiply", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def subtract(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("subtract", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def add(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(source,
         thisClass.getMethod("add", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[WBigInteger]))
+        true, true, element[WBigInteger]))
     }
 
     def toByteArray: Rep[WArray[Byte]] = {
       asRep[WArray[Byte]](mkMethodCall(source,
         thisClass.getMethod("toByteArray"),
         List(),
-        true, isAdapterCall = true, element[WArray[Byte]]))
+        true, true, element[WArray[Byte]]))
     }
 
     def toString(x$1: Rep[Int]): Rep[String] = {
       asRep[String](mkMethodCall(source,
         thisClass.getMethod("toString", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = true, element[String]))
+        true, true, element[String]))
     }
   }
 
@@ -697,21 +697,21 @@ object WBigInteger extends EntityObject("WBigInteger") {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("valueOf", classOf[Sym]),
         List(x$1),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def ONE: Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("ONE"),
         List(),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
 
     def ZERO: Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
         thisClass.getMethod("ZERO"),
         List(),
-        true, isAdapterCall = false, element[WBigInteger]))
+        true, false, element[WBigInteger]))
     }
   }
 

@@ -154,7 +154,8 @@ package special.sigma {
       def treeLookup(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]];
       def treeModifications(tree: Rep[AvlTree], operations: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]];
       def groupGenerator: Rep[WECPoint];
-      def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint]
+      def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint];
+      @Reified(value = "T") def substConstants[T](scriptBytes: Rep[Col[Byte]], positions: Rep[Col[Int]], newValues: Rep[Col[T]])(implicit cT: Elem[T]): Rep[Col[Byte]]
     };
     trait CostModelCompanion;
     trait DslBuilderCompanion;

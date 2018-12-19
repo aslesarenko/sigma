@@ -9,13 +9,15 @@ package special.sigma {
     import CostedBuilder._  // manual fix
     import CCostedBuilder._;
     import Col._;
-    import ColBuilder._ // manual fix
+    import ColBuilder._;
     import ColOverArrayBuilder._;
     import Context._;
     import CostModel._;
+    import CostedBuilder._;
     import CostedCol._;
     import CostedOption._;
     import DefaultSigma._;
+    import MonoidBuilder._;
     import MonoidBuilderInst._;
     import SigmaContract._;
     import SigmaDslBuilder._;
@@ -66,15 +68,14 @@ package special.sigma {
       @NeverInline def LastBlockUtxoRootHash: Rep[AvlTree] = delayInvoke;
       @NeverInline def MinerPubKey: Rep[Col[Byte]] = delayInvoke;
       @NeverInline def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke;
-      @NeverInline def getConstant[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[T] = delayInvoke ;
+      // manual fix
+      @NeverInline def getConstant[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[T] = delayInvoke;
       @NeverInline def cost: Rep[Int] = delayInvoke;
       @NeverInline def dataSize: Rep[Long] = delayInvoke
     };
     abstract class TestSigmaDslBuilder extends SigmaDslBuilder {
-      // manual fix
       def Cols: Rep[ColBuilder] = RColOverArrayBuilder();
-      def Monoids: Rep[MonoidBuilderInst] = RMonoidBuilderInst();
-      // manual fix
+      def Monoids: Rep[MonoidBuilder] = RMonoidBuilderInst();
       def Costing: Rep[CostedBuilder] = RCCostedBuilder();
       @NeverInline def CostModel: Rep[CostModel] = delayInvoke;
       def costBoxes(bs: Rep[Col[Box]]): Rep[CostedCol[Box]] = {
@@ -117,7 +118,8 @@ package special.sigma {
       @NeverInline def treeLookup(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = delayInvoke;
       @NeverInline def treeModifications(tree: Rep[AvlTree], operations: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = delayInvoke;
       @NeverInline def groupGenerator: Rep[WECPoint] = delayInvoke;
-      @NeverInline def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint] = delayInvoke
+      @NeverInline def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint] = delayInvoke;
+      @Reified(value = "T") @NeverInline override def substConstants[T](scriptBytes: Rep[Col[Byte]], positions: Rep[Col[Int]], newValues: Rep[Col[T]])(implicit cT: Elem[T]): Rep[Col[Byte]] = delayInvoke
     };
     abstract class TrivialSigma(val _isValid: Rep[Boolean]) extends SigmaProp with DefaultSigma with Product with Serializable {
       @NeverInline def propBytes: Rep[Col[Byte]] = delayInvoke;
