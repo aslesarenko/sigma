@@ -240,6 +240,9 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
       positions: Col[Int],
       newValues: Col[T])
       (implicit cT: RType[T]): Col[Byte] = ???
+
+  @NeverInline
+  override def decodePoint(encoded: Col[Byte]): ECPoint = __curve__.getCurve.decodePoint(encoded.arr)
 }
 
 trait DefaultSigma extends SigmaProp {
