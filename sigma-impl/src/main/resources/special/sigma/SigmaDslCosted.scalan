@@ -8,9 +8,12 @@ package special.sigma {
     import CCostedAvlTree._;
     import CCostedBox._;
     import CCostedCol._;
+    import CCostedContext._;
     import CCostedPrim._;
     import Col._;
+    import ColBuilder._;
     import Context._;
+    import CostModel._;
     import Costed._;
     import CostedAvlTree._;
     import CostedBox._;
@@ -23,9 +26,9 @@ package special.sigma {
       def dsl: Rep[SigmaDslBuilder] = RTestSigmaDslBuilder();
       def OUTPUTS: Rep[CostedCol[Box]] = CCostedContext.this.dsl.costBoxes(CCostedContext.this.ctx.OUTPUTS);
       def INPUTS: Rep[CostedCol[Box]] = CCostedContext.this.dsl.costBoxes(CCostedContext.this.ctx.INPUTS);
-      def HEIGHT: Rep[Costed[Long]] = {
+      def HEIGHT: Rep[Costed[Int]] = {
         val cost: Rep[Int] = CCostedContext.this.dsl.CostModel.SelectField;
-        RCCostedPrim(CCostedContext.this.ctx.HEIGHT, cost, toRep(8L.asInstanceOf[Long]))
+        RCCostedPrim(CCostedContext.this.ctx.HEIGHT, cost, toRep(4L.asInstanceOf[Long]))
       };
       def SELF: Rep[CostedBox] = RCCostedBox(CCostedContext.this.ctx.SELF, CCostedContext.this.dsl.CostModel.AccessBox);
       def LastBlockUtxoRootHash: Rep[CostedAvlTree] = RCCostedAvlTree(CCostedContext.this.ctx.LastBlockUtxoRootHash, CCostedContext.this.dsl.CostModel.AccessAvlTree);
@@ -59,7 +62,7 @@ package special.sigma {
         val opt: Rep[WOption[T]] = CCostedBox.this.box.getReg[T](id);
         CCostedBox.this.dsl.costOption[T](opt, CCostedBox.this.dsl.CostModel.GetRegister)
       };
-      @NeverInline def creationInfo: Rep[Costed[scala.Tuple2[Long, Col[Byte]]]] = delayInvoke;
+      @NeverInline def creationInfo: Rep[Costed[scala.Tuple2[Int, Col[Byte]]]] = delayInvoke;
       def value: Rep[Box] = CCostedBox.this.box;
       def dataSize: Rep[Long] = CCostedBox.this.box.dataSize
     };

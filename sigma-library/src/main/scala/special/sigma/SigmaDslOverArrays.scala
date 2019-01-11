@@ -13,6 +13,7 @@ package special.sigma {
     import ColOverArrayBuilder._;
     import Context._;
     import CostModel._;
+    import Costed._;
     import CostedBuilder._;
     import CostedCol._;
     import CostedOption._;
@@ -48,7 +49,7 @@ package special.sigma {
       @NeverInline def getReg[T](id: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = delayInvoke;
       @NeverInline def cost: Rep[Int] = delayInvoke;
       @NeverInline def dataSize: Rep[Long] = delayInvoke;
-      def creationInfo: Rep[scala.Tuple2[Long, Col[Byte]]] = this.R3[scala.Tuple2[Long, Col[Byte]]].get;
+      def creationInfo: Rep[scala.Tuple2[Int, Col[Byte]]] = this.R3[scala.Tuple2[Int, Col[Byte]]].get;
       def tokens: Rep[Col[scala.Tuple2[Col[Byte], Long]]] = this.R2[Col[scala.Tuple2[Col[Byte], Long]]].get
     };
     abstract class TestAvlTree(val startingDigest: Rep[Col[Byte]], val keyLength: Rep[Int], val valueLengthOpt: Rep[WOption[Int]], val maxNumOperations: Rep[WOption[Int]], val maxDeletes: Rep[WOption[Int]]) extends AvlTree with Product with Serializable {
@@ -59,7 +60,7 @@ package special.sigma {
     abstract class TestValue[T](val value: Rep[T]) extends AnyValue {
       @NeverInline def dataSize: Rep[Long] = delayInvoke
     };
-    abstract class TestContext(val inputs: Rep[WArray[Box]], val outputs: Rep[WArray[Box]], val height: Rep[Long], val selfBox: Rep[Box], val lastBlockUtxoRootHash: Rep[AvlTree], val minerPubKey: Rep[WArray[Byte]], val vars: Rep[WArray[AnyValue]]) extends Context {
+    abstract class TestContext(val inputs: Rep[WArray[Box]], val outputs: Rep[WArray[Box]], val height: Rep[Int], val selfBox: Rep[Box], val lastBlockUtxoRootHash: Rep[AvlTree], val minerPubKey: Rep[WArray[Byte]], val vars: Rep[WArray[AnyValue]]) extends Context {
       def builder: Rep[TestSigmaDslBuilder] = RTestSigmaDslBuilder();
       @NeverInline def HEIGHT: Rep[Int] = delayInvoke;
       @NeverInline def SELF: Rep[Box] = delayInvoke;

@@ -3,22 +3,22 @@ package wrappers.org.bouncycastle.math.ec
 import scalan._
 import impl._
 import special.sigma.wrappers.WrappersModule
+import special.sigma.wrappers.ECPointWrapSpec
+import java.lang.reflect.Method  // manual fix
+import java.math.BigInteger  // manual fix
+
+import org.bouncycastle.math.ec.ECPoint  // manual fix
 import scala.reflect.runtime.universe._
 import scala.reflect._
 
 package impl {
-  import java.lang.reflect.Method  // manual fix
-  import java.math.BigInteger  // manual fix
-
-  import org.bouncycastle.math.ec.ECPoint  // manual fix
-  import special.sigma.wrappers.ECPointWrapSpec // manual fix
-
-  // Abs -----------------------------------
+// Abs -----------------------------------
 trait WECPointsDefs extends scalan.Scalan with WECPoints {
   self: WrappersModule =>
 import IsoUR._
 import Converter._
 import WArray._
+import WBigInteger._
 import WECPoint._
 
 object WECPoint extends EntityObject("WECPoint") {
@@ -28,28 +28,33 @@ object WECPoint extends EntityObject("WECPoint") {
 
   case class WECPointConst(
         constValue: ECPoint
-      ) extends WECPoint with LiftedConst[ECPoint, WECPoint] {
+      ) extends WECPoint with LiftedConst[ECPoint, WECPoint]
+        with Def[WECPoint] with WECPointConstMethods {
     val liftable: Liftable[ECPoint, WECPoint] = LiftableECPoint
     val selfType: Elem[WECPoint] = liftable.eW
-    private val thisClass = classOf[WECPoint]
+  }
 
-    def add(x$1: Rep[WECPoint]): Rep[WECPoint] = {
+  trait WECPointConstMethods extends WECPoint  { thisConst: Def[_] =>
+
+    private val WECPointClass = classOf[WECPoint]
+
+    override def add(x$1: Rep[WECPoint]): Rep[WECPoint] = {
       asRep[WECPoint](mkMethodCall(self,
-        thisClass.getMethod("add", classOf[Sym]),
+        WECPointClass.getMethod("add", classOf[Sym]),
         List(x$1),
         true, false, element[WECPoint]))
     }
 
-    def multiply(x$1: Rep[WBigInteger]): Rep[WECPoint] = {
+    override def multiply(x$1: Rep[WBigInteger]): Rep[WECPoint] = {
       asRep[WECPoint](mkMethodCall(self,
-        thisClass.getMethod("multiply", classOf[Sym]),
+        WECPointClass.getMethod("multiply", classOf[Sym]),
         List(x$1),
         true, false, element[WECPoint]))
     }
 
-    def getEncoded(x$1: Rep[Boolean]): Rep[WArray[Byte]] = {
+    override def getEncoded(x$1: Rep[Boolean]): Rep[WArray[Byte]] = {
       asRep[WArray[Byte]](mkMethodCall(self,
-        thisClass.getMethod("getEncoded", classOf[Sym]),
+        WECPointClass.getMethod("getEncoded", classOf[Sym]),
         List(x$1),
         true, false, element[WArray[Byte]]))
     }
@@ -69,11 +74,12 @@ object WECPoint extends EntityObject("WECPoint") {
     }
   }
 
-  private val _ECPointWrapSpec = new ECPointWrapSpec
+  private val _ECPointWrapSpec = new ECPointWrapSpec {}
   // entityAdapter for WECPoint trait
   case class WECPointAdapter(source: Rep[WECPoint])
       extends WECPoint with Def[WECPoint] {
     val selfType: Elem[WECPoint] = element[WECPoint]
+    override def transform(t: Transformer) = WECPointAdapter(t(source))
     private val thisClass = classOf[WECPoint]
 
     def add(x$1: Rep[WECPoint]): Rep[WECPoint] = {
@@ -108,7 +114,7 @@ object WECPoint extends EntityObject("WECPoint") {
   // familyElem
   class WECPointElem[To <: WECPoint]
     extends EntityElem[To] {
-    override val liftable = LiftableECPoint.asLiftable[ECPoint, To]
+    override val liftable: Liftables.Liftable[_, To] = LiftableECPoint.asLiftable[ECPoint, To]
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++
@@ -136,8 +142,8 @@ object WECPoint extends EntityObject("WECPoint") {
     override def getDefaultRep: Rep[To] = ???
   }
 
-  implicit def wECPointElement: Elem[WECPoint] =
-    cachedElem[WECPointElem[WECPoint]]()
+  implicit lazy val wECPointElement: Elem[WECPoint] =
+    new WECPointElem[WECPoint]
 
   implicit case object WECPointCompanionElem extends CompanionElem[WECPointCompanionCtor] {
     lazy val tag = weakTypeTag[WECPointCompanionCtor]

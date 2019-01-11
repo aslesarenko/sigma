@@ -77,7 +77,7 @@ package special.sigma {
       def R8[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(8.asInstanceOf[Int]));
       def R9[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(9.asInstanceOf[Int]));
       def tokens: Rep[Col[scala.Tuple2[Col[Byte], Long]]];
-      def creationInfo: Rep[scala.Tuple2[Long, Col[Byte]]]
+      def creationInfo: Rep[scala.Tuple2[Int, Col[Byte]]]
     };
     // manual fix (Def)
     @Liftable trait AvlTree extends Def[AvlTree] with DslObject {

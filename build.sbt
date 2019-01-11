@@ -49,14 +49,14 @@ lazy val testSettings = Seq(
 lazy val commonSettings = buildSettings ++ testSettings
 def libraryDefSettings = commonSettings ++ Seq(
   scalacOptions ++= Seq(
-//    s"-Xplugin:${file(".").absolutePath }/scalanizer/target/scala-2.12/scalanizer-assembly-master-4fdf0bf0-SNAPSHOT.jar"
+//    s"-Xplugin:${file(".").absolutePath }/scalanizer/target/scala-2.12/scalanizer-assembly-optimizations-51cf49fb-SNAPSHOT.jar"
   )
 )
 
 lazy val allConfigDependency = "compile->compile;test->test"
 cancelable in Global := true
 
-val specialVersion = "master-c19564fd-SNAPSHOT"
+val specialVersion = "optimizations-2a6dd4c4-SNAPSHOT"
 
 val scripto     = "org.scorexfoundation" %% "scrypto" % "2.1.0"
 val paradise    = "org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full

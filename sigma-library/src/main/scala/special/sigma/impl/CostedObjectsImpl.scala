@@ -30,7 +30,9 @@ object CostedSigmaObject extends EntityObject("CostedSigmaObject") {
   case class CostedSigmaObjectAdapter[Val](source: Rep[CostedSigmaObject[Val]])
       extends CostedSigmaObject[Val] with Def[CostedSigmaObject[Val]] {
     implicit lazy val eVal = source.elem.typeArgs("Val")._1.asElem[Val]
+
     val selfType: Elem[CostedSigmaObject[Val]] = element[CostedSigmaObject[Val]]
+    override def transform(t: Transformer) = CostedSigmaObjectAdapter[Val](t(source))
     private val thisClass = classOf[CostedSigmaObject[Val]]
 
     def dsl: Rep[SigmaDslBuilder] = {
@@ -150,10 +152,10 @@ object CostedContext extends EntityObject("CostedContext") {
   // entityAdapter for CostedContext trait
   case class CostedContextAdapter(source: Rep[CostedContext])
       extends CostedContext with Def[CostedContext] {
+    override lazy val eVal: Elem[Context] = implicitly[Elem[Context]]
     val selfType: Elem[CostedContext] = element[CostedContext]
+    override def transform(t: Transformer) = CostedContextAdapter(t(source))
     private val thisClass = classOf[CostedContext]
-
-    lazy val eVal: Elem[Context] = element[Context] // manual fix
 
     def OUTPUTS: Rep[CostedCol[Box]] = {
       asRep[CostedCol[Box]](mkMethodCall(source,
@@ -269,8 +271,8 @@ object CostedContext extends EntityObject("CostedContext") {
     override def getDefaultRep: Rep[To] = ???
   }
 
-  implicit def costedContextElement: Elem[CostedContext] =
-    cachedElem[CostedContextElem[CostedContext]]()
+  implicit lazy val costedContextElement: Elem[CostedContext] =
+    new CostedContextElem[CostedContext]
 
   implicit case object CostedContextCompanionElem extends CompanionElem[CostedContextCompanionCtor] {
     lazy val tag = weakTypeTag[CostedContextCompanionCtor]
@@ -403,9 +405,10 @@ object CostedBox extends EntityObject("CostedBox") {
   // entityAdapter for CostedBox trait
   case class CostedBoxAdapter(source: Rep[CostedBox])
       extends CostedBox with Def[CostedBox] {
+    override lazy val eVal: Elem[Box] = implicitly[Elem[Box]]
     val selfType: Elem[CostedBox] = element[CostedBox]
+    override def transform(t: Transformer) = CostedBoxAdapter(t(source))
     private val thisClass = classOf[CostedBox]
-    lazy val eVal: Elem[Box] = element[Box] // manual fix
 
     def id: Rep[CostedCol[Byte]] = {
       asRep[CostedCol[Byte]](mkMethodCall(source,
@@ -521,8 +524,8 @@ object CostedBox extends EntityObject("CostedBox") {
     override def getDefaultRep: Rep[To] = ???
   }
 
-  implicit def costedBoxElement: Elem[CostedBox] =
-    cachedElem[CostedBoxElem[CostedBox]]()
+  implicit lazy val costedBoxElement: Elem[CostedBox] =
+    new CostedBoxElem[CostedBox]
 
   implicit case object CostedBoxCompanionElem extends CompanionElem[CostedBoxCompanionCtor] {
     lazy val tag = weakTypeTag[CostedBoxCompanionCtor]
@@ -655,9 +658,10 @@ object CostedAvlTree extends EntityObject("CostedAvlTree") {
   // entityAdapter for CostedAvlTree trait
   case class CostedAvlTreeAdapter(source: Rep[CostedAvlTree])
       extends CostedAvlTree with Def[CostedAvlTree] {
+    override lazy val eVal: Elem[AvlTree] = implicitly[Elem[AvlTree]]
     val selfType: Elem[CostedAvlTree] = element[CostedAvlTree]
+    override def transform(t: Transformer) = CostedAvlTreeAdapter(t(source))
     private val thisClass = classOf[CostedAvlTree]
-    lazy val eVal: Elem[AvlTree] = element[AvlTree] // manual fix
 
     def startingDigest: Rep[CostedCol[Byte]] = {
       asRep[CostedCol[Byte]](mkMethodCall(source,
@@ -752,8 +756,8 @@ object CostedAvlTree extends EntityObject("CostedAvlTree") {
     override def getDefaultRep: Rep[To] = ???
   }
 
-  implicit def costedAvlTreeElement: Elem[CostedAvlTree] =
-    cachedElem[CostedAvlTreeElem[CostedAvlTree]]()
+  implicit lazy val costedAvlTreeElement: Elem[CostedAvlTree] =
+    new CostedAvlTreeElem[CostedAvlTree]
 
   implicit case object CostedAvlTreeCompanionElem extends CompanionElem[CostedAvlTreeCompanionCtor] {
     lazy val tag = weakTypeTag[CostedAvlTreeCompanionCtor]

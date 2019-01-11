@@ -5,6 +5,8 @@ package wrappers.special.sigma {
 
   import special.sigma.wrappers.WrappersModule
 
+  import special.sigma.wrappers.SigmaPredefWrapSpec
+
   trait WSigmaPredefs extends Base { self: WrappersModule =>
     import WSigmaPredef._;
     @External("SigmaPredef") trait WSigmaPredef extends Def[WSigmaPredef] { self =>

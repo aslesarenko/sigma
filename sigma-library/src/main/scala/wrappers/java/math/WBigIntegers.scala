@@ -5,6 +5,8 @@ package wrappers.java.math {
 
   import special.sigma.wrappers.WrappersModule
 
+  import special.sigma.wrappers.BigIntegerWrapSpec
+
   trait WBigIntegers extends Base { self: WrappersModule =>
     import WArray._;
     import WBigInteger._;
