@@ -1,10 +1,10 @@
 sudo: required
 dist: trusty
 
-branches:
-  only:
-    - master
-    - /^\d\.\d+$/
+#branches:
+#  only:
+#    - master
+#    - /^\d\.\d+$/
 
 # Tricks to avoid unnecessary cache updates
 before_cache:
