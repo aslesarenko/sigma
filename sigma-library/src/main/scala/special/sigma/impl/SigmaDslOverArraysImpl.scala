@@ -22,6 +22,7 @@ import ColBuilder._
 import ColOverArrayBuilder._
 import Context._
 import CostModel._
+import Costed._
 import CostedBuilder._
 import CostedCol._
 import CostedOption._
@@ -32,10 +33,11 @@ import SigmaContract._
 import SigmaDslBuilder._
 import SigmaProp._
 import TestSigmaDslBuilder._
-import WArray._ // manual fix
 import WBigInteger._
 import WECPoint._
 import WOption._
+import WArray._
+import WSpecialPredef._
 import DefaultContract._
 import ProveDHTEvidence._
 import ProveDlogEvidence._
@@ -50,7 +52,12 @@ object DefaultSigma extends EntityObject("DefaultSigma") {
   case class DefaultSigmaAdapter(source: Rep[DefaultSigma])
       extends DefaultSigma with Def[DefaultSigma] {
     val selfType: Elem[DefaultSigma] = element[DefaultSigma]
+    override def transform(t: Transformer) = DefaultSigmaAdapter(t(source))
     private val thisClass = classOf[DefaultSigma]
+
+    // manual fix (removed && method)
+
+    // manual fix (removed || method)
 
     def isValid: Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(source,
@@ -96,8 +103,8 @@ object DefaultSigma extends EntityObject("DefaultSigma") {
     override def getDefaultRep: Rep[To] = ???
   }
 
-  implicit def defaultSigmaElement: Elem[DefaultSigma] =
-    cachedElem[DefaultSigmaElem[DefaultSigma]]()
+  implicit lazy val defaultSigmaElement: Elem[DefaultSigma] =
+    new DefaultSigmaElem[DefaultSigma]
 
   implicit case object DefaultSigmaCompanionElem extends CompanionElem[DefaultSigmaCompanionCtor] {
     lazy val tag = weakTypeTag[DefaultSigmaCompanionCtor]
@@ -218,6 +225,7 @@ object DefaultContract extends EntityObject("DefaultContract") {
   case class DefaultContractAdapter(source: Rep[DefaultContract])
       extends DefaultContract with Def[DefaultContract] {
     val selfType: Elem[DefaultContract] = element[DefaultContract]
+    override def transform(t: Transformer) = DefaultContractAdapter(t(source))
     private val thisClass = classOf[DefaultContract]
 
     def canOpen(ctx: Rep[Context]): Rep[Boolean] = {
@@ -257,8 +265,8 @@ object DefaultContract extends EntityObject("DefaultContract") {
     override def getDefaultRep: Rep[To] = ???
   }
 
-  implicit def defaultContractElement: Elem[DefaultContract] =
-    cachedElem[DefaultContractElem[DefaultContract]]()
+  implicit lazy val defaultContractElement: Elem[DefaultContract] =
+    new DefaultContractElem[DefaultContract]
 
   implicit case object DefaultContractCompanionElem extends CompanionElem[DefaultContractCompanionCtor] {
     lazy val tag = weakTypeTag[DefaultContractCompanionCtor]
@@ -301,7 +309,7 @@ object TestBox extends EntityObject("TestBox") {
       (override val id: Rep[Col[Byte]], override val value: Rep[Long], override val bytes: Rep[Col[Byte]], override val bytesWithoutRef: Rep[Col[Byte]], override val propositionBytes: Rep[Col[Byte]], override val registers: Rep[Col[AnyValue]])
     extends TestBox(id, value, bytes, bytesWithoutRef, propositionBytes, registers) with Def[TestBox] {
     lazy val selfType = element[TestBox]
-    // manual fix
+    override def transform(t: Transformer) = TestBoxCtor(t(id), t(value), t(bytes), t(bytesWithoutRef), t(propositionBytes), t(registers))
     private val thisClass = classOf[Box]
 
     override def getReg[T](id: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = {
@@ -344,6 +352,7 @@ object TestBox extends EntityObject("TestBox") {
   // 3) Iso for concrete class
   class TestBoxIso
     extends EntityIso[TestBoxData, TestBox] with Def[TestBoxIso] {
+    override def transform(t: Transformer) = new TestBoxIso()
     private lazy val _safeFrom = fun { p: Rep[TestBox] => (p.id, p.value, p.bytes, p.bytesWithoutRef, p.propositionBytes, p.registers) }
     override def from(p: Rep[TestBox]) =
       tryConvert[TestBox, (Col[Byte], (Long, (Col[Byte], (Col[Byte], (Col[Byte], Col[AnyValue])))))](eTo, eFrom, p, _safeFrom)
@@ -507,7 +516,7 @@ object TestAvlTree extends EntityObject("TestAvlTree") {
       (override val startingDigest: Rep[Col[Byte]], override val keyLength: Rep[Int], override val valueLengthOpt: Rep[WOption[Int]], override val maxNumOperations: Rep[WOption[Int]], override val maxDeletes: Rep[WOption[Int]])
     extends TestAvlTree(startingDigest, keyLength, valueLengthOpt, maxNumOperations, maxDeletes) with Def[TestAvlTree] {
     lazy val selfType = element[TestAvlTree]
-    // manual fix
+    override def transform(t: Transformer) = TestAvlTreeCtor(t(startingDigest), t(keyLength), t(valueLengthOpt), t(maxNumOperations), t(maxDeletes))
     private val thisClass = classOf[AvlTree]
 
     override def dataSize: Rep[Long] = {
@@ -543,6 +552,7 @@ object TestAvlTree extends EntityObject("TestAvlTree") {
   // 3) Iso for concrete class
   class TestAvlTreeIso
     extends EntityIso[TestAvlTreeData, TestAvlTree] with Def[TestAvlTreeIso] {
+    override def transform(t: Transformer) = new TestAvlTreeIso()
     private lazy val _safeFrom = fun { p: Rep[TestAvlTree] => (p.startingDigest, p.keyLength, p.valueLengthOpt, p.maxNumOperations, p.maxDeletes) }
     override def from(p: Rep[TestAvlTree]) =
       tryConvert[TestAvlTree, (Col[Byte], (Int, (WOption[Int], (WOption[Int], WOption[Int]))))](eTo, eFrom, p, _safeFrom)
@@ -669,7 +679,7 @@ object TestValue extends EntityObject("TestValue") {
     implicit lazy val eT = value.elem
 
     lazy val selfType = element[TestValue[T]]
-    // manual fix
+    override def transform(t: Transformer) = TestValueCtor[T](t(value))
     private val thisClass = classOf[AnyValue]
 
     override def dataSize: Rep[Long] = {
@@ -700,6 +710,7 @@ object TestValue extends EntityObject("TestValue") {
   // 3) Iso for concrete class
   class TestValueIso[T](implicit eT: Elem[T])
     extends EntityIso[TestValueData[T], TestValue[T]] with Def[TestValueIso[T]] {
+    override def transform(t: Transformer) = new TestValueIso[T]()(eT)
     private lazy val _safeFrom = fun { p: Rep[TestValue[T]] => p.value }
     override def from(p: Rep[TestValue[T]]) =
       tryConvert[TestValue[T], T](eTo, eFrom, p, _safeFrom)
@@ -793,10 +804,10 @@ object TestValue extends EntityObject("TestValue") {
 
 object TestContext extends EntityObject("TestContext") {
   case class TestContextCtor
-      (override val inputs: Rep[WArray[Box]], override val outputs: Rep[WArray[Box]], override val height: Rep[Long], override val selfBox: Rep[Box], override val lastBlockUtxoRootHash: Rep[AvlTree], override val minerPubKey: Rep[WArray[Byte]], override val vars: Rep[WArray[AnyValue]])
+      (override val inputs: Rep[WArray[Box]], override val outputs: Rep[WArray[Box]], override val height: Rep[Int], override val selfBox: Rep[Box], override val lastBlockUtxoRootHash: Rep[AvlTree], override val minerPubKey: Rep[WArray[Byte]], override val vars: Rep[WArray[AnyValue]])
     extends TestContext(inputs, outputs, height, selfBox, lastBlockUtxoRootHash, minerPubKey, vars) with Def[TestContext] {
     lazy val selfType = element[TestContext]
-    // manual fix
+    override def transform(t: Transformer) = TestContextCtor(t(inputs), t(outputs), t(height), t(selfBox), t(lastBlockUtxoRootHash), t(minerPubKey), t(vars))
     private val thisClass = classOf[Context]
 
     override def HEIGHT: Rep[Int] = {
@@ -878,26 +889,27 @@ object TestContext extends EntityObject("TestContext") {
     override def buildTypeArgs = super.buildTypeArgs ++ TypeArgs()
     override def convertContext(x: Rep[Context]) = // Converter is not generated by meta
 !!!("Cannot convert from Context to TestContext: missing fields List(inputs, outputs, height, selfBox, lastBlockUtxoRootHash, minerPubKey, vars)")
-    override def getDefaultRep = RTestContext(element[WArray[Box]].defaultRepValue, element[WArray[Box]].defaultRepValue, 0l, element[Box].defaultRepValue, element[AvlTree].defaultRepValue, element[WArray[Byte]].defaultRepValue, element[WArray[AnyValue]].defaultRepValue)
+    override def getDefaultRep = RTestContext(element[WArray[Box]].defaultRepValue, element[WArray[Box]].defaultRepValue, 0, element[Box].defaultRepValue, element[AvlTree].defaultRepValue, element[WArray[Byte]].defaultRepValue, element[WArray[AnyValue]].defaultRepValue)
     override lazy val tag = {
       weakTypeTag[TestContext]
     }
   }
 
   // state representation type
-  type TestContextData = (WArray[Box], (WArray[Box], (Long, (Box, (AvlTree, (WArray[Byte], WArray[AnyValue]))))))
+  type TestContextData = (WArray[Box], (WArray[Box], (Int, (Box, (AvlTree, (WArray[Byte], WArray[AnyValue]))))))
 
   // 3) Iso for concrete class
   class TestContextIso
     extends EntityIso[TestContextData, TestContext] with Def[TestContextIso] {
+    override def transform(t: Transformer) = new TestContextIso()
     private lazy val _safeFrom = fun { p: Rep[TestContext] => (p.inputs, p.outputs, p.height, p.selfBox, p.lastBlockUtxoRootHash, p.minerPubKey, p.vars) }
     override def from(p: Rep[TestContext]) =
-      tryConvert[TestContext, (WArray[Box], (WArray[Box], (Long, (Box, (AvlTree, (WArray[Byte], WArray[AnyValue]))))))](eTo, eFrom, p, _safeFrom)
-    override def to(p: Rep[(WArray[Box], (WArray[Box], (Long, (Box, (AvlTree, (WArray[Byte], WArray[AnyValue]))))))]) = {
+      tryConvert[TestContext, (WArray[Box], (WArray[Box], (Int, (Box, (AvlTree, (WArray[Byte], WArray[AnyValue]))))))](eTo, eFrom, p, _safeFrom)
+    override def to(p: Rep[(WArray[Box], (WArray[Box], (Int, (Box, (AvlTree, (WArray[Byte], WArray[AnyValue]))))))]) = {
       val Pair(inputs, Pair(outputs, Pair(height, Pair(selfBox, Pair(lastBlockUtxoRootHash, Pair(minerPubKey, vars)))))) = p
       RTestContext(inputs, outputs, height, selfBox, lastBlockUtxoRootHash, minerPubKey, vars)
     }
-    lazy val eFrom = pairElement(element[WArray[Box]], pairElement(element[WArray[Box]], pairElement(element[Long], pairElement(element[Box], pairElement(element[AvlTree], pairElement(element[WArray[Byte]], element[WArray[AnyValue]]))))))
+    lazy val eFrom = pairElement(element[WArray[Box]], pairElement(element[WArray[Box]], pairElement(element[Int], pairElement(element[Box], pairElement(element[AvlTree], pairElement(element[WArray[Byte]], element[WArray[AnyValue]]))))))
     lazy val eTo = new TestContextElem(self)
     lazy val selfType = new TestContextIsoElem
     def productArity = 0
@@ -920,7 +932,7 @@ object TestContext extends EntityObject("TestContext") {
     }
 
     @scalan.OverloadId("fromFields")
-    def apply(inputs: Rep[WArray[Box]], outputs: Rep[WArray[Box]], height: Rep[Long], selfBox: Rep[Box], lastBlockUtxoRootHash: Rep[AvlTree], minerPubKey: Rep[WArray[Byte]], vars: Rep[WArray[AnyValue]]): Rep[TestContext] =
+    def apply(inputs: Rep[WArray[Box]], outputs: Rep[WArray[Box]], height: Rep[Int], selfBox: Rep[Box], lastBlockUtxoRootHash: Rep[AvlTree], minerPubKey: Rep[WArray[Byte]], vars: Rep[WArray[AnyValue]]): Rep[TestContext] =
       mkTestContext(inputs, outputs, height, selfBox, lastBlockUtxoRootHash, minerPubKey, vars)
 
     def unapply(p: Rep[Context]) = unmkTestContext(p)
@@ -953,7 +965,7 @@ object TestContext extends EntityObject("TestContext") {
     reifyObject(new TestContextIso())
 
   def mkTestContext
-    (inputs: Rep[WArray[Box]], outputs: Rep[WArray[Box]], height: Rep[Long], selfBox: Rep[Box], lastBlockUtxoRootHash: Rep[AvlTree], minerPubKey: Rep[WArray[Byte]], vars: Rep[WArray[AnyValue]]): Rep[TestContext] = {
+    (inputs: Rep[WArray[Box]], outputs: Rep[WArray[Box]], height: Rep[Int], selfBox: Rep[Box], lastBlockUtxoRootHash: Rep[AvlTree], minerPubKey: Rep[WArray[Byte]], vars: Rep[WArray[AnyValue]]): Rep[TestContext] = {
     new TestContextCtor(inputs, outputs, height, selfBox, lastBlockUtxoRootHash, minerPubKey, vars)
   }
   def unmkTestContext(p: Rep[Context]) = p.elem.asInstanceOf[Elem[_]] match {
@@ -1118,7 +1130,7 @@ object TestSigmaDslBuilder extends EntityObject("TestSigmaDslBuilder") {
       ()
     extends TestSigmaDslBuilder() with Def[TestSigmaDslBuilder] {
     lazy val selfType = element[TestSigmaDslBuilder]
-    // manual fix
+    override def transform(t: Transformer) = TestSigmaDslBuilderCtor()
     private val thisClass = classOf[SigmaDslBuilder]
 
     override def CostModel: Rep[CostModel] = {
@@ -1295,6 +1307,7 @@ object TestSigmaDslBuilder extends EntityObject("TestSigmaDslBuilder") {
   // 3) Iso for concrete class
   class TestSigmaDslBuilderIso
     extends EntityIso[TestSigmaDslBuilderData, TestSigmaDslBuilder] with Def[TestSigmaDslBuilderIso] {
+    override def transform(t: Transformer) = new TestSigmaDslBuilderIso()
     private lazy val _safeFrom = fun { p: Rep[TestSigmaDslBuilder] => () }
     override def from(p: Rep[TestSigmaDslBuilder]) =
       tryConvert[TestSigmaDslBuilder, Unit](eTo, eFrom, p, _safeFrom)
@@ -1744,7 +1757,7 @@ object TrivialSigma extends EntityObject("TrivialSigma") {
       (override val _isValid: Rep[Boolean])
     extends TrivialSigma(_isValid) with Def[TrivialSigma] {
     lazy val selfType = element[TrivialSigma]
-    // manual fix
+    override def transform(t: Transformer) = TrivialSigmaCtor(t(_isValid))
     private val thisClass = classOf[SigmaProp]
 
     override def propBytes: Rep[Col[Byte]] = {
@@ -1825,6 +1838,7 @@ object TrivialSigma extends EntityObject("TrivialSigma") {
   // 3) Iso for concrete class
   class TrivialSigmaIso
     extends EntityIso[TrivialSigmaData, TrivialSigma] with Def[TrivialSigmaIso] {
+    override def transform(t: Transformer) = new TrivialSigmaIso()
     private lazy val _safeFrom = fun { p: Rep[TrivialSigma] => p._isValid }
     override def from(p: Rep[TrivialSigma]) =
       tryConvert[TrivialSigma, Boolean](eTo, eFrom, p, _safeFrom)
@@ -2010,7 +2024,7 @@ object ProveDlogEvidence extends EntityObject("ProveDlogEvidence") {
       (override val value: Rep[WECPoint])
     extends ProveDlogEvidence(value) with Def[ProveDlogEvidence] {
     lazy val selfType = element[ProveDlogEvidence]
-    // manual fix
+    override def transform(t: Transformer) = ProveDlogEvidenceCtor(t(value))
     private val thisClass = classOf[SigmaProp]
 
     override def propBytes: Rep[Col[Byte]] = {
@@ -2089,6 +2103,7 @@ object ProveDlogEvidence extends EntityObject("ProveDlogEvidence") {
   // 3) Iso for concrete class
   class ProveDlogEvidenceIso
     extends EntityIso[ProveDlogEvidenceData, ProveDlogEvidence] with Def[ProveDlogEvidenceIso] {
+    override def transform(t: Transformer) = new ProveDlogEvidenceIso()
     private lazy val _safeFrom = fun { p: Rep[ProveDlogEvidence] => p.value }
     override def from(p: Rep[ProveDlogEvidence]) =
       tryConvert[ProveDlogEvidence, WECPoint](eTo, eFrom, p, _safeFrom)
@@ -2274,7 +2289,7 @@ object ProveDHTEvidence extends EntityObject("ProveDHTEvidence") {
       (override val gv: Rep[WECPoint], override val hv: Rep[WECPoint], override val uv: Rep[WECPoint], override val vv: Rep[WECPoint])
     extends ProveDHTEvidence(gv, hv, uv, vv) with Def[ProveDHTEvidence] {
     lazy val selfType = element[ProveDHTEvidence]
-    // manual fix
+    override def transform(t: Transformer) = ProveDHTEvidenceCtor(t(gv), t(hv), t(uv), t(vv))
     private val thisClass = classOf[SigmaProp]
 
     override def propBytes: Rep[Col[Byte]] = {
@@ -2353,6 +2368,7 @@ object ProveDHTEvidence extends EntityObject("ProveDHTEvidence") {
   // 3) Iso for concrete class
   class ProveDHTEvidenceIso
     extends EntityIso[ProveDHTEvidenceData, ProveDHTEvidence] with Def[ProveDHTEvidenceIso] {
+    override def transform(t: Transformer) = new ProveDHTEvidenceIso()
     private lazy val _safeFrom = fun { p: Rep[ProveDHTEvidence] => (p.gv, p.hv, p.uv, p.vv) }
     override def from(p: Rep[ProveDHTEvidence]) =
       tryConvert[ProveDHTEvidence, (WECPoint, (WECPoint, (WECPoint, WECPoint)))](eTo, eFrom, p, _safeFrom)

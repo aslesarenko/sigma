@@ -16,9 +16,12 @@ import Box._
 import CCostedAvlTree._
 import CCostedBox._
 import CCostedCol._
+import CCostedContext._
 import CCostedPrim._
 import Col._
+import ColBuilder._
 import Context._
+import CostModel._
 import Costed._
 import CostedAvlTree._
 import CostedBox._
@@ -27,7 +30,6 @@ import CostedContext._
 import CostedOption._
 import SigmaDslBuilder._
 import TestSigmaDslBuilder._
-import CCostedContext._
 
 object CCostedContext extends EntityObject("CCostedContext") {
   case class CCostedContextCtor
@@ -35,7 +37,8 @@ object CCostedContext extends EntityObject("CCostedContext") {
     extends CCostedContext(ctx) with Def[CCostedContext] {
     override lazy val eVal: Elem[Context] = implicitly[Elem[Context]]
     lazy val selfType = element[CCostedContext]
-    private val thisClass = classOf[CCostedContext]
+    override def transform(t: Transformer) = CCostedContextCtor(t(ctx))
+    private val thisClass = classOf[CostedContext]
 
     override def getConstant[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[Costed[T]] = {
       asRep[Costed[T]](mkMethodCall(self,
@@ -64,6 +67,7 @@ object CCostedContext extends EntityObject("CCostedContext") {
   // 3) Iso for concrete class
   class CCostedContextIso
     extends EntityIso[CCostedContextData, CCostedContext] with Def[CCostedContextIso] {
+    override def transform(t: Transformer) = new CCostedContextIso()
     private lazy val _safeFrom = fun { p: Rep[CCostedContext] => p.ctx }
     override def from(p: Rep[CCostedContext]) =
       tryConvert[CCostedContext, Context](eTo, eFrom, p, _safeFrom)
@@ -302,7 +306,8 @@ object CCostedBox extends EntityObject("CCostedBox") {
     extends CCostedBox(box, cost) with Def[CCostedBox] {
     override lazy val eVal: Elem[Box] = implicitly[Elem[Box]]
     lazy val selfType = element[CCostedBox]
-    private val thisClass = classOf[CCostedBox]
+    override def transform(t: Transformer) = CCostedBoxCtor(t(box), t(cost))
+    private val thisClass = classOf[CostedBox]
 
     override def creationInfo: Rep[Costed[(Int, Col[Byte])]] = {
       asRep[Costed[(Int, Col[Byte])]](mkMethodCall(self,
@@ -331,6 +336,7 @@ object CCostedBox extends EntityObject("CCostedBox") {
   // 3) Iso for concrete class
   class CCostedBoxIso
     extends EntityIso[CCostedBoxData, CCostedBox] with Def[CCostedBoxIso] {
+    override def transform(t: Transformer) = new CCostedBoxIso()
     private lazy val _safeFrom = fun { p: Rep[CCostedBox] => (p.box, p.cost) }
     override def from(p: Rep[CCostedBox]) =
       tryConvert[CCostedBox, (Box, Int)](eTo, eFrom, p, _safeFrom)
@@ -560,6 +566,7 @@ object CCostedAvlTree extends EntityObject("CCostedAvlTree") {
     extends CCostedAvlTree(tree, cost) with Def[CCostedAvlTree] {
     override lazy val eVal: Elem[AvlTree] = implicitly[Elem[AvlTree]]
     lazy val selfType = element[CCostedAvlTree]
+    override def transform(t: Transformer) = CCostedAvlTreeCtor(t(tree), t(cost))
   }
   // elem for concrete class
   class CCostedAvlTreeElem(val iso: Iso[CCostedAvlTreeData, CCostedAvlTree])
@@ -581,6 +588,7 @@ object CCostedAvlTree extends EntityObject("CCostedAvlTree") {
   // 3) Iso for concrete class
   class CCostedAvlTreeIso
     extends EntityIso[CCostedAvlTreeData, CCostedAvlTree] with Def[CCostedAvlTreeIso] {
+    override def transform(t: Transformer) = new CCostedAvlTreeIso()
     private lazy val _safeFrom = fun { p: Rep[CCostedAvlTree] => (p.tree, p.cost) }
     override def from(p: Rep[CCostedAvlTree]) =
       tryConvert[CCostedAvlTree, (AvlTree, Int)](eTo, eFrom, p, _safeFrom)

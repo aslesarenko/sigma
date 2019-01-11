@@ -3,6 +3,7 @@ package wrappers.special.sigma
 import scalan._
 import impl._
 import special.sigma.wrappers.WrappersModule
+import special.sigma.wrappers.SigmaPredefWrapSpec
 import scala.reflect.runtime.universe._
 import scala.reflect._
 
@@ -19,6 +20,7 @@ object WSigmaPredef extends EntityObject("WSigmaPredef") {
   case class WSigmaPredefAdapter(source: Rep[WSigmaPredef])
       extends WSigmaPredef with Def[WSigmaPredef] {
     val selfType: Elem[WSigmaPredef] = element[WSigmaPredef]
+    override def transform(t: Transformer) = WSigmaPredefAdapter(t(source))
   }
 
   // entityProxy: single proxy for each type family
@@ -50,8 +52,8 @@ object WSigmaPredef extends EntityObject("WSigmaPredef") {
     override def getDefaultRep: Rep[To] = ???
   }
 
-  implicit def wSigmaPredefElement: Elem[WSigmaPredef] =
-    cachedElem[WSigmaPredefElem[WSigmaPredef]]()
+  implicit lazy val wSigmaPredefElement: Elem[WSigmaPredef] =
+    new WSigmaPredefElem[WSigmaPredef]
 
   implicit case object WSigmaPredefCompanionElem extends CompanionElem[WSigmaPredefCompanionCtor] {
     lazy val tag = weakTypeTag[WSigmaPredefCompanionCtor]

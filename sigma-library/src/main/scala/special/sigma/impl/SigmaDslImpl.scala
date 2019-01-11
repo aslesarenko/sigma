@@ -39,78 +39,83 @@ object CostModel extends EntityObject("CostModel") {
   type SCostModel = special.sigma.CostModel
   case class CostModelConst(
         constValue: SCostModel
-      ) extends CostModel with LiftedConst[SCostModel, CostModel] {
+      ) extends CostModel with LiftedConst[SCostModel, CostModel]
+        with Def[CostModel] with CostModelConstMethods {
     val liftable: Liftable[SCostModel, CostModel] = LiftableCostModel
     val selfType: Elem[CostModel] = liftable.eW
-    private val thisClass = classOf[CostModel]
+  }
 
-    def AccessBox: Rep[Int] = {
+  trait CostModelConstMethods extends CostModel  { thisConst: Def[_] =>
+
+    private val CostModelClass = classOf[CostModel]
+
+    override def AccessBox: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("AccessBox"),
+        CostModelClass.getMethod("AccessBox"),
         List(),
         true, false, element[Int]))
     }
 
-    def AccessAvlTree: Rep[Int] = {
+    override def AccessAvlTree: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("AccessAvlTree"),
+        CostModelClass.getMethod("AccessAvlTree"),
         List(),
         true, false, element[Int]))
     }
 
-    def GetVar: Rep[Int] = {
+    override def GetVar: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("GetVar"),
+        CostModelClass.getMethod("GetVar"),
         List(),
         true, false, element[Int]))
     }
 
-    def DeserializeVar: Rep[Int] = {
+    override def DeserializeVar: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("DeserializeVar"),
+        CostModelClass.getMethod("DeserializeVar"),
         List(),
         true, false, element[Int]))
     }
 
-    def GetRegister: Rep[Int] = {
+    override def GetRegister: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("GetRegister"),
+        CostModelClass.getMethod("GetRegister"),
         List(),
         true, false, element[Int]))
     }
 
-    def DeserializeRegister: Rep[Int] = {
+    override def DeserializeRegister: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("DeserializeRegister"),
+        CostModelClass.getMethod("DeserializeRegister"),
         List(),
         true, false, element[Int]))
     }
 
-    def SelectField: Rep[Int] = {
+    override def SelectField: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("SelectField"),
+        CostModelClass.getMethod("SelectField"),
         List(),
         true, false, element[Int]))
     }
 
-    def CollectionConst: Rep[Int] = {
+    override def CollectionConst: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("CollectionConst"),
+        CostModelClass.getMethod("CollectionConst"),
         List(),
         true, false, element[Int]))
     }
 
-    def AccessKiloByteOfData: Rep[Int] = {
+    override def AccessKiloByteOfData: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("AccessKiloByteOfData"),
+        CostModelClass.getMethod("AccessKiloByteOfData"),
         List(),
         true, false, element[Int]))
     }
 
-    def dataSize[T](x: Rep[T])(implicit cT: Elem[T]): Rep[Long] = {
+    override def dataSize[T](x: Rep[T])(implicit cT: Elem[T]): Rep[Long] = {
       implicit val eT = x.elem
       asRep[Long](mkMethodCall(self,
-        thisClass.getMethod("dataSize", classOf[Sym], classOf[Elem[_]]),
+        CostModelClass.getMethod("dataSize", classOf[Sym], classOf[Elem[_]]),
         List(x, cT),
         true, false, element[Long]))
     }
@@ -134,6 +139,7 @@ object CostModel extends EntityObject("CostModel") {
   case class CostModelAdapter(source: Rep[CostModel])
       extends CostModel with Def[CostModel] {
     val selfType: Elem[CostModel] = element[CostModel]
+    override def transform(t: Transformer) = CostModelAdapter(t(source))
     private val thisClass = classOf[CostModel]
 
     def AccessBox: Rep[Int] = {
@@ -218,7 +224,7 @@ object CostModel extends EntityObject("CostModel") {
   // familyElem
   class CostModelElem[To <: CostModel]
     extends EntityElem[To] {
-    override val liftable = LiftableCostModel.asLiftable[SCostModel, To]
+    override val liftable: Liftables.Liftable[_, To] = LiftableCostModel.asLiftable[SCostModel, To]
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++
@@ -246,8 +252,8 @@ object CostModel extends EntityObject("CostModel") {
     override def getDefaultRep: Rep[To] = ???
   }
 
-  implicit def costModelElement: Elem[CostModel] =
-    cachedElem[CostModelElem[CostModel]]()
+  implicit lazy val costModelElement: Elem[CostModel] =
+    new CostModelElem[CostModel]
 
   implicit case object CostModelCompanionElem extends CompanionElem[CostModelCompanionCtor] {
     lazy val tag = weakTypeTag[CostModelCompanionCtor]
@@ -420,6 +426,7 @@ object DslBuilder extends EntityObject("DslBuilder") {
   case class DslBuilderAdapter(source: Rep[DslBuilder])
       extends DslBuilder with Def[DslBuilder] {
     val selfType: Elem[DslBuilder] = element[DslBuilder]
+    override def transform(t: Transformer) = DslBuilderAdapter(t(source))
   }
 
   // entityProxy: single proxy for each type family
@@ -451,8 +458,8 @@ object DslBuilder extends EntityObject("DslBuilder") {
     override def getDefaultRep: Rep[To] = ???
   }
 
-  implicit def dslBuilderElement: Elem[DslBuilder] =
-    cachedElem[DslBuilderElem[DslBuilder]]()
+  implicit lazy val dslBuilderElement: Elem[DslBuilder] =
+    new DslBuilderElem[DslBuilder]
 
   implicit case object DslBuilderCompanionElem extends CompanionElem[DslBuilderCompanionCtor] {
     lazy val tag = weakTypeTag[DslBuilderCompanionCtor]
@@ -483,6 +490,7 @@ object DslObject extends EntityObject("DslObject") {
   case class DslObjectAdapter(source: Rep[DslObject])
       extends DslObject with Def[DslObject] {
     val selfType: Elem[DslObject] = element[DslObject]
+    override def transform(t: Transformer) = DslObjectAdapter(t(source))
     private val thisClass = classOf[DslObject]
 
     def builder: Rep[SigmaDslBuilder] = {
@@ -522,8 +530,8 @@ object DslObject extends EntityObject("DslObject") {
     override def getDefaultRep: Rep[To] = ???
   }
 
-  implicit def dslObjectElement: Elem[DslObject] =
-    cachedElem[DslObjectElem[DslObject]]()
+  implicit lazy val dslObjectElement: Elem[DslObject] =
+    new DslObjectElem[DslObject]
 
   implicit case object DslObjectCompanionElem extends CompanionElem[DslObjectCompanionCtor] {
     lazy val tag = weakTypeTag[DslObjectCompanionCtor]
@@ -568,75 +576,80 @@ object SigmaProp extends EntityObject("SigmaProp") {
   type SSigmaProp = special.sigma.SigmaProp
   case class SigmaPropConst(
         constValue: SSigmaProp
-      ) extends SigmaProp with LiftedConst[SSigmaProp, SigmaProp] {
+      ) extends SigmaProp with LiftedConst[SSigmaProp, SigmaProp]
+        with Def[SigmaProp] with SigmaPropConstMethods {
     val liftable: Liftable[SSigmaProp, SigmaProp] = LiftableSigmaProp
     val selfType: Elem[SigmaProp] = liftable.eW
-    private val thisClass = classOf[SigmaProp]
+  }
+
+  trait SigmaPropConstMethods extends SigmaProp  { thisConst: Def[_] =>
+
+    private val SigmaPropClass = classOf[SigmaProp]
 
     // manual fix (builder is inherited)
     def builder: Rep[SigmaDslBuilder] = {
       asRep[SigmaDslBuilder](mkMethodCall(self,
-        thisClass.getMethod("builder"),
+        SigmaPropClass.getMethod("builder"),
         List(),
         true, isAdapterCall = false, element[SigmaDslBuilder]))
     }
 
-    def isValid: Rep[Boolean] = {
+    override def isValid: Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(self,
-        thisClass.getMethod("isValid"),
+        SigmaPropClass.getMethod("isValid"),
         List(),
         true, false, element[Boolean]))
     }
 
-    def propBytes: Rep[Col[Byte]] = {
+    override def propBytes: Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(self,
-        thisClass.getMethod("propBytes"),
+        SigmaPropClass.getMethod("propBytes"),
         List(),
         true, false, element[Col[Byte]]))
     }
 
     // manual fix &&
-    def &&(other: Rep[SigmaProp]): Rep[SigmaProp] = {
+    override def &&(other: Rep[SigmaProp]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
-        thisClass.getMethod("$amp$amp", classOf[Sym]),
+        SigmaPropClass.getMethod("$amp$amp", classOf[Sym]),
         List(other),
         true, false, element[SigmaProp]))
     }
 
     // manual fix &&
-    def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
+    override def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
-        thisClass.getMethod("$amp$amp", classOf[Sym], classOf[Overloaded1]),
+        SigmaPropClass.getMethod("$amp$amp", classOf[Sym], classOf[Overloaded1]),
         List(other, o),
         true, false, element[SigmaProp]))
     }
 
     // manual fix ||
-    def ||(other: Rep[SigmaProp]): Rep[SigmaProp] = {
+    override def ||(other: Rep[SigmaProp]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
-        thisClass.getMethod("$bar$bar", classOf[Sym]),
+        SigmaPropClass.getMethod("$bar$bar", classOf[Sym]),
         List(other),
         true, false, element[SigmaProp]))
     }
 
     // manual fix ||
-    def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
+    override def ||(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
-        thisClass.getMethod("$bar$bar", classOf[Sym], classOf[Overloaded1]),
+        SigmaPropClass.getMethod("$bar$bar", classOf[Sym], classOf[Overloaded1]),
         List(other, o),
         true, false, element[SigmaProp]))
     }
 
-    def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = {
+    override def lazyAnd(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
-        thisClass.getMethod("lazyAnd", classOf[Sym]),
+        SigmaPropClass.getMethod("lazyAnd", classOf[Sym]),
         List(other),
         true, false, element[SigmaProp]))
     }
 
-    def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = {
+    override def lazyOr(other: Rep[Thunk[SigmaProp]]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
-        thisClass.getMethod("lazyOr", classOf[Sym]),
+        SigmaPropClass.getMethod("lazyOr", classOf[Sym]),
         List(other),
         true, false, element[SigmaProp]))
     }
@@ -660,6 +673,7 @@ object SigmaProp extends EntityObject("SigmaProp") {
   case class SigmaPropAdapter(source: Rep[SigmaProp])
       extends SigmaProp with Def[SigmaProp] {
     val selfType: Elem[SigmaProp] = element[SigmaProp]
+    override def transform(t: Transformer) = SigmaPropAdapter(t(source))
     private val thisClass = classOf[SigmaProp]
 
     def isValid: Rep[Boolean] = {
@@ -740,7 +754,7 @@ object SigmaProp extends EntityObject("SigmaProp") {
   // familyElem
   class SigmaPropElem[To <: SigmaProp]
     extends DslObjectElem[To] {
-    override val liftable = LiftableSigmaProp.asLiftable[SSigmaProp, To]
+    override val liftable: Liftables.Liftable[_, To] = LiftableSigmaProp.asLiftable[SSigmaProp, To]
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++
@@ -768,8 +782,8 @@ object SigmaProp extends EntityObject("SigmaProp") {
     override def getDefaultRep: Rep[To] = ???
   }
 
-  implicit def sigmaPropElement: Elem[SigmaProp] =
-    cachedElem[SigmaPropElem[SigmaProp]]()
+  implicit lazy val sigmaPropElement: Elem[SigmaProp] =
+    new SigmaPropElem[SigmaProp]
 
   implicit case object SigmaPropCompanionElem extends CompanionElem[SigmaPropCompanionCtor] {
     lazy val tag = weakTypeTag[SigmaPropCompanionCtor]
@@ -905,14 +919,19 @@ object AnyValue extends EntityObject("AnyValue") {
   type SAnyValue = special.sigma.AnyValue
   case class AnyValueConst(
         constValue: SAnyValue
-      ) extends AnyValue with LiftedConst[SAnyValue, AnyValue] {
+      ) extends AnyValue with LiftedConst[SAnyValue, AnyValue]
+        with Def[AnyValue] with AnyValueConstMethods {
     val liftable: Liftable[SAnyValue, AnyValue] = LiftableAnyValue
     val selfType: Elem[AnyValue] = liftable.eW
-    private val thisClass = classOf[AnyValue]
+  }
 
-    def dataSize: Rep[Long] = {
+  trait AnyValueConstMethods extends AnyValue  { thisConst: Def[_] =>
+
+    private val AnyValueClass = classOf[AnyValue]
+
+    override def dataSize: Rep[Long] = {
       asRep[Long](mkMethodCall(self,
-        thisClass.getMethod("dataSize"),
+        AnyValueClass.getMethod("dataSize"),
         List(),
         true, false, element[Long]))
     }
@@ -936,6 +955,7 @@ object AnyValue extends EntityObject("AnyValue") {
   case class AnyValueAdapter(source: Rep[AnyValue])
       extends AnyValue with Def[AnyValue] {
     val selfType: Elem[AnyValue] = element[AnyValue]
+    override def transform(t: Transformer) = AnyValueAdapter(t(source))
     private val thisClass = classOf[AnyValue]
 
     def dataSize: Rep[Long] = {
@@ -956,7 +976,7 @@ object AnyValue extends EntityObject("AnyValue") {
   // familyElem
   class AnyValueElem[To <: AnyValue]
     extends EntityElem[To] {
-    override val liftable = LiftableAnyValue.asLiftable[SAnyValue, To]
+    override val liftable: Liftables.Liftable[_, To] = LiftableAnyValue.asLiftable[SAnyValue, To]
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++
@@ -984,8 +1004,8 @@ object AnyValue extends EntityObject("AnyValue") {
     override def getDefaultRep: Rep[To] = ???
   }
 
-  implicit def anyValueElement: Elem[AnyValue] =
-    cachedElem[AnyValueElem[AnyValue]]()
+  implicit lazy val anyValueElement: Elem[AnyValue] =
+    new AnyValueElem[AnyValue]
 
   implicit case object AnyValueCompanionElem extends CompanionElem[AnyValueCompanionCtor] {
     lazy val tag = weakTypeTag[AnyValueCompanionCtor]
@@ -1030,94 +1050,99 @@ object Box extends EntityObject("Box") {
   type SBox = special.sigma.Box
   case class BoxConst(
         constValue: SBox
-      ) extends Box with LiftedConst[SBox, Box] {
+      ) extends Box with LiftedConst[SBox, Box]
+        with Def[Box] with BoxConstMethods {
     val liftable: Liftable[SBox, Box] = LiftableBox
     val selfType: Elem[Box] = liftable.eW
-    private val thisClass = classOf[Box]
+  }
+
+  trait BoxConstMethods extends Box  { thisConst: Def[_] =>
+
+    private val BoxClass = classOf[Box]
 
     // manual fix
-    def builder: Rep[SigmaDslBuilder] = {
+    override def builder: Rep[SigmaDslBuilder] = {
       asRep[SigmaDslBuilder](mkMethodCall(self,
-        thisClass.getMethod("builder"),
+        BoxClass.getMethod("builder"),
         List(),
         true, isAdapterCall = false, element[SigmaDslBuilder]))
     }
 
-    def id: Rep[Col[Byte]] = {
+    override def id: Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(self,
-        thisClass.getMethod("id"),
+        BoxClass.getMethod("id"),
         List(),
         true, false, element[Col[Byte]]))
     }
 
-    def value: Rep[Long] = {
+    override def value: Rep[Long] = {
       asRep[Long](mkMethodCall(self,
-        thisClass.getMethod("value"),
+        BoxClass.getMethod("value"),
         List(),
         true, false, element[Long]))
     }
 
-    def bytes: Rep[Col[Byte]] = {
+    override def bytes: Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(self,
-        thisClass.getMethod("bytes"),
+        BoxClass.getMethod("bytes"),
         List(),
         true, false, element[Col[Byte]]))
     }
 
-    def bytesWithoutRef: Rep[Col[Byte]] = {
+    override def bytesWithoutRef: Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(self,
-        thisClass.getMethod("bytesWithoutRef"),
+        BoxClass.getMethod("bytesWithoutRef"),
         List(),
         true, false, element[Col[Byte]]))
     }
 
-    def propositionBytes: Rep[Col[Byte]] = {
+    override def propositionBytes: Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(self,
-        thisClass.getMethod("propositionBytes"),
+        BoxClass.getMethod("propositionBytes"),
         List(),
         true, false, element[Col[Byte]]))
     }
 
-    def cost: Rep[Int] = {
+    override def cost: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("cost"),
+        BoxClass.getMethod("cost"),
         List(),
         true, false, element[Int]))
     }
 
-    def dataSize: Rep[Long] = {
+    override def dataSize: Rep[Long] = {
       asRep[Long](mkMethodCall(self,
-        thisClass.getMethod("dataSize"),
+        BoxClass.getMethod("dataSize"),
         List(),
         true, false, element[Long]))
     }
 
-    def registers: Rep[Col[AnyValue]] = {
+    override def registers: Rep[Col[AnyValue]] = {
       asRep[Col[AnyValue]](mkMethodCall(self,
-        thisClass.getMethod("registers"),
+        BoxClass.getMethod("registers"),
         List(),
         true, false, element[Col[AnyValue]]))
     }
 
-    def getReg[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = {
+    override def getReg[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]] = {
       asRep[WOption[T]](mkMethodCall(self,
-        thisClass.getMethod("getReg", classOf[Sym], classOf[Elem[_]]),
+        BoxClass.getMethod("getReg", classOf[Sym], classOf[Elem[_]]),
         List(i, cT),
         true, false, element[WOption[T]]))
     }
 
-    def tokens: Rep[Col[(Col[Byte], Long)]] = {
+    override def tokens: Rep[Col[(Col[Byte], Long)]] = {
       asRep[Col[(Col[Byte], Long)]](mkMethodCall(self,
-        thisClass.getMethod("tokens"),
+        BoxClass.getMethod("tokens"),
         List(),
         true, false, element[Col[(Col[Byte], Long)]]))
     }
 
-    def creationInfo: Rep[(Long, Col[Byte])] = {
-      asRep[(Long, Col[Byte])](mkMethodCall(self,
-        thisClass.getMethod("creationInfo"),
+    override def creationInfo: Rep[(Int, Col[Byte])] = {
+      asRep[(Int, Col[Byte])](mkMethodCall(self,
+        BoxClass.getMethod("creationInfo"),
         List(),
-        true, false, element[(Long, Col[Byte])]))
+        true, false, element[(Int, Col[Byte])]))
     }
   }
 
@@ -1139,6 +1164,7 @@ object Box extends EntityObject("Box") {
   case class BoxAdapter(source: Rep[Box])
       extends Box with Def[Box] {
     val selfType: Elem[Box] = element[Box]
+    override def transform(t: Transformer) = BoxAdapter(t(source))
     private val thisClass = classOf[Box]
 
     def id: Rep[Col[Byte]] = {
@@ -1211,11 +1237,11 @@ object Box extends EntityObject("Box") {
         true, true, element[Col[(Col[Byte], Long)]]))
     }
 
-    def creationInfo: Rep[(Long, Col[Byte])] = {
-      asRep[(Long, Col[Byte])](mkMethodCall(source,
+    def creationInfo: Rep[(Int, Col[Byte])] = {
+      asRep[(Int, Col[Byte])](mkMethodCall(source,
         thisClass.getMethod("creationInfo"),
         List(),
-        true, true, element[(Long, Col[Byte])]))
+        true, true, element[(Int, Col[Byte])]))
     }
 
     def builder: Rep[SigmaDslBuilder] = {
@@ -1236,7 +1262,7 @@ object Box extends EntityObject("Box") {
   // familyElem
   class BoxElem[To <: Box]
     extends DslObjectElem[To] {
-    override val liftable = LiftableBox.asLiftable[SBox, To]
+    override val liftable: Liftables.Liftable[_, To] = LiftableBox.asLiftable[SBox, To]
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++
@@ -1264,8 +1290,8 @@ object Box extends EntityObject("Box") {
     override def getDefaultRep: Rep[To] = ???
   }
 
-  implicit def boxElement: Elem[Box] =
-    cachedElem[BoxElem[Box]]()
+  implicit lazy val boxElement: Elem[Box] =
+    new BoxElem[Box]
 
   implicit case object BoxCompanionElem extends CompanionElem[BoxCompanionCtor] {
     lazy val tag = weakTypeTag[BoxCompanionCtor]
@@ -1570,64 +1596,69 @@ object AvlTree extends EntityObject("AvlTree") {
   type SAvlTree = special.sigma.AvlTree
   case class AvlTreeConst(
         constValue: SAvlTree
-      ) extends AvlTree with LiftedConst[SAvlTree, AvlTree] {
+      ) extends AvlTree with LiftedConst[SAvlTree, AvlTree]
+        with Def[AvlTree] with AvlTreeConstMethods {
     val liftable: Liftable[SAvlTree, AvlTree] = LiftableAvlTree
     val selfType: Elem[AvlTree] = liftable.eW
-    private val thisClass = classOf[AvlTree]
+  }
+
+  trait AvlTreeConstMethods extends AvlTree  { thisConst: Def[_] =>
+
+    private val AvlTreeClass = classOf[AvlTree]
 
     // manual fix
-    def builder: Rep[SigmaDslBuilder] = {
+    override def builder: Rep[SigmaDslBuilder] = {
       asRep[SigmaDslBuilder](mkMethodCall(self,
-        thisClass.getMethod("builder"),
+        AvlTreeClass.getMethod("builder"),
         List(),
         true, isAdapterCall = false, element[SigmaDslBuilder]))
     }
 
-    def startingDigest: Rep[Col[Byte]] = {
+    override def startingDigest: Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(self,
-        thisClass.getMethod("startingDigest"),
+        AvlTreeClass.getMethod("startingDigest"),
         List(),
         true, false, element[Col[Byte]]))
     }
 
-    def keyLength: Rep[Int] = {
+    override def keyLength: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("keyLength"),
+        AvlTreeClass.getMethod("keyLength"),
         List(),
         true, false, element[Int]))
     }
 
-    def valueLengthOpt: Rep[WOption[Int]] = {
+    override def valueLengthOpt: Rep[WOption[Int]] = {
       asRep[WOption[Int]](mkMethodCall(self,
-        thisClass.getMethod("valueLengthOpt"),
+        AvlTreeClass.getMethod("valueLengthOpt"),
         List(),
         true, false, element[WOption[Int]]))
     }
 
-    def maxNumOperations: Rep[WOption[Int]] = {
+    override def maxNumOperations: Rep[WOption[Int]] = {
       asRep[WOption[Int]](mkMethodCall(self,
-        thisClass.getMethod("maxNumOperations"),
+        AvlTreeClass.getMethod("maxNumOperations"),
         List(),
         true, false, element[WOption[Int]]))
     }
 
-    def maxDeletes: Rep[WOption[Int]] = {
+    override def maxDeletes: Rep[WOption[Int]] = {
       asRep[WOption[Int]](mkMethodCall(self,
-        thisClass.getMethod("maxDeletes"),
+        AvlTreeClass.getMethod("maxDeletes"),
         List(),
         true, false, element[WOption[Int]]))
     }
 
-    def cost: Rep[Int] = {
+    override def cost: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("cost"),
+        AvlTreeClass.getMethod("cost"),
         List(),
         true, false, element[Int]))
     }
 
-    def dataSize: Rep[Long] = {
+    override def dataSize: Rep[Long] = {
       asRep[Long](mkMethodCall(self,
-        thisClass.getMethod("dataSize"),
+        AvlTreeClass.getMethod("dataSize"),
         List(),
         true, false, element[Long]))
     }
@@ -1651,6 +1682,7 @@ object AvlTree extends EntityObject("AvlTree") {
   case class AvlTreeAdapter(source: Rep[AvlTree])
       extends AvlTree with Def[AvlTree] {
     val selfType: Elem[AvlTree] = element[AvlTree]
+    override def transform(t: Transformer) = AvlTreeAdapter(t(source))
     private val thisClass = classOf[AvlTree]
 
     def startingDigest: Rep[Col[Byte]] = {
@@ -1720,7 +1752,7 @@ object AvlTree extends EntityObject("AvlTree") {
   // familyElem
   class AvlTreeElem[To <: AvlTree]
     extends DslObjectElem[To] {
-    override val liftable = LiftableAvlTree.asLiftable[SAvlTree, To]
+    override val liftable: Liftables.Liftable[_, To] = LiftableAvlTree.asLiftable[SAvlTree, To]
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++
@@ -1748,8 +1780,8 @@ object AvlTree extends EntityObject("AvlTree") {
     override def getDefaultRep: Rep[To] = ???
   }
 
-  implicit def avlTreeElement: Elem[AvlTree] =
-    cachedElem[AvlTreeElem[AvlTree]]()
+  implicit lazy val avlTreeElement: Elem[AvlTree] =
+    new AvlTreeElem[AvlTree]
 
   implicit case object AvlTreeCompanionElem extends CompanionElem[AvlTreeCompanionCtor] {
     lazy val tag = weakTypeTag[AvlTreeCompanionCtor]
@@ -1872,84 +1904,89 @@ object Context extends EntityObject("Context") {
   type SContext = special.sigma.Context
   case class ContextConst(
         constValue: SContext
-      ) extends Context with LiftedConst[SContext, Context] {
+      ) extends Context with LiftedConst[SContext, Context]
+        with Def[Context] with ContextConstMethods {
     val liftable: Liftable[SContext, Context] = LiftableContext
     val selfType: Elem[Context] = liftable.eW
-    private val thisClass = classOf[Context]
+  }
 
-    def builder: Rep[SigmaDslBuilder] = {
+  trait ContextConstMethods extends Context  { thisConst: Def[_] =>
+
+    private val ContextClass = classOf[Context]
+
+    override def builder: Rep[SigmaDslBuilder] = {
       asRep[SigmaDslBuilder](mkMethodCall(self,
-        thisClass.getMethod("builder"),
+        ContextClass.getMethod("builder"),
         List(),
         true, false, element[SigmaDslBuilder]))
     }
 
-    def OUTPUTS: Rep[Col[Box]] = {
+    override def OUTPUTS: Rep[Col[Box]] = {
       asRep[Col[Box]](mkMethodCall(self,
-        thisClass.getMethod("OUTPUTS"),
+        ContextClass.getMethod("OUTPUTS"),
         List(),
         true, false, element[Col[Box]]))
     }
 
-    def INPUTS: Rep[Col[Box]] = {
+    override def INPUTS: Rep[Col[Box]] = {
       asRep[Col[Box]](mkMethodCall(self,
-        thisClass.getMethod("INPUTS"),
+        ContextClass.getMethod("INPUTS"),
         List(),
         true, false, element[Col[Box]]))
     }
 
-    def HEIGHT: Rep[Int] = {
+    override def HEIGHT: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("HEIGHT"),
+        ContextClass.getMethod("HEIGHT"),
         List(),
         true, false, element[Int]))
     }
 
-    def SELF: Rep[Box] = {
+    override def SELF: Rep[Box] = {
       asRep[Box](mkMethodCall(self,
-        thisClass.getMethod("SELF"),
+        ContextClass.getMethod("SELF"),
         List(),
         true, false, element[Box]))
     }
 
-    def LastBlockUtxoRootHash: Rep[AvlTree] = {
+    override def LastBlockUtxoRootHash: Rep[AvlTree] = {
       asRep[AvlTree](mkMethodCall(self,
-        thisClass.getMethod("LastBlockUtxoRootHash"),
+        ContextClass.getMethod("LastBlockUtxoRootHash"),
         List(),
         true, false, element[AvlTree]))
     }
 
-    def MinerPubKey: Rep[Col[Byte]] = {
+    override def MinerPubKey: Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(self,
-        thisClass.getMethod("MinerPubKey"),
+        ContextClass.getMethod("MinerPubKey"),
         List(),
         true, false, element[Col[Byte]]))
     }
 
-    def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = {
+    override def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]] = {
       asRep[WOption[T]](mkMethodCall(self,
-        thisClass.getMethod("getVar", classOf[Sym], classOf[Elem[_]]),
+        ContextClass.getMethod("getVar", classOf[Sym], classOf[Elem[_]]),
         List(id, cT),
         true, false, element[WOption[T]]))
     }
 
-    def getConstant[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[T] = {
+    override def getConstant[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[T] = {
       asRep[T](mkMethodCall(self,
-        thisClass.getMethod("getConstant", classOf[Sym], classOf[Elem[_]]),
+        ContextClass.getMethod("getConstant", classOf[Sym], classOf[Elem[_]]),
         List(id, cT),
         true, false, element[T]))
     }
 
-    def cost: Rep[Int] = {
+    override def cost: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("cost"),
+        ContextClass.getMethod("cost"),
         List(),
         true, false, element[Int]))
     }
 
-    def dataSize: Rep[Long] = {
+    override def dataSize: Rep[Long] = {
       asRep[Long](mkMethodCall(self,
-        thisClass.getMethod("dataSize"),
+        ContextClass.getMethod("dataSize"),
         List(),
         true, false, element[Long]))
     }
@@ -1973,6 +2010,7 @@ object Context extends EntityObject("Context") {
   case class ContextAdapter(source: Rep[Context])
       extends Context with Def[Context] {
     val selfType: Elem[Context] = element[Context]
+    override def transform(t: Transformer) = ContextAdapter(t(source))
     private val thisClass = classOf[Context]
 
     def builder: Rep[SigmaDslBuilder] = {
@@ -2001,7 +2039,7 @@ object Context extends EntityObject("Context") {
         thisClass.getMethod("HEIGHT"),
         List(),
         true, true, element[Int]))
-         }
+    }
 
     def SELF: Rep[Box] = {
       asRep[Box](mkMethodCall(source,
@@ -2063,7 +2101,7 @@ object Context extends EntityObject("Context") {
   // familyElem
   class ContextElem[To <: Context]
     extends EntityElem[To] {
-    override val liftable = LiftableContext.asLiftable[SContext, To]
+    override val liftable: Liftables.Liftable[_, To] = LiftableContext.asLiftable[SContext, To]
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++
@@ -2091,8 +2129,8 @@ object Context extends EntityObject("Context") {
     override def getDefaultRep: Rep[To] = ???
   }
 
-  implicit def contextElement: Elem[Context] =
-    cachedElem[ContextElem[Context]]()
+  implicit lazy val contextElement: Elem[Context] =
+    new ContextElem[Context]
 
   implicit case object ContextCompanionElem extends CompanionElem[ContextCompanionCtor] {
     lazy val tag = weakTypeTag[ContextCompanionCtor]
@@ -2267,21 +2305,26 @@ object SigmaContract extends EntityObject("SigmaContract") {
   type SSigmaContract = special.sigma.SigmaContract
   case class SigmaContractConst(
         constValue: SSigmaContract
-      ) extends SigmaContract with LiftedConst[SSigmaContract, SigmaContract] {
+      ) extends SigmaContract with LiftedConst[SSigmaContract, SigmaContract]
+        with Def[SigmaContract] with SigmaContractConstMethods {
     val liftable: Liftable[SSigmaContract, SigmaContract] = LiftableSigmaContract
     val selfType: Elem[SigmaContract] = liftable.eW
-    private val thisClass = classOf[SigmaContract]
+  }
 
-    def builder: Rep[SigmaDslBuilder] = {
+  trait SigmaContractConstMethods extends SigmaContract  { thisConst: Def[_] =>
+
+    private val SigmaContractClass = classOf[SigmaContract]
+
+    override def builder: Rep[SigmaDslBuilder] = {
       asRep[SigmaDslBuilder](mkMethodCall(self,
-        thisClass.getMethod("builder"),
+        SigmaContractClass.getMethod("builder"),
         List(),
         true, false, element[SigmaDslBuilder]))
     }
 
-    def canOpen(ctx: Rep[Context]): Rep[Boolean] = {
+    override def canOpen(ctx: Rep[Context]): Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(self,
-        thisClass.getMethod("canOpen", classOf[Sym]),
+        SigmaContractClass.getMethod("canOpen", classOf[Sym]),
         List(ctx),
         true, false, element[Boolean]))
     }
@@ -2305,6 +2348,7 @@ object SigmaContract extends EntityObject("SigmaContract") {
   case class SigmaContractAdapter(source: Rep[SigmaContract])
       extends SigmaContract with Def[SigmaContract] {
     val selfType: Elem[SigmaContract] = element[SigmaContract]
+    override def transform(t: Transformer) = SigmaContractAdapter(t(source))
     private val thisClass = classOf[SigmaContract]
 
     def builder: Rep[SigmaDslBuilder] = {
@@ -2332,7 +2376,7 @@ object SigmaContract extends EntityObject("SigmaContract") {
   // familyElem
   class SigmaContractElem[To <: SigmaContract]
     extends EntityElem[To] {
-    override val liftable = LiftableSigmaContract.asLiftable[SSigmaContract, To]
+    override val liftable: Liftables.Liftable[_, To] = LiftableSigmaContract.asLiftable[SSigmaContract, To]
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++
@@ -2360,8 +2404,8 @@ object SigmaContract extends EntityObject("SigmaContract") {
     override def getDefaultRep: Rep[To] = ???
   }
 
-  implicit def sigmaContractElement: Elem[SigmaContract] =
-    cachedElem[SigmaContractElem[SigmaContract]]()
+  implicit lazy val sigmaContractElement: Elem[SigmaContract] =
+    new SigmaContractElem[SigmaContract]
 
   implicit case object SigmaContractCompanionElem extends CompanionElem[SigmaContractCompanionCtor] {
     lazy val tag = weakTypeTag[SigmaContractCompanionCtor]
@@ -2692,206 +2736,211 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
   type SSigmaDslBuilder = special.sigma.SigmaDslBuilder
   case class SigmaDslBuilderConst(
         constValue: SSigmaDslBuilder
-      ) extends SigmaDslBuilder with LiftedConst[SSigmaDslBuilder, SigmaDslBuilder] {
+      ) extends SigmaDslBuilder with LiftedConst[SSigmaDslBuilder, SigmaDslBuilder]
+        with Def[SigmaDslBuilder] with SigmaDslBuilderConstMethods {
     val liftable: Liftable[SSigmaDslBuilder, SigmaDslBuilder] = LiftableSigmaDslBuilder
     val selfType: Elem[SigmaDslBuilder] = liftable.eW
-    private val thisClass = classOf[SigmaDslBuilder]
+  }
 
-    def Cols: Rep[ColBuilder] = {
+  trait SigmaDslBuilderConstMethods extends SigmaDslBuilder  { thisConst: Def[_] =>
+
+    private val SigmaDslBuilderClass = classOf[SigmaDslBuilder]
+
+    override def Cols: Rep[ColBuilder] = {
       asRep[ColBuilder](mkMethodCall(self,
-        thisClass.getMethod("Cols"),
+        SigmaDslBuilderClass.getMethod("Cols"),
         List(),
         true, false, element[ColBuilder]))
     }
 
-    def Monoids: Rep[MonoidBuilder] = {
+    override def Monoids: Rep[MonoidBuilder] = {
       asRep[MonoidBuilder](mkMethodCall(self,
-        thisClass.getMethod("Monoids"),
+        SigmaDslBuilderClass.getMethod("Monoids"),
         List(),
         true, false, element[MonoidBuilder]))
     }
 
-    def Costing: Rep[CostedBuilder] = {
+    override def Costing: Rep[CostedBuilder] = {
       asRep[CostedBuilder](mkMethodCall(self,
-        thisClass.getMethod("Costing"),
+        SigmaDslBuilderClass.getMethod("Costing"),
         List(),
         true, false, element[CostedBuilder]))
     }
 
-    def CostModel: Rep[CostModel] = {
+    override def CostModel: Rep[CostModel] = {
       asRep[CostModel](mkMethodCall(self,
-        thisClass.getMethod("CostModel"),
+        SigmaDslBuilderClass.getMethod("CostModel"),
         List(),
         true, false, element[CostModel]))
     }
 
-    def costBoxes(bs: Rep[Col[Box]]): Rep[CostedCol[Box]] = {
+    override def costBoxes(bs: Rep[Col[Box]]): Rep[CostedCol[Box]] = {
       asRep[CostedCol[Box]](mkMethodCall(self,
-        thisClass.getMethod("costBoxes", classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("costBoxes", classOf[Sym]),
         List(bs),
         true, false, element[CostedCol[Box]]))
     }
 
-    def costColWithConstSizedItem[T](xs: Rep[Col[T]], len: Rep[Int], itemSize: Rep[Long]): Rep[CostedCol[T]] = {
+    override def costColWithConstSizedItem[T](xs: Rep[Col[T]], len: Rep[Int], itemSize: Rep[Long]): Rep[CostedCol[T]] = {
       implicit val eT = xs.eA
       asRep[CostedCol[T]](mkMethodCall(self,
-        thisClass.getMethod("costColWithConstSizedItem", classOf[Sym], classOf[Sym], classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("costColWithConstSizedItem", classOf[Sym], classOf[Sym], classOf[Sym]),
         List(xs, len, itemSize),
         true, false, element[CostedCol[T]]))
     }
 
-    def costOption[T](opt: Rep[WOption[T]], opCost: Rep[Int]): Rep[CostedOption[T]] = {
+    override def costOption[T](opt: Rep[WOption[T]], opCost: Rep[Int]): Rep[CostedOption[T]] = {
       implicit val eT = opt.eA
       asRep[CostedOption[T]](mkMethodCall(self,
-        thisClass.getMethod("costOption", classOf[Sym], classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("costOption", classOf[Sym], classOf[Sym]),
         List(opt, opCost),
         true, false, element[CostedOption[T]]))
     }
 
-    def verifyZK(cond: Rep[Thunk[SigmaProp]]): Rep[Boolean] = {
+    override def verifyZK(cond: Rep[Thunk[SigmaProp]]): Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(self,
-        thisClass.getMethod("verifyZK", classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("verifyZK", classOf[Sym]),
         List(cond),
         true, false, element[Boolean]))
     }
 
-    def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp] = {
+    override def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
-        thisClass.getMethod("atLeast", classOf[Sym], classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("atLeast", classOf[Sym], classOf[Sym]),
         List(bound, props),
         true, false, element[SigmaProp]))
     }
 
-    def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = {
+    override def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(self,
-        thisClass.getMethod("allOf", classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("allOf", classOf[Sym]),
         List(conditions),
         true, false, element[Boolean]))
     }
 
-    def allZK(conditions: Rep[Col[SigmaProp]]): Rep[SigmaProp] = {
+    override def allZK(conditions: Rep[Col[SigmaProp]]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
-        thisClass.getMethod("allZK", classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("allZK", classOf[Sym]),
         List(conditions),
         true, false, element[SigmaProp]))
     }
 
-    def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = {
+    override def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(self,
-        thisClass.getMethod("anyOf", classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("anyOf", classOf[Sym]),
         List(conditions),
         true, false, element[Boolean]))
     }
 
-    def anyZK(conditions: Rep[Col[SigmaProp]]): Rep[SigmaProp] = {
+    override def anyZK(conditions: Rep[Col[SigmaProp]]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
-        thisClass.getMethod("anyZK", classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("anyZK", classOf[Sym]),
         List(conditions),
         true, false, element[SigmaProp]))
     }
 
-    def PubKey(base64String: Rep[String]): Rep[SigmaProp] = {
+    override def PubKey(base64String: Rep[String]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
-        thisClass.getMethod("PubKey", classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("PubKey", classOf[Sym]),
         List(base64String),
         true, false, element[SigmaProp]))
     }
 
-    def sigmaProp(b: Rep[Boolean]): Rep[SigmaProp] = {
+    override def sigmaProp(b: Rep[Boolean]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
-        thisClass.getMethod("sigmaProp", classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("sigmaProp", classOf[Sym]),
         List(b),
         true, false, element[SigmaProp]))
     }
 
-    def blake2b256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = {
+    override def blake2b256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(self,
-        thisClass.getMethod("blake2b256", classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("blake2b256", classOf[Sym]),
         List(bytes),
         true, false, element[Col[Byte]]))
     }
 
-    def sha256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = {
+    override def sha256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(self,
-        thisClass.getMethod("sha256", classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("sha256", classOf[Sym]),
         List(bytes),
         true, false, element[Col[Byte]]))
     }
 
-    def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[WBigInteger] = {
+    override def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("byteArrayToBigInt", classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("byteArrayToBigInt", classOf[Sym]),
         List(bytes),
         true, false, element[WBigInteger]))
     }
 
-    def longToByteArray(l: Rep[Long]): Rep[Col[Byte]] = {
+    override def longToByteArray(l: Rep[Long]): Rep[Col[Byte]] = {
       asRep[Col[Byte]](mkMethodCall(self,
-        thisClass.getMethod("longToByteArray", classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("longToByteArray", classOf[Sym]),
         List(l),
         true, false, element[Col[Byte]]))
     }
 
-    def proveDlog(g: Rep[WECPoint]): Rep[SigmaProp] = {
+    override def proveDlog(g: Rep[WECPoint]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
-        thisClass.getMethod("proveDlog", classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("proveDlog", classOf[Sym]),
         List(g),
         true, false, element[SigmaProp]))
     }
 
-    def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[SigmaProp] = {
+    override def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[SigmaProp] = {
       asRep[SigmaProp](mkMethodCall(self,
-        thisClass.getMethod("proveDHTuple", classOf[Sym], classOf[Sym], classOf[Sym], classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("proveDHTuple", classOf[Sym], classOf[Sym], classOf[Sym], classOf[Sym]),
         List(g, h, u, v),
         true, false, element[SigmaProp]))
     }
 
-    def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean] = {
+    override def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(self,
-        thisClass.getMethod("isMember", classOf[Sym], classOf[Sym], classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("isMember", classOf[Sym], classOf[Sym], classOf[Sym]),
         List(tree, key, proof),
         true, false, element[Boolean]))
     }
 
-    def treeLookup(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = {
+    override def treeLookup(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = {
       asRep[WOption[Col[Byte]]](mkMethodCall(self,
-        thisClass.getMethod("treeLookup", classOf[Sym], classOf[Sym], classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("treeLookup", classOf[Sym], classOf[Sym], classOf[Sym]),
         List(tree, key, proof),
         true, false, element[WOption[Col[Byte]]]))
     }
 
-    def treeModifications(tree: Rep[AvlTree], operations: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = {
+    override def treeModifications(tree: Rep[AvlTree], operations: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = {
       asRep[WOption[Col[Byte]]](mkMethodCall(self,
-        thisClass.getMethod("treeModifications", classOf[Sym], classOf[Sym], classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("treeModifications", classOf[Sym], classOf[Sym], classOf[Sym]),
         List(tree, operations, proof),
         true, false, element[WOption[Col[Byte]]]))
     }
 
-    def groupGenerator: Rep[WECPoint] = {
+    override def groupGenerator: Rep[WECPoint] = {
       asRep[WECPoint](mkMethodCall(self,
-        thisClass.getMethod("groupGenerator"),
+        SigmaDslBuilderClass.getMethod("groupGenerator"),
         List(),
         true, false, element[WECPoint]))
     }
 
-    def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint] = {
+    override def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint] = {
       asRep[WECPoint](mkMethodCall(self,
-        thisClass.getMethod("exponentiate", classOf[Sym], classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("exponentiate", classOf[Sym], classOf[Sym]),
         List(base, exponent),
         true, false, element[WECPoint]))
     }
 
-    def substConstants[T](scriptBytes: Rep[Col[Byte]], positions: Rep[Col[Int]], newValues: Rep[Col[T]])(implicit cT: Elem[T]): Rep[Col[Byte]] = {
+    override def substConstants[T](scriptBytes: Rep[Col[Byte]], positions: Rep[Col[Int]], newValues: Rep[Col[T]])(implicit cT: Elem[T]): Rep[Col[Byte]] = {
       implicit val eT = newValues.eA
       asRep[Col[Byte]](mkMethodCall(self,
-        thisClass.getMethod("substConstants", classOf[Sym], classOf[Sym], classOf[Sym], classOf[Elem[_]]),
+        SigmaDslBuilderClass.getMethod("substConstants", classOf[Sym], classOf[Sym], classOf[Sym], classOf[Elem[_]]),
         List(scriptBytes, positions, newValues, cT),
         true, false, element[Col[Byte]]))
     }
 
-    def decodePoint(encoded: Rep[Col[Byte]]): Rep[WECPoint] = {
+    override def decodePoint(encoded: Rep[Col[Byte]]): Rep[WECPoint] = {
       asRep[WECPoint](mkMethodCall(self,
-        thisClass.getMethod("decodePoint", classOf[Sym]),
+        SigmaDslBuilderClass.getMethod("decodePoint", classOf[Sym]),
         List(encoded),
         true, false, element[WECPoint]))
     }
@@ -2915,6 +2964,7 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
   case class SigmaDslBuilderAdapter(source: Rep[SigmaDslBuilder])
       extends SigmaDslBuilder with Def[SigmaDslBuilder] {
     val selfType: Elem[SigmaDslBuilder] = element[SigmaDslBuilder]
+    override def transform(t: Transformer) = SigmaDslBuilderAdapter(t(source))
     private val thisClass = classOf[SigmaDslBuilder]
 
     def Cols: Rep[ColBuilder] = {
@@ -3127,7 +3177,7 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
   // familyElem
   class SigmaDslBuilderElem[To <: SigmaDslBuilder]
     extends DslBuilderElem[To] {
-    override val liftable = LiftableSigmaDslBuilder.asLiftable[SSigmaDslBuilder, To]
+    override val liftable: Liftables.Liftable[_, To] = LiftableSigmaDslBuilder.asLiftable[SSigmaDslBuilder, To]
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++
@@ -3155,8 +3205,8 @@ object SigmaDslBuilder extends EntityObject("SigmaDslBuilder") {
     override def getDefaultRep: Rep[To] = ???
   }
 
-  implicit def sigmaDslBuilderElement: Elem[SigmaDslBuilder] =
-    cachedElem[SigmaDslBuilderElem[SigmaDslBuilder]]()
+  implicit lazy val sigmaDslBuilderElement: Elem[SigmaDslBuilder] =
+    new SigmaDslBuilderElem[SigmaDslBuilder]
 
   implicit case object SigmaDslBuilderCompanionElem extends CompanionElem[SigmaDslBuilderCompanionCtor] {
     lazy val tag = weakTypeTag[SigmaDslBuilderCompanionCtor]

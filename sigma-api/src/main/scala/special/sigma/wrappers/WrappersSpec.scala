@@ -8,13 +8,13 @@ import special.sigma.SigmaPredef
 
 import scala.reflect.ClassTag
 
-class ECPointWrapSpec extends WrapSpecBase {
+trait ECPointWrapSpec extends WrapSpecBase {
   def getEncoded[A](g: ECPoint, compressed: Boolean): Array[Byte] = g.getEncoded(compressed)
   def multiply(l: ECPoint, r: BigInteger) = l.multiply(r)
   def add(l: ECPoint, r: ECPoint) = l.add(r)
 }
 
-class BigIntegerWrapSpec extends WrapSpecBase {
+trait BigIntegerWrapSpec extends WrapSpecBase {
   def fromString(s: String) = new BigInteger(s)
   def fromArray(sig: Int, arr: Array[Byte]) = new BigInteger(sig, arr)
   def ZERO = BigInteger.ZERO
@@ -64,6 +64,6 @@ class BigIntegerWrapSpec extends WrapSpecBase {
 
 }
 
-class SigmaPredefWrapSpec extends WrapSpecBase {
+trait SigmaPredefWrapSpec extends WrapSpecBase {
   def dataSize(v: Any): Long = SigmaPredef.dataSize(v)
 }

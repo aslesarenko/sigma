@@ -3,18 +3,15 @@ package wrappers.java.math
 import scalan._
 import impl._
 import special.sigma.wrappers.WrappersModule
+import special.sigma.wrappers.BigIntegerWrapSpec
 import scala.reflect.runtime.universe._
 import scala.reflect._
+import java.lang.reflect.Method  // manual fix
+import java.math.BigInteger  // manual fix
+import org.bouncycastle.math.ec.ECPoint  // manual fix
 
 package impl {
-  import java.lang.reflect.Method  // manual fix
-  import java.math.BigInteger  // manual fix
-
-  import org.bouncycastle.math.ec.ECPoint  // manual fix
-  import special.sigma.wrappers.BigIntegerWrapSpec  // manual fix
-  import special.wrappers.ArrayWrapSpec  // manual fix
-
-  // Abs -----------------------------------
+// Abs -----------------------------------
 trait WBigIntegersDefs extends scalan.Scalan with WBigIntegers {
   self: WrappersModule =>
 import IsoUR._
@@ -29,294 +26,299 @@ object WBigInteger extends EntityObject("WBigInteger") {
 
   case class WBigIntegerConst(
         constValue: BigInteger
-      ) extends WBigInteger with LiftedConst[BigInteger, WBigInteger] {
+      ) extends WBigInteger with LiftedConst[BigInteger, WBigInteger]
+        with Def[WBigInteger] with WBigIntegerConstMethods {
     val liftable: Liftable[BigInteger, WBigInteger] = LiftableBigInteger
     val selfType: Elem[WBigInteger] = liftable.eW
-    private val thisClass = classOf[WBigInteger]
+  }
 
-    def longValueExact: Rep[Long] = {
+  trait WBigIntegerConstMethods extends WBigInteger  { thisConst: Def[_] =>
+
+    private val WBigIntegerClass = classOf[WBigInteger]
+
+    override def longValueExact: Rep[Long] = {
       asRep[Long](mkMethodCall(self,
-        thisClass.getMethod("longValueExact"),
+        WBigIntegerClass.getMethod("longValueExact"),
         List(),
         true, false, element[Long]))
     }
 
-    def intValueExact: Rep[Int] = {
+    override def intValueExact: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("intValueExact"),
+        WBigIntegerClass.getMethod("intValueExact"),
         List(),
         true, false, element[Int]))
     }
 
-    def shortValueExact: Rep[Short] = {
+    override def shortValueExact: Rep[Short] = {
       asRep[Short](mkMethodCall(self,
-        thisClass.getMethod("shortValueExact"),
+        WBigIntegerClass.getMethod("shortValueExact"),
         List(),
         true, false, element[Short]))
     }
 
-    def byteValueExact: Rep[Byte] = {
+    override def byteValueExact: Rep[Byte] = {
       asRep[Byte](mkMethodCall(self,
-        thisClass.getMethod("byteValueExact"),
+        WBigIntegerClass.getMethod("byteValueExact"),
         List(),
         true, false, element[Byte]))
     }
 
-    def longValue: Rep[Long] = {
+    override def longValue: Rep[Long] = {
       asRep[Long](mkMethodCall(self,
-        thisClass.getMethod("longValue"),
+        WBigIntegerClass.getMethod("longValue"),
         List(),
         true, false, element[Long]))
     }
 
-    def intValue: Rep[Int] = {
+    override def intValue: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("intValue"),
+        WBigIntegerClass.getMethod("intValue"),
         List(),
         true, false, element[Int]))
     }
 
-    def shortValue: Rep[Short] = {
+    override def shortValue: Rep[Short] = {
       asRep[Short](mkMethodCall(self,
-        thisClass.getMethod("shortValue"),
+        WBigIntegerClass.getMethod("shortValue"),
         List(),
         true, false, element[Short]))
     }
 
-    def byteValue: Rep[Byte] = {
+    override def byteValue: Rep[Byte] = {
       asRep[Byte](mkMethodCall(self,
-        thisClass.getMethod("byteValue"),
+        WBigIntegerClass.getMethod("byteValue"),
         List(),
         true, false, element[Byte]))
     }
 
-    def signum: Rep[Int] = {
+    override def signum: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("signum"),
+        WBigIntegerClass.getMethod("signum"),
         List(),
         true, false, element[Int]))
     }
 
-    def negate: Rep[WBigInteger] = {
+    override def negate: Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("negate"),
+        WBigIntegerClass.getMethod("negate"),
         List(),
         true, false, element[WBigInteger]))
     }
 
-    def abs: Rep[WBigInteger] = {
+    override def abs: Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("abs"),
+        WBigIntegerClass.getMethod("abs"),
         List(),
         true, false, element[WBigInteger]))
     }
 
-    def shiftRight(x$1: Rep[Int]): Rep[WBigInteger] = {
+    override def shiftRight(x$1: Rep[Int]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("shiftRight", classOf[Sym]),
+        WBigIntegerClass.getMethod("shiftRight", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def shiftLeft(x$1: Rep[Int]): Rep[WBigInteger] = {
+    override def shiftLeft(x$1: Rep[Int]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("shiftLeft", classOf[Sym]),
+        WBigIntegerClass.getMethod("shiftLeft", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def isProbablePrime(x$1: Rep[Int]): Rep[Boolean] = {
+    override def isProbablePrime(x$1: Rep[Int]): Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(self,
-        thisClass.getMethod("isProbablePrime", classOf[Sym]),
+        WBigIntegerClass.getMethod("isProbablePrime", classOf[Sym]),
         List(x$1),
         true, false, element[Boolean]))
     }
 
-    def bitLength: Rep[Int] = {
+    override def bitLength: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("bitLength"),
+        WBigIntegerClass.getMethod("bitLength"),
         List(),
         true, false, element[Int]))
     }
 
-    def bitCount: Rep[Int] = {
+    override def bitCount: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("bitCount"),
+        WBigIntegerClass.getMethod("bitCount"),
         List(),
         true, false, element[Int]))
     }
 
-    def getLowestSetBit: Rep[Int] = {
+    override def getLowestSetBit: Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("getLowestSetBit"),
+        WBigIntegerClass.getMethod("getLowestSetBit"),
         List(),
         true, false, element[Int]))
     }
 
-    def flipBit(x$1: Rep[Int]): Rep[WBigInteger] = {
+    override def flipBit(x$1: Rep[Int]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("flipBit", classOf[Sym]),
+        WBigIntegerClass.getMethod("flipBit", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def clearBit(x$1: Rep[Int]): Rep[WBigInteger] = {
+    override def clearBit(x$1: Rep[Int]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("clearBit", classOf[Sym]),
+        WBigIntegerClass.getMethod("clearBit", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def setBit(x$1: Rep[Int]): Rep[WBigInteger] = {
+    override def setBit(x$1: Rep[Int]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("setBit", classOf[Sym]),
+        WBigIntegerClass.getMethod("setBit", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def testBit(x$1: Rep[Int]): Rep[Boolean] = {
+    override def testBit(x$1: Rep[Int]): Rep[Boolean] = {
       asRep[Boolean](mkMethodCall(self,
-        thisClass.getMethod("testBit", classOf[Sym]),
+        WBigIntegerClass.getMethod("testBit", classOf[Sym]),
         List(x$1),
         true, false, element[Boolean]))
     }
 
-    def pow(x$1: Rep[Int]): Rep[WBigInteger] = {
+    override def pow(x$1: Rep[Int]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("pow", classOf[Sym]),
+        WBigIntegerClass.getMethod("pow", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def andNot(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
+    override def andNot(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("andNot", classOf[Sym]),
+        WBigIntegerClass.getMethod("andNot", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def not: Rep[WBigInteger] = {
+    override def not: Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("not"),
+        WBigIntegerClass.getMethod("not"),
         List(),
         true, false, element[WBigInteger]))
     }
 
-    def xor(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
+    override def xor(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("xor", classOf[Sym]),
+        WBigIntegerClass.getMethod("xor", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def or(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
+    override def or(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("or", classOf[Sym]),
+        WBigIntegerClass.getMethod("or", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def and(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
+    override def and(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("and", classOf[Sym]),
+        WBigIntegerClass.getMethod("and", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def gcd(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
+    override def gcd(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("gcd", classOf[Sym]),
+        WBigIntegerClass.getMethod("gcd", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def max(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
+    override def max(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("max", classOf[Sym]),
+        WBigIntegerClass.getMethod("max", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def min(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
+    override def min(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("min", classOf[Sym]),
+        WBigIntegerClass.getMethod("min", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def compareTo(x$1: Rep[WBigInteger]): Rep[Int] = {
+    override def compareTo(x$1: Rep[WBigInteger]): Rep[Int] = {
       asRep[Int](mkMethodCall(self,
-        thisClass.getMethod("compareTo", classOf[Sym]),
+        WBigIntegerClass.getMethod("compareTo", classOf[Sym]),
         List(x$1),
         true, false, element[Int]))
     }
 
-    def divide(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
+    override def divide(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("divide", classOf[Sym]),
+        WBigIntegerClass.getMethod("divide", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def remainder(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
+    override def remainder(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("remainder", classOf[Sym]),
+        WBigIntegerClass.getMethod("remainder", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def modPow(x$1: Rep[WBigInteger], x$2: Rep[WBigInteger]): Rep[WBigInteger] = {
+    override def modPow(x$1: Rep[WBigInteger], x$2: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("modPow", classOf[Sym], classOf[Sym]),
+        WBigIntegerClass.getMethod("modPow", classOf[Sym], classOf[Sym]),
         List(x$1, x$2),
         true, false, element[WBigInteger]))
     }
 
-    def modInverse(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
+    override def modInverse(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("modInverse", classOf[Sym]),
+        WBigIntegerClass.getMethod("modInverse", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def mod(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
+    override def mod(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("mod", classOf[Sym]),
+        WBigIntegerClass.getMethod("mod", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def multiply(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
+    override def multiply(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("multiply", classOf[Sym]),
+        WBigIntegerClass.getMethod("multiply", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def subtract(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
+    override def subtract(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("subtract", classOf[Sym]),
+        WBigIntegerClass.getMethod("subtract", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def add(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
+    override def add(x$1: Rep[WBigInteger]): Rep[WBigInteger] = {
       asRep[WBigInteger](mkMethodCall(self,
-        thisClass.getMethod("add", classOf[Sym]),
+        WBigIntegerClass.getMethod("add", classOf[Sym]),
         List(x$1),
         true, false, element[WBigInteger]))
     }
 
-    def toByteArray: Rep[WArray[Byte]] = {
+    override def toByteArray: Rep[WArray[Byte]] = {
       asRep[WArray[Byte]](mkMethodCall(self,
-        thisClass.getMethod("toByteArray"),
+        WBigIntegerClass.getMethod("toByteArray"),
         List(),
         true, false, element[WArray[Byte]]))
     }
 
-    def toString(x$1: Rep[Int]): Rep[String] = {
+    override def toString(x$1: Rep[Int]): Rep[String] = {
       asRep[String](mkMethodCall(self,
-        thisClass.getMethod("toString", classOf[Sym]),
+        WBigIntegerClass.getMethod("toString", classOf[Sym]),
         List(x$1),
         true, false, element[String]))
     }
@@ -336,11 +338,12 @@ object WBigInteger extends EntityObject("WBigInteger") {
     }
   }
 
-  private val _BigIntegerWrapSpec = new BigIntegerWrapSpec
+  private val _BigIntegerWrapSpec = new BigIntegerWrapSpec {}
   // entityAdapter for WBigInteger trait
   case class WBigIntegerAdapter(source: Rep[WBigInteger])
       extends WBigInteger with Def[WBigInteger] {
     val selfType: Elem[WBigInteger] = element[WBigInteger]
+    override def transform(t: Transformer) = WBigIntegerAdapter(t(source))
     private val thisClass = classOf[WBigInteger]
 
     def longValueExact: Rep[Long] = {
@@ -641,7 +644,7 @@ object WBigInteger extends EntityObject("WBigInteger") {
   // familyElem
   class WBigIntegerElem[To <: WBigInteger]
     extends EntityElem[To] {
-    override val liftable = LiftableBigInteger.asLiftable[BigInteger, To]
+    override val liftable: Liftables.Liftable[_, To] = LiftableBigInteger.asLiftable[BigInteger, To]
 
     override protected def collectMethods: Map[java.lang.reflect.Method, MethodDesc] = {
       super.collectMethods ++
@@ -669,8 +672,8 @@ object WBigInteger extends EntityObject("WBigInteger") {
     override def getDefaultRep: Rep[To] = ???
   }
 
-  implicit def wBigIntegerElement: Elem[WBigInteger] =
-    cachedElem[WBigIntegerElem[WBigInteger]]()
+  implicit lazy val wBigIntegerElement: Elem[WBigInteger] =
+    new WBigIntegerElem[WBigInteger]
 
   implicit case object WBigIntegerCompanionElem extends CompanionElem[WBigIntegerCompanionCtor] {
     lazy val tag = weakTypeTag[WBigIntegerCompanionCtor]

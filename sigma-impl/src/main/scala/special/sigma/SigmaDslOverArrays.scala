@@ -115,7 +115,7 @@ class TestContext(
   }
 
   @NeverInline
-  def getConstant[T](id: Byte)(implicit cT: RType[T]) =
+  def getConstant[T](id: Byte)(implicit cT: RType[T]): T =
     sys.error(s"Method getConstant is not defined in TestContext. Should be overriden in real context.")
 
   @NeverInline

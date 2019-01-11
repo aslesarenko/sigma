@@ -8,18 +8,18 @@ package special.sigma {
     import CCostedAvlTree._;
     import CCostedBox._;
     import CCostedCol._;
+    import CCostedContext._;
     import CCostedPrim._;
     import Col._;
-    import ColBuilder._; // manual fix
+    import ColBuilder._;
     import Context._;
+    import CostModel._;
     import Costed._;
-    import CostedAvlTree._; // manual fix
-    import CostedBox._; // manual fix
-    import CostedBuilder._;  // manual fix
+    import CostedAvlTree._;
+    import CostedBox._;
     import CostedCol._;
     import CostedContext._;
     import CostedOption._;
-    import CostModel._;  // manual fix
     import SigmaDslBuilder._;
     import TestSigmaDslBuilder._;
     import WOption._;  // manual fix
