@@ -13,7 +13,7 @@ class SigmaExamplesTests extends FunSuite with ContractsTestkit {
     val timeout = 100
     val minToRaise = 1000
     val contract = new CrowdFundingContract(timeout, minToRaise, backer, project)
-    val bytes = Cols.fromArray(Array[Byte]())
+    val bytes = Colls.fromArray(Array[Byte]())
     val self = new TestBox(selfId, 10, noBytes, noBytes, noBytes, noRegisters)
 
     { // when backer can open
@@ -37,7 +37,7 @@ class SigmaExamplesTests extends FunSuite with ContractsTestkit {
     val userProof = new MockProveDlog(isValid = true, noBytes)
     val contract = new DemurrageCurrencyContract(demurragePeriod, demurrageCost, userProof)
 
-    val prop = Cols.fromArray(Array[Byte](1, 2))
+    val prop = Colls.fromArray(Array[Byte](1, 2))
     val outHeight = 100
     val outValue = 10L
     val curHeight = outHeight + demurragePeriod

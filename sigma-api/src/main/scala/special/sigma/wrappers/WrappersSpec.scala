@@ -2,7 +2,8 @@ package special.sigma.wrappers
 
 import java.math.BigInteger
 
-import special.wrappers.{WrapSpec, WrapSpecBase}
+import scalan.WrapSpec
+import special.wrappers.{WrapSpecBase}
 import org.bouncycastle.math.ec.ECPoint
 import special.sigma.SigmaPredef
 

@@ -15,8 +15,8 @@ trait SigmaLibrary extends Library
     with SigmaDslOverArraysModule
     with SigmaDslCostedModule {
   import WArray._
-  import Col._
-  import ColBuilder._
+  import Coll._
+  import CollBuilder._
   import SigmaProp._
   import TrivialSigma._
   import SigmaContract._
@@ -24,8 +24,8 @@ trait SigmaLibrary extends Library
   import SigmaDslBuilder._
 
   private val WA = WArrayMethods
-  private val CM = ColMethods
-  private val CBM = ColBuilderMethods
+  private val CM = CollMethods
+  private val CBM = CollBuilderMethods
   private val SM = SigmaPropMethods
   private val SCM = SigmaContractMethods
   private val SDBM = SigmaDslBuilderMethods
@@ -33,28 +33,28 @@ trait SigmaLibrary extends Library
   def sigmaDslBuilder: Rep[SigmaDslBuilder]
 
   object AnyOf {
-    def unapply(d: Def[_]): Option[(Rep[ColBuilder], Seq[Rep[A]], Elem[A]) forSome {type A}] = d match {
+    def unapply(d: Def[_]): Option[(Rep[CollBuilder], Seq[Rep[A]], Elem[A]) forSome {type A}] = d match {
       case SDBM.anyOf(_, CBM.fromItems(b, items, e)) =>
         Some((b, items, e.asInstanceOf[Elem[Any]]))
       case _ => None
     }
   }
   object AllOf {
-    def unapply(d: Def[_]): Option[(Rep[ColBuilder], Seq[Rep[A]], Elem[A]) forSome {type A}] = d match {
+    def unapply(d: Def[_]): Option[(Rep[CollBuilder], Seq[Rep[A]], Elem[A]) forSome {type A}] = d match {
       case SDBM.allOf(_, CBM.fromItems(b, items, e)) =>
         Some((b, items, e.asInstanceOf[Elem[Any]]))
       case _ => None
     }
   }
   object AnyZk {
-    def unapply(d: Def[_]): Option[(Rep[ColBuilder], Seq[Rep[SigmaProp]], Elem[SigmaProp])] = d match {
+    def unapply(d: Def[_]): Option[(Rep[CollBuilder], Seq[Rep[SigmaProp]], Elem[SigmaProp])] = d match {
       case SDBM.anyZK(_, CBM.fromItems(b, items, e)) =>
         Some((b, items.asInstanceOf[Seq[Rep[SigmaProp]]], e.asInstanceOf[Elem[SigmaProp]]))
       case _ => None
     }
   }
   object AllZk {
-    def unapply(d: Def[_]): Option[(Rep[ColBuilder], Seq[Rep[SigmaProp]], Elem[SigmaProp])] = d match {
+    def unapply(d: Def[_]): Option[(Rep[CollBuilder], Seq[Rep[SigmaProp]], Elem[SigmaProp])] = d match {
       case SDBM.allZK(_, CBM.fromItems(b, items, e)) =>
         Some((b, items.asInstanceOf[Seq[Rep[SigmaProp]]], e.asInstanceOf[Elem[SigmaProp]]))
       case _ => None
@@ -97,9 +97,9 @@ trait SigmaLibrary extends Library
     case ApplyBinOp(op, lhs, rhs) =>
       op.asInstanceOf[BinOp[_, _]] match {
         case And =>
-          sigmaDslBuilder.allOf(sigmaDslBuilder.Cols.fromItems(Seq(lhs.asRep[Boolean], rhs.asRep[Boolean]):_*))
+          sigmaDslBuilder.allOf(sigmaDslBuilder.Colls.fromItems(Seq(lhs.asRep[Boolean], rhs.asRep[Boolean]):_*))
         case Or =>
-          sigmaDslBuilder.anyOf(sigmaDslBuilder.Cols.fromItems(Seq(lhs.asRep[Boolean], rhs.asRep[Boolean]):_*))
+          sigmaDslBuilder.anyOf(sigmaDslBuilder.Colls.fromItems(Seq(lhs.asRep[Boolean], rhs.asRep[Boolean]):_*))
         case _ => super.rewriteDef(d)
       }
 

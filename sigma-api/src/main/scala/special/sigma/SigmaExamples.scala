@@ -1,10 +1,9 @@
 package special.sigma
 
-import special.collection.Col
+import special.collection.Coll
 
-import scalan.meta.RType
+import scalan.RType
 import RType._
-import special.collection.Types._
 
 trait CrowdFunding extends SigmaContract {
   def deadline: Long
@@ -31,17 +30,17 @@ trait CrossChainAtomicSwap extends SigmaContract {
   def deadlineAlice: Long
   def pkA: SigmaProp
   def pkB: SigmaProp
-  def hx: Col[Byte]
+  def hx: Coll[Byte]
   
   def templateForBobChain(ctx: Context) = verifyZK {
     anyZK(Collection(
       sigmaProp(ctx.HEIGHT > deadlineBob) && pkA,
-      pkB && blake2b256(ctx.getVar[Col[Byte]](1).get) == hx
+      pkB && blake2b256(ctx.getVar[Coll[Byte]](1).get) == hx
     ))
   }
 
   def templateForAliceChain(ctx: Context) = verifyZK {
-    val x = ctx.getVar[Col[Byte]](1).get
+    val x = ctx.getVar[Coll[Byte]](1).get
     anyZK(Collection(
       sigmaProp(ctx.HEIGHT > deadlineAlice) && pkB,
       allZK( Collection(
@@ -57,7 +56,7 @@ trait InChainAtomicSwap extends SigmaContract {
   def deadline: Long
   def pkA: SigmaProp
   def pkB: SigmaProp
-  def token1: Col[Byte]
+  def token1: Coll[Byte]
 
   def templateForAlice(ctx: Context) = verifyZK {
     (pkA && ctx.HEIGHT > deadline) || {

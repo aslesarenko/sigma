@@ -1,7 +1,7 @@
 package special.sigma
 
-import special.collection.{Col, ColOverArrayBuilder}
-import org.bouncycastle.crypto.ec.CustomNamedCurves
+import special.collection.{Coll, CollOverArrayBuilder}
+import scalan._
 
 import scala.reflect.ClassTag
 
@@ -18,7 +18,7 @@ trait ContractsTestkit {
   val R9 = 9.toByte;
 
 
-  val Cols = new ColOverArrayBuilder
+  val Colls = new CollOverArrayBuilder
   val SigmaDsl = new TestSigmaDslBuilder
   val noRegisters = collection[AnyValue]()
   val noBytes = collection[Byte]()
@@ -27,18 +27,18 @@ trait ContractsTestkit {
   val dummyPubkey: Array[Byte] = Array.fill(32)(0: Byte)
   val emptyAvlTree = new TestAvlTree(noBytes, 0, None, None, None)
 
-  def collection[T:ClassTag](items: T*) = Cols.fromArray(items.toArray)
+  def collection[T:RType](items: T*) = Colls.fromArray(items.toArray)
 
-  def regs(m: Map[Byte, Any]): Col[AnyValue] = {
+  def regs(m: Map[Byte, Any]): Coll[AnyValue] = {
     val res = new Array[AnyValue](10)
     for ((id, v) <- m) {
       assert(res(id) == null, s"register $id is defined more then once")
       res(id) = new TestValue(v)
     }
-    Cols.fromArray(res)
+    Colls.fromArray(res)
   }
 
-  def contextVars(m: Map[Byte, Any]): Col[AnyValue] = {
+  def contextVars(m: Map[Byte, Any]): Coll[AnyValue] = {
     val maxKey = if (m.keys.isEmpty) 0 else m.keys.max
     val res = new Array[AnyValue](maxKey)
     for ((id, v) <- m) {
@@ -46,13 +46,13 @@ trait ContractsTestkit {
       assert(res(i) == null, s"register $id is defined more then once")
       res(i) = new TestValue(v)
     }
-    Cols.fromArray(res)
+    Colls.fromArray(res)
   }
 
   val AliceId = Array[Byte](1) // 0x0001
   def newAliceBox(id: Byte, value: Long, registers: Map[Int, Any] = Map()): Box = new TestBox(
-    Cols.fromArray(Array[Byte](0, id)), value,
-    Cols.fromArray(AliceId), noBytes, noBytes,
+    Colls.fromArray(Array[Byte](0, id)), value,
+    Colls.fromArray(AliceId), noBytes, noBytes,
     regs(registers.map { case (k, v) => (k.toByte, v) })
   )
 

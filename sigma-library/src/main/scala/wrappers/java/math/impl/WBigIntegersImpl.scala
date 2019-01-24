@@ -14,6 +14,7 @@ package impl {
 // Abs -----------------------------------
 trait WBigIntegersDefs extends scalan.Scalan with WBigIntegers {
   self: WrappersModule =>
+import special.sigma._  // manual fix
 import IsoUR._
 import Converter._
 import WArray._
@@ -327,8 +328,8 @@ object WBigInteger extends EntityObject("WBigInteger") {
   implicit object LiftableBigInteger
     extends Liftable[BigInteger, WBigInteger] {
     lazy val eW: Elem[WBigInteger] = wBigIntegerElement
-    lazy val sourceClassTag: ClassTag[BigInteger] = {
-      classTag[BigInteger]
+    lazy val sourceType: RType[BigInteger] = {
+      RType[BigInteger]
     }
     def lift(x: BigInteger): Rep[WBigInteger] = WBigIntegerConst(x)
     def unlift(w: Rep[WBigInteger]): BigInteger = w match {

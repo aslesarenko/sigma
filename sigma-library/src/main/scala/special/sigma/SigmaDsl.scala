@@ -6,12 +6,12 @@ package special.sigma {
     import AnyValue._;
     import AvlTree._;
     import Box._;
-    import Col._;
-    import ColBuilder._;
+    import Coll._;
+    import CollBuilder._;
     import Context._;
     import CostModel._;
     import CostedBuilder._;
-    import CostedCol._;
+    import CostedColl._;
     import CostedOption._;
     import DslBuilder._;
     import DslObject._;
@@ -42,7 +42,7 @@ package special.sigma {
     // manual fix (Def)
     @Liftable trait SigmaProp extends Def[SigmaProp] with DslObject {
       def isValid: Rep[Boolean];
-      def propBytes: Rep[Col[Byte]];
+      def propBytes: Rep[Coll[Byte]];
       @OverloadId(value = "and_sigma") def &&(other: Rep[SigmaProp]): Rep[SigmaProp];
       // manual fix
       @OverloadId(value = "and_bool") def &&(other: Rep[Boolean])(implicit o: Overloaded1): Rep[SigmaProp];
@@ -57,14 +57,14 @@ package special.sigma {
     };
     // manual fix (Def)
     @Liftable trait Box extends Def[Box] with DslObject {
-      def id: Rep[Col[Byte]];
+      def id: Rep[Coll[Byte]];
       def value: Rep[Long];
-      def bytes: Rep[Col[Byte]];
-      def bytesWithoutRef: Rep[Col[Byte]];
-      def propositionBytes: Rep[Col[Byte]];
+      def bytes: Rep[Coll[Byte]];
+      def bytesWithoutRef: Rep[Coll[Byte]];
+      def propositionBytes: Rep[Coll[Byte]];
       def cost: Rep[Int];
       def dataSize: Rep[Long];
-      def registers: Rep[Col[AnyValue]];
+      def registers: Rep[Coll[AnyValue]];
       def getReg[T](i: Rep[Int])(implicit cT: Elem[T]): Rep[WOption[T]];
       def R0[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(0.asInstanceOf[Int]));
       def R1[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(1.asInstanceOf[Int]));
@@ -76,12 +76,12 @@ package special.sigma {
       def R7[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(7.asInstanceOf[Int]));
       def R8[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(8.asInstanceOf[Int]));
       def R9[T](implicit cT: Elem[T]): Rep[WOption[T]] = this.getReg[T](toRep(9.asInstanceOf[Int]));
-      def tokens: Rep[Col[scala.Tuple2[Col[Byte], Long]]];
-      def creationInfo: Rep[scala.Tuple2[Int, Col[Byte]]]
+      def tokens: Rep[Coll[scala.Tuple2[Coll[Byte], Long]]];
+      def creationInfo: Rep[scala.Tuple2[Int, Coll[Byte]]]
     };
     // manual fix (Def)
     @Liftable trait AvlTree extends Def[AvlTree] with DslObject {
-      def startingDigest: Rep[Col[Byte]];
+      def startingDigest: Rep[Coll[Byte]];
       def keyLength: Rep[Int];
       def valueLengthOpt: Rep[WOption[Int]];
       def maxNumOperations: Rep[WOption[Int]];
@@ -91,12 +91,12 @@ package special.sigma {
     };
     @Liftable trait Context extends Def[Context] {
       def builder: Rep[SigmaDslBuilder];
-      def OUTPUTS: Rep[Col[Box]];
-      def INPUTS: Rep[Col[Box]];
+      def OUTPUTS: Rep[Coll[Box]];
+      def INPUTS: Rep[Coll[Box]];
       def HEIGHT: Rep[Int];
       def SELF: Rep[Box];
       def LastBlockUtxoRootHash: Rep[AvlTree];
-      def MinerPubKey: Rep[Col[Byte]];
+      def MinerPubKey: Rep[Coll[Byte]];
       def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[WOption[T]];
       def getConstant[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[T];
       def cost: Rep[Int];
@@ -104,24 +104,24 @@ package special.sigma {
     };
     @Liftable trait SigmaContract extends Def[SigmaContract] {
       def builder: Rep[SigmaDslBuilder];
-      @NeverInline @Reified(value = "T") def Collection[T](items: Rep[T]*)(implicit cT: Elem[T]): Rep[Col[T]] = delayInvoke;
+      @NeverInline @Reified(value = "T") def Collection[T](items: Rep[T]*)(implicit cT: Elem[T]): Rep[Coll[T]] = delayInvoke;
       def verifyZK(cond: Rep[Thunk[SigmaProp]]): Rep[Boolean] = this.builder.verifyZK(cond);
-      def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp] = this.builder.atLeast(bound, props);
-      def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = this.builder.allOf(conditions);
-      def allZK(conditions: Rep[Col[SigmaProp]]): Rep[SigmaProp] = this.builder.allZK(conditions);
-      def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean] = this.builder.anyOf(conditions);
-      def anyZK(conditions: Rep[Col[SigmaProp]]): Rep[SigmaProp] = this.builder.anyZK(conditions);
+      def atLeast(bound: Rep[Int], props: Rep[Coll[SigmaProp]]): Rep[SigmaProp] = this.builder.atLeast(bound, props);
+      def allOf(conditions: Rep[Coll[Boolean]]): Rep[Boolean] = this.builder.allOf(conditions);
+      def allZK(conditions: Rep[Coll[SigmaProp]]): Rep[SigmaProp] = this.builder.allZK(conditions);
+      def anyOf(conditions: Rep[Coll[Boolean]]): Rep[Boolean] = this.builder.anyOf(conditions);
+      def anyZK(conditions: Rep[Coll[SigmaProp]]): Rep[SigmaProp] = this.builder.anyZK(conditions);
       def PubKey(base64String: Rep[String]): Rep[SigmaProp] = this.builder.PubKey(base64String);
       def sigmaProp(b: Rep[Boolean]): Rep[SigmaProp] = this.builder.sigmaProp(b);
-      def blake2b256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = this.builder.blake2b256(bytes);
-      def sha256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]] = this.builder.sha256(bytes);
-      def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[WBigInteger] = this.builder.byteArrayToBigInt(bytes);
-      def longToByteArray(l: Rep[Long]): Rep[Col[Byte]] = this.builder.longToByteArray(l);
+      def blake2b256(bytes: Rep[Coll[Byte]]): Rep[Coll[Byte]] = this.builder.blake2b256(bytes);
+      def sha256(bytes: Rep[Coll[Byte]]): Rep[Coll[Byte]] = this.builder.sha256(bytes);
+      def byteArrayToBigInt(bytes: Rep[Coll[Byte]]): Rep[WBigInteger] = this.builder.byteArrayToBigInt(bytes);
+      def longToByteArray(l: Rep[Long]): Rep[Coll[Byte]] = this.builder.longToByteArray(l);
       def proveDlog(g: Rep[WECPoint]): Rep[SigmaProp] = this.builder.proveDlog(g);
       def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[SigmaProp] = this.builder.proveDHTuple(g, h, u, v);
-      def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean] = this.builder.isMember(tree, key, proof);
-      def treeLookup(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = this.builder.treeLookup(tree, key, proof);
-      def treeModifications(tree: Rep[AvlTree], operations: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]] = this.builder.treeModifications(tree, operations, proof);
+      def isMember(tree: Rep[AvlTree], key: Rep[Coll[Byte]], proof: Rep[Coll[Byte]]): Rep[Boolean] = this.builder.isMember(tree, key, proof);
+      def treeLookup(tree: Rep[AvlTree], key: Rep[Coll[Byte]], proof: Rep[Coll[Byte]]): Rep[WOption[Coll[Byte]]] = this.builder.treeLookup(tree, key, proof);
+      def treeModifications(tree: Rep[AvlTree], operations: Rep[Coll[Byte]], proof: Rep[Coll[Byte]]): Rep[WOption[Coll[Byte]]] = this.builder.treeModifications(tree, operations, proof);
       def groupGenerator: Rep[WECPoint] = this.builder.groupGenerator;
       def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint] = this.builder.exponentiate(base, exponent);
       @clause def canOpen(ctx: Rep[Context]): Rep[Boolean];
@@ -129,34 +129,34 @@ package special.sigma {
     };
     // manual fix (Def)
     @Liftable trait SigmaDslBuilder extends Def[SigmaDslBuilder] with DslBuilder {
-      def Cols: Rep[ColBuilder];
+      def Colls: Rep[CollBuilder];
       def Monoids: Rep[MonoidBuilder];
       def Costing: Rep[CostedBuilder];
       def CostModel: Rep[CostModel];
-      def costBoxes(bs: Rep[Col[Box]]): Rep[CostedCol[Box]];
-      def costColWithConstSizedItem[T](xs: Rep[Col[T]], len: Rep[Int], itemSize: Rep[Long]): Rep[CostedCol[T]];
+      def costBoxes(bs: Rep[Coll[Box]]): Rep[CostedColl[Box]];
+      def costColWithConstSizedItem[T](xs: Rep[Coll[T]], len: Rep[Int], itemSize: Rep[Long]): Rep[CostedColl[T]];
       def costOption[T](opt: Rep[WOption[T]], opCost: Rep[Int]): Rep[CostedOption[T]];
       def verifyZK(cond: Rep[Thunk[SigmaProp]]): Rep[Boolean];
-      def atLeast(bound: Rep[Int], props: Rep[Col[SigmaProp]]): Rep[SigmaProp];
-      def allOf(conditions: Rep[Col[Boolean]]): Rep[Boolean];
-      def allZK(conditions: Rep[Col[SigmaProp]]): Rep[SigmaProp];
-      def anyOf(conditions: Rep[Col[Boolean]]): Rep[Boolean];
-      def anyZK(conditions: Rep[Col[SigmaProp]]): Rep[SigmaProp];
+      def atLeast(bound: Rep[Int], props: Rep[Coll[SigmaProp]]): Rep[SigmaProp];
+      def allOf(conditions: Rep[Coll[Boolean]]): Rep[Boolean];
+      def allZK(conditions: Rep[Coll[SigmaProp]]): Rep[SigmaProp];
+      def anyOf(conditions: Rep[Coll[Boolean]]): Rep[Boolean];
+      def anyZK(conditions: Rep[Coll[SigmaProp]]): Rep[SigmaProp];
       def PubKey(base64String: Rep[String]): Rep[SigmaProp];
       def sigmaProp(b: Rep[Boolean]): Rep[SigmaProp];
-      def blake2b256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]];
-      def sha256(bytes: Rep[Col[Byte]]): Rep[Col[Byte]];
-      def byteArrayToBigInt(bytes: Rep[Col[Byte]]): Rep[WBigInteger];
-      def longToByteArray(l: Rep[Long]): Rep[Col[Byte]];
+      def blake2b256(bytes: Rep[Coll[Byte]]): Rep[Coll[Byte]];
+      def sha256(bytes: Rep[Coll[Byte]]): Rep[Coll[Byte]];
+      def byteArrayToBigInt(bytes: Rep[Coll[Byte]]): Rep[WBigInteger];
+      def longToByteArray(l: Rep[Long]): Rep[Coll[Byte]];
       def proveDlog(g: Rep[WECPoint]): Rep[SigmaProp];
       def proveDHTuple(g: Rep[WECPoint], h: Rep[WECPoint], u: Rep[WECPoint], v: Rep[WECPoint]): Rep[SigmaProp];
-      def isMember(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[Boolean];
-      def treeLookup(tree: Rep[AvlTree], key: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]];
-      def treeModifications(tree: Rep[AvlTree], operations: Rep[Col[Byte]], proof: Rep[Col[Byte]]): Rep[WOption[Col[Byte]]];
+      def isMember(tree: Rep[AvlTree], key: Rep[Coll[Byte]], proof: Rep[Coll[Byte]]): Rep[Boolean];
+      def treeLookup(tree: Rep[AvlTree], key: Rep[Coll[Byte]], proof: Rep[Coll[Byte]]): Rep[WOption[Coll[Byte]]];
+      def treeModifications(tree: Rep[AvlTree], operations: Rep[Coll[Byte]], proof: Rep[Coll[Byte]]): Rep[WOption[Coll[Byte]]];
       def groupGenerator: Rep[WECPoint];
       def exponentiate(base: Rep[WECPoint], exponent: Rep[WBigInteger]): Rep[WECPoint];
-      @Reified(value = "T") def substConstants[T](scriptBytes: Rep[Col[Byte]], positions: Rep[Col[Int]], newValues: Rep[Col[T]])(implicit cT: Elem[T]): Rep[Col[Byte]];
-      def decodePoint(encoded: Rep[Col[Byte]]): Rep[WECPoint]
+      @Reified(value = "T") def substConstants[T](scriptBytes: Rep[Coll[Byte]], positions: Rep[Coll[Int]], newValues: Rep[Coll[T]])(implicit cT: Elem[T]): Rep[Coll[Byte]];
+      def decodePoint(encoded: Rep[Coll[Byte]]): Rep[WECPoint]
     };
     trait CostModelCompanion;
     trait DslBuilderCompanion;

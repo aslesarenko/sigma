@@ -15,6 +15,7 @@ package impl {
 // Abs -----------------------------------
 trait WECPointsDefs extends scalan.Scalan with WECPoints {
   self: WrappersModule =>
+  import special.sigma._ // manual fix
 import IsoUR._
 import Converter._
 import WArray._
@@ -63,8 +64,8 @@ object WECPoint extends EntityObject("WECPoint") {
   implicit object LiftableECPoint
     extends Liftable[ECPoint, WECPoint] {
     lazy val eW: Elem[WECPoint] = wECPointElement
-    lazy val sourceClassTag: ClassTag[ECPoint] = {
-      classTag[ECPoint]
+    lazy val sourceType: RType[ECPoint] = {
+      RType[ECPoint]
     }
     def lift(x: ECPoint): Rep[WECPoint] = WECPointConst(x)
     def unlift(w: Rep[WECPoint]): ECPoint = w match {

@@ -13,13 +13,13 @@ import Converter._
 import AnyValue._
 import AvlTree._
 import Box._
-import Col._
+import Coll._
 import Context._
 import Costed._
 import CostedAvlTree._
 import CostedBox._
 import CostedBuilder._
-import CostedCol._
+import CostedColl._
 import CostedOption._
 import CostedSigmaObject._
 import SigmaDslBuilder._
@@ -157,18 +157,18 @@ object CostedContext extends EntityObject("CostedContext") {
     override def transform(t: Transformer) = CostedContextAdapter(t(source))
     private val thisClass = classOf[CostedContext]
 
-    def OUTPUTS: Rep[CostedCol[Box]] = {
-      asRep[CostedCol[Box]](mkMethodCall(source,
+    def OUTPUTS: Rep[CostedColl[Box]] = {
+      asRep[CostedColl[Box]](mkMethodCall(source,
         thisClass.getMethod("OUTPUTS"),
         List(),
-        true, true, element[CostedCol[Box]]))
+        true, true, element[CostedColl[Box]]))
     }
 
-    def INPUTS: Rep[CostedCol[Box]] = {
-      asRep[CostedCol[Box]](mkMethodCall(source,
+    def INPUTS: Rep[CostedColl[Box]] = {
+      asRep[CostedColl[Box]](mkMethodCall(source,
         thisClass.getMethod("INPUTS"),
         List(),
-        true, true, element[CostedCol[Box]]))
+        true, true, element[CostedColl[Box]]))
     }
 
     def HEIGHT: Rep[Costed[Int]] = {
@@ -192,11 +192,11 @@ object CostedContext extends EntityObject("CostedContext") {
         true, true, element[CostedAvlTree]))
     }
 
-    def MinerPubKey: Rep[CostedCol[Byte]] = {
-      asRep[CostedCol[Byte]](mkMethodCall(source,
+    def MinerPubKey: Rep[CostedColl[Byte]] = {
+      asRep[CostedColl[Byte]](mkMethodCall(source,
         thisClass.getMethod("MinerPubKey"),
         List(),
-        true, true, element[CostedCol[Byte]]))
+        true, true, element[CostedColl[Byte]]))
     }
 
     def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[CostedOption[T]] = {
@@ -410,11 +410,11 @@ object CostedBox extends EntityObject("CostedBox") {
     override def transform(t: Transformer) = CostedBoxAdapter(t(source))
     private val thisClass = classOf[CostedBox]
 
-    def id: Rep[CostedCol[Byte]] = {
-      asRep[CostedCol[Byte]](mkMethodCall(source,
+    def id: Rep[CostedColl[Byte]] = {
+      asRep[CostedColl[Byte]](mkMethodCall(source,
         thisClass.getMethod("id"),
         List(),
-        true, true, element[CostedCol[Byte]]))
+        true, true, element[CostedColl[Byte]]))
     }
 
     def valueCosted: Rep[Costed[Long]] = {
@@ -424,32 +424,32 @@ object CostedBox extends EntityObject("CostedBox") {
         true, true, element[Costed[Long]]))
     }
 
-    def bytes: Rep[CostedCol[Byte]] = {
-      asRep[CostedCol[Byte]](mkMethodCall(source,
+    def bytes: Rep[CostedColl[Byte]] = {
+      asRep[CostedColl[Byte]](mkMethodCall(source,
         thisClass.getMethod("bytes"),
         List(),
-        true, true, element[CostedCol[Byte]]))
+        true, true, element[CostedColl[Byte]]))
     }
 
-    def bytesWithoutRef: Rep[CostedCol[Byte]] = {
-      asRep[CostedCol[Byte]](mkMethodCall(source,
+    def bytesWithoutRef: Rep[CostedColl[Byte]] = {
+      asRep[CostedColl[Byte]](mkMethodCall(source,
         thisClass.getMethod("bytesWithoutRef"),
         List(),
-        true, true, element[CostedCol[Byte]]))
+        true, true, element[CostedColl[Byte]]))
     }
 
-    def propositionBytes: Rep[CostedCol[Byte]] = {
-      asRep[CostedCol[Byte]](mkMethodCall(source,
+    def propositionBytes: Rep[CostedColl[Byte]] = {
+      asRep[CostedColl[Byte]](mkMethodCall(source,
         thisClass.getMethod("propositionBytes"),
         List(),
-        true, true, element[CostedCol[Byte]]))
+        true, true, element[CostedColl[Byte]]))
     }
 
-    def registers: Rep[CostedCol[AnyValue]] = {
-      asRep[CostedCol[AnyValue]](mkMethodCall(source,
+    def registers: Rep[CostedColl[AnyValue]] = {
+      asRep[CostedColl[AnyValue]](mkMethodCall(source,
         thisClass.getMethod("registers"),
         List(),
-        true, true, element[CostedCol[AnyValue]]))
+        true, true, element[CostedColl[AnyValue]]))
     }
 
     def getReg[T](id: Rep[Int])(implicit cT: Elem[T]): Rep[CostedOption[T]] = {
@@ -459,11 +459,11 @@ object CostedBox extends EntityObject("CostedBox") {
         true, true, element[CostedOption[T]]))
     }
 
-    def creationInfo: Rep[Costed[(Int, Col[Byte])]] = {
-      asRep[Costed[(Int, Col[Byte])]](mkMethodCall(source,
+    def creationInfo: Rep[Costed[(Int, Coll[Byte])]] = {
+      asRep[Costed[(Int, Coll[Byte])]](mkMethodCall(source,
         thisClass.getMethod("creationInfo"),
         List(),
-        true, true, element[Costed[(Int, Col[Byte])]]))
+        true, true, element[Costed[(Int, Coll[Byte])]]))
     }
 
     def dsl: Rep[SigmaDslBuilder] = {
@@ -663,11 +663,11 @@ object CostedAvlTree extends EntityObject("CostedAvlTree") {
     override def transform(t: Transformer) = CostedAvlTreeAdapter(t(source))
     private val thisClass = classOf[CostedAvlTree]
 
-    def startingDigest: Rep[CostedCol[Byte]] = {
-      asRep[CostedCol[Byte]](mkMethodCall(source,
+    def startingDigest: Rep[CostedColl[Byte]] = {
+      asRep[CostedColl[Byte]](mkMethodCall(source,
         thisClass.getMethod("startingDigest"),
         List(),
-        true, true, element[CostedCol[Byte]]))
+        true, true, element[CostedColl[Byte]]))
     }
 
     def keyLength: Rep[Costed[Int]] = {

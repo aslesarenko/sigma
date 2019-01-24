@@ -15,17 +15,17 @@ import AvlTree._
 import Box._
 import CCostedAvlTree._
 import CCostedBox._
-import CCostedCol._
+import CCostedColl._
 import CCostedContext._
 import CCostedPrim._
-import Col._
-import ColBuilder._
+import Coll._
+import CollBuilder._
 import Context._
 import CostModel._
 import Costed._
 import CostedAvlTree._
 import CostedBox._
-import CostedCol._
+import CostedColl._
 import CostedContext._
 import CostedOption._
 import SigmaDslBuilder._
@@ -309,11 +309,11 @@ object CCostedBox extends EntityObject("CCostedBox") {
     override def transform(t: Transformer) = CCostedBoxCtor(t(box), t(cost))
     private val thisClass = classOf[CostedBox]
 
-    override def creationInfo: Rep[Costed[(Int, Col[Byte])]] = {
-      asRep[Costed[(Int, Col[Byte])]](mkMethodCall(self,
+    override def creationInfo: Rep[Costed[(Int, Coll[Byte])]] = {
+      asRep[Costed[(Int, Coll[Byte])]](mkMethodCall(self,
         thisClass.getMethod("creationInfo"),
         List(),
-        true, false, element[Costed[(Int, Col[Byte])]]))
+        true, false, element[Costed[(Int, Coll[Byte])]]))
     }
   }
   // elem for concrete class

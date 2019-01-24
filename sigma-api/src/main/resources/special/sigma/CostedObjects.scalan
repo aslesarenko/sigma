@@ -5,13 +5,13 @@ package special.sigma {
     import AnyValue._;
     import AvlTree._;
     import Box._;
-    import Col._;
+    import Coll._;
     import Context._;
     import Costed._;
     import CostedAvlTree._;
     import CostedBox._;
     import CostedBuilder._;
-    import CostedCol._;
+    import CostedColl._;
     import CostedOption._;
     import CostedSigmaObject._;
     import SigmaDslBuilder._;
@@ -21,27 +21,27 @@ package special.sigma {
       def builder: Rep[CostedBuilder] = CostedSigmaObject.this.dsl.Costing
     };
     trait CostedContext extends CostedSigmaObject[Context] {
-      def OUTPUTS: Rep[CostedCol[Box]];
-      def INPUTS: Rep[CostedCol[Box]];
+      def OUTPUTS: Rep[CostedColl[Box]];
+      def INPUTS: Rep[CostedColl[Box]];
       def HEIGHT: Rep[Costed[Int]];
       def SELF: Rep[CostedBox];
       def LastBlockUtxoRootHash: Rep[CostedAvlTree];
-      def MinerPubKey: Rep[CostedCol[Byte]];
+      def MinerPubKey: Rep[CostedColl[Byte]];
       def getVar[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[CostedOption[T]];
       def getConstant[T](id: Rep[Byte])(implicit cT: Elem[T]): Rep[Costed[T]]
     };
     trait CostedBox extends CostedSigmaObject[Box] {
-      def id: Rep[CostedCol[Byte]];
+      def id: Rep[CostedColl[Byte]];
       def valueCosted: Rep[Costed[Long]];
-      def bytes: Rep[CostedCol[Byte]];
-      def bytesWithoutRef: Rep[CostedCol[Byte]];
-      def propositionBytes: Rep[CostedCol[Byte]];
-      def registers: Rep[CostedCol[AnyValue]];
+      def bytes: Rep[CostedColl[Byte]];
+      def bytesWithoutRef: Rep[CostedColl[Byte]];
+      def propositionBytes: Rep[CostedColl[Byte]];
+      def registers: Rep[CostedColl[AnyValue]];
       def getReg[T](id: Rep[Int])(implicit cT: Elem[T]): Rep[CostedOption[T]];
-      def creationInfo: Rep[Costed[scala.Tuple2[Int, Col[Byte]]]]
+      def creationInfo: Rep[Costed[scala.Tuple2[Int, Coll[Byte]]]]
     };
     trait CostedAvlTree extends CostedSigmaObject[AvlTree] {
-      def startingDigest: Rep[CostedCol[Byte]];
+      def startingDigest: Rep[CostedColl[Byte]];
       def keyLength: Rep[Costed[Int]];
       def valueLengthOpt: Rep[CostedOption[Int]];
       def maxNumOperations: Rep[CostedOption[Int]];

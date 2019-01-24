@@ -7,7 +7,7 @@ import org.scalatest.{FunSuite, Matchers}
 
 class BasicOpsTests extends FunSuite with ContractsTestkit with Matchers {
   test("atLeast") {
-    val props = Cols.fromArray(Array[SigmaProp](false, true, true, false))
+    val props = Colls.fromArray(Array[SigmaProp](false, true, true, false))
     // border cases
     SigmaDsl.atLeast(0, props).isValid shouldBe true
     SigmaDsl.atLeast(5, props).isValid shouldBe false
@@ -25,18 +25,18 @@ class BasicOpsTests extends FunSuite with ContractsTestkit with Matchers {
     val groupOrder = CustomNamedCurves.getByName("curve25519").getN
 
     SigmaDsl.byteArrayToBigInt(
-      Cols.fromArray(groupOrder.subtract(BigInteger.ONE).toByteArray)
+      Colls.fromArray(groupOrder.subtract(BigInteger.ONE).toByteArray)
     ).compareTo(BigInteger.ONE) shouldBe 1
 
     SigmaDsl.byteArrayToBigInt(
-      Cols.fromArray(groupOrder.toByteArray)
+      Colls.fromArray(groupOrder.toByteArray)
     ).compareTo(BigInteger.ONE) shouldBe 1
 
     an [RuntimeException] should be thrownBy
-      SigmaDsl.byteArrayToBigInt(Cols.fromArray(groupOrder.add(BigInteger.ONE).toByteArray))
+      SigmaDsl.byteArrayToBigInt(Colls.fromArray(groupOrder.add(BigInteger.ONE).toByteArray))
 
     an [RuntimeException] should be thrownBy
-      SigmaDsl.byteArrayToBigInt(Cols.fromArray(Array.fill[Byte](500)(1)))
+      SigmaDsl.byteArrayToBigInt(Colls.fromArray(Array.fill[Byte](500)(1)))
   }
 
   def test(f: Context => Boolean, ctx: Context, expected: Boolean) = {
@@ -45,7 +45,7 @@ class BasicOpsTests extends FunSuite with ContractsTestkit with Matchers {
     res shouldBe expected
   }
 
-  test("Col.append")  {
+  test("Coll.append")  {
     val c1 = collection[Byte](1, 2)
     val c2 = collection[Byte](3, 4)
     c1.append(c2).arr shouldBe Array[Byte](1, 2, 3, 4)
