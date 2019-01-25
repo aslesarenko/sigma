@@ -48,7 +48,7 @@ class BasicOpsTests extends FunSuite with ContractsTestkit with Matchers {
   test("Coll.append")  {
     val c1 = collection[Byte](1, 2)
     val c2 = collection[Byte](3, 4)
-    c1.append(c2).arr shouldBe Array[Byte](1, 2, 3, 4)
+    c1.append(c2).toArray shouldBe Array[Byte](1, 2, 3, 4)
   }
   test("examples from wpaper")  {
     val selfId = collection[Byte](0, 1)

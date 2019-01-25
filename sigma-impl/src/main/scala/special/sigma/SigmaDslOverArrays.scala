@@ -188,10 +188,10 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
   def sigmaProp(b: Boolean): SigmaProp = TrivialSigma(b)
 
   @NeverInline
-  def blake2b256(bytes: Coll[Byte]): Coll[Byte] = Colls.fromArray(Blake2b256.hash(bytes.arr))
+  def blake2b256(bytes: Coll[Byte]): Coll[Byte] = Colls.fromArray(Blake2b256.hash(bytes.toArray))
 
   @NeverInline
-  def sha256(bytes: Coll[Byte]): Coll[Byte] = Colls.fromArray(Sha256.hash(bytes.arr))
+  def sha256(bytes: Coll[Byte]): Coll[Byte] = Colls.fromArray(Sha256.hash(bytes.toArray))
 
   @NeverInline
   def PubKey(base64String: String): SigmaProp = ???
@@ -199,7 +199,7 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
   @NeverInline
   def byteArrayToBigInt(bytes: Coll[Byte]): BigInteger = {
     val dlogGroupOrder = __curve__.getN
-    val bi = new BigInteger(1, bytes.arr)
+    val bi = new BigInteger(1, bytes.toArray)
     if (bi.compareTo(dlogGroupOrder) == 1) {
       throw new RuntimeException(s"BigInt value exceeds the order of the dlog group (${__curve__}). Expected to be less than: $dlogGroupOrder, actual: $bi")
     }
@@ -241,7 +241,7 @@ class TestSigmaDslBuilder extends SigmaDslBuilder {
       (implicit cT: RType[T]): Coll[Byte] = ???
 
   @NeverInline
-  override def decodePoint(encoded: Coll[Byte]): ECPoint = __curve__.getCurve.decodePoint(encoded.arr)
+  override def decodePoint(encoded: Coll[Byte]): ECPoint = __curve__.getCurve.decodePoint(encoded.toArray)
 }
 
 trait DefaultSigma extends SigmaProp {

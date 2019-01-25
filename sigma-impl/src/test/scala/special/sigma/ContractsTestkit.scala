@@ -67,7 +67,7 @@ trait ContractsTestkit {
       new TestContext(ctx.inputs, outputs.toArray, ctx.height, ctx.selfBox, emptyAvlTree, dummyPubkey, ctx.vars)
     def withVariables(vars: Map[Int, Any]) =
       new TestContext(ctx.inputs, ctx.outputs, ctx.height, ctx.selfBox, emptyAvlTree, dummyPubkey,
-        contextVars(vars.map { case (k, v) => (k.toByte, v) }).arr)
+        contextVars(vars.map { case (k, v) => (k.toByte, v) }).toArray)
   }
 
   implicit def boolToSigma(b: Boolean): SigmaProp = TrivialSigma(b)
